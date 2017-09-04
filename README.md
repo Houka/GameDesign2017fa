@@ -25,7 +25,8 @@ CS4154: Analytics in Game Design repo
 
 ## Sublime Project Setup 
 
-HelloWorld.sublime-project
+`Game.sublime-project` will be the project setup template file for this repo
+
 ### Mac
 ```
 {
@@ -33,8 +34,8 @@ HelloWorld.sublime-project
 	[
 		{
 			"follow_symlinks": true,
-			"name": "Hello World",
-			"path": "/Users/newmac/Documents/GameDesign2017fa/Hello World"
+			"name": "Game",
+			"path": "<path to your project>/GameDesign2017fa/Game"
 		},
 		{
 			"follow_symlinks": true,
@@ -62,8 +63,8 @@ HelloWorld.sublime-project
 	[
 		{
 			"follow_symlinks": true,
-			"name": "HelloWorld",
-			"path": "C:\\Users\\Lu\\projects\\test/HelloWorld"
+			"name": "Game",
+			"path": "<path to your project>\\GameDesign2017fa/Game"
 		},
 		{
 			"follow_symlinks": true,
