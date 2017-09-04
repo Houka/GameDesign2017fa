@@ -22,3 +22,65 @@ CS4154: Analytics in Game Design repo
  5. Setup lime
   - `haxelib -notimeout run lime setup`
   - `hxcpp 3.4.64`, `lime-samples 4.0.1` should be installed
+
+## Sublime Project Setup 
+
+HelloWorld.sublime-project
+### Mac
+```
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"name": "Hello World",
+			"path": "/Users/newmac/Documents/GameDesign2017fa/Hello World"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Flixel",
+			"path": "/usr/local/lib/haxe/lib/flixel/4,3,0/"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Flixel Addons",
+			"path": "/usr/local/lib/haxe/lib/flixel-addons/2,5,0/"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Haxe",
+			"path": "/usr/local/lib/haxe/std"
+		}
+	]
+}
+
+```
+### Windows 
+``` 
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"name": "HelloWorld",
+			"path": "C:\\Users\\Lu\\projects\\test/HelloWorld"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Flixel",
+			"path": "C:\\HaxeToolkit\\haxe\\lib\\flixel/4,3,0/"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Flixel Addons",
+			"path": "C:\\HaxeToolkit\\haxe\\lib\\flixel-addons/2,5,0/"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Haxe",
+			"path": "C:\\HaxeToolkit\\haxe\\std"
+		}
+	]
+}
+
+```
