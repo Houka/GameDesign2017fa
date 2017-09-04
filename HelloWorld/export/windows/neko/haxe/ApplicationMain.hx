@@ -515,7 +515,11 @@ class ApplicationMain {
 		
 		config = {
 			
+<<<<<<< HEAD:HelloWorld/export/windows/neko/haxe/ApplicationMain.hx
 			build: "5",
+=======
+			build: "11",
+>>>>>>> 78a5c8165bf4115d930ad62eacfce99f151531c3:Hello World/export/mac64/neko/haxe/ApplicationMain.hx
 			company: "HaxeFlixel",
 			file: "HelloWorld",
 			fps: 60,
