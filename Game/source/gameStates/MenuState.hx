@@ -1,13 +1,13 @@
-package;
+package gameStates;
 
 import flixel.FlxState;
 
-class PlayState extends FlxState
+class MenuState extends FlxState
 {
 	override public function create():Void
 	{
 		super.create();
-		var text = new flixel.text.FlxText(0, 0, 0, "Hello World", 64);
+		var text = new flixel.text.FlxText(0, 0, 0, "Menu State", 64);
 		text.screenCenter();
 		add(text);
 	}
