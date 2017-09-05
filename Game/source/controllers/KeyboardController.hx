@@ -1,4 +1,4 @@
-package;
+package controllers;
 
 import flixel.FlxBasic;
 import flixel.FlxG;
