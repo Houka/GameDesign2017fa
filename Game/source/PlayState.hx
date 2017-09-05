@@ -4,16 +4,29 @@ import flixel.FlxState;
 
 class PlayState extends FlxState
 {
+    var keyboard:KeyboardController;
+
 	override public function create():Void
 	{
 		super.create();
-		var text = new flixel.text.FlxText(0, 0, 0, "Hello World", 64);
-		text.screenCenter();
-		add(text);
+        keyboard = new KeyboardController();
+        add(keyboard);
 	}
 
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+        var text = new flixel.text.FlxText(0, 0, 0, "Paused", 64);
+        text.screenCenter();
+        add(text);
+
+        if(KeyboardController.paused()){
+            text.text = "Paused";
+            //trace("Paused");
+        }
+        else{
+            text.text = "Unpaused";
+            //trace("Unpaused");
+        }
 	}
 }
