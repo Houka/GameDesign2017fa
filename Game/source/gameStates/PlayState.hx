@@ -1,6 +1,7 @@
 package gameStates;
 
-import controllers.KeyboardController;
+import controllers.*;
+import gameObjects.*;
 import flixel.FlxState;
 import flixel.FlxSprite; 
 
@@ -20,6 +21,8 @@ class PlayState extends FlxState
 		add(player); 
 		player.loadGraphic(AssetPaths.player__png, true, 16, 16);
 		player.animation.add("walk", [0, 1, 2, 3, 4, 5], 5, true);
+		var turret:TowerController = new TowerController(10, 50, 20, 0, 7);
+		add(turret);
 	}
 
 	override public function update(elapsed:Float):Void

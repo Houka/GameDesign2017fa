@@ -3,7 +3,8 @@ package;
 import flixel.FlxGame;
 import openfl.display.Sprite;
 import gameStates.*;  
-import controllers.*; 
+import controllers.*;
+import gameObjects.*;
 import haxe.Timer; 
 import flixel.FlxG; 
 
