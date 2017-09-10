@@ -2,6 +2,7 @@
 
  import flixel.FlxSprite;
  import flixel.system.FlxAssets.FlxGraphicAsset;
+ import controllers.RenderBuffer;
 
 /**
  * Tower is an abstract class which provides functionality to the
@@ -29,16 +30,20 @@ class Tower extends FlxSprite
 
         this._canFire = 0;
         loadGraphic(AssetPaths.temp_tower__png, true, 36, 78);
-        animation.add("shooting", [0,1,2,3,4,5,6,7,8,9,10], 20);
+        animation.add("shooting", [0,1,2,3,4,5,6,7,8,9,10], 20, false);
+        //animation.add("still", [0]);
         animation.play("shooting");
     }
 
     public function shoot(xTarget:Float, yTarget:Float)
     {
+        animation.play("shooting");
         if(_canFire>=fireRate)
-        {       
+        {
+            trace("bang!");
             this._canFire = 0;
-            var ammo:Projectile = new Projectile(x, y, xTarget, yTarget, attackPoints, muzzleVelocity);
+            var bullet:Projectile = new Projectile(x, y, xTarget, yTarget, attackPoints, muzzleVelocity);
+            RenderBuffer.buffer.add(bullet);
         }
     }
 

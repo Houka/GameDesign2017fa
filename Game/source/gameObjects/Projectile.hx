@@ -31,9 +31,9 @@ class Projectile extends FlxSprite
     override public function update(elapsed:Float)
     {
         super.update(elapsed);
-        if(FlxG.keys.anyJustPressed([E]))
+        if(!isOnScreen())
         {
-            this.kill();
+            kill();
         }
     }
 }
