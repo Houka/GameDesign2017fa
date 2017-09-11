@@ -13,17 +13,18 @@ import controllers.*;
 class PlayState extends FlxState
 {
 	var mouse:MouseController; 
+	var newSpriteList:Array<FlxSprite> = new Array<FlxSprite>();
 
 	override public function create():Void
 	{
 		super.create();
-		mouse = new MouseController(); 
-		add(mouse);		
+		mouse = new MouseController(this); 
 	}
 
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+		mouse.update(newSpriteList);
 
 	}
 }
