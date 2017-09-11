@@ -26,7 +26,7 @@ class PlayState extends FlxState
 		add(player); 
 		player.loadGraphic(AssetPaths.player__png, true, 16, 16);
 		player.animation.add("walk", [0, 1, 2, 3, 4, 5], 5, true);
-		var turret:TowerController = new TowerController(300, 200, 400, 150, 120);
+		var turret:TowerController = new TowerController(300, 200, 40, 150, 400);
 		add(turret);
 	}
 

@@ -21,8 +21,8 @@ class Projectile extends FlxSprite
         this.attackPoints = attack;
         loadGraphic(AssetPaths.fireball__png, false, 38, 14);
 
-        var pAngle = FlxAngle.angleBetweenPoint(this, new FlxPoint(xTarget, yTarget));
-        angle = pAngle;
+        var pAngle = FlxAngle.asDegrees(FlxAngle.angleBetweenPoint(this, new FlxPoint(xTarget, yTarget)));
+        this.angle = pAngle;
         velocity.set(speed, 0);
         velocity.rotate(FlxPoint.weak(0,0), pAngle);
     }
