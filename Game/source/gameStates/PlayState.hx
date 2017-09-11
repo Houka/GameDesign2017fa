@@ -48,10 +48,10 @@ class PlayState extends FlxState
 
 		player.animation.play("walk");
 		if(KeyboardController.paused()){
-			trace("paused");
+			//trace("paused");
 		}
 		if(KeyboardController.quit()){
-			trace("quitting");
+			//trace("quitting");
 		}
 
 		//render sprites

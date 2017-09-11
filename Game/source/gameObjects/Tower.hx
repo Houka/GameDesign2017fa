@@ -41,7 +41,6 @@ class Tower extends FlxSprite
         animation.play("shooting");
         if(_fireCountup>=fireRate)
         {
-            trace("bang!");
             this._fireCountup = 0;
             var bullet:Projectile = new Projectile(x+origin.x, y+origin.y, xTarget, yTarget, attackPoints, muzzleVelocity);
             RenderBuffer.buffer.add(bullet);
