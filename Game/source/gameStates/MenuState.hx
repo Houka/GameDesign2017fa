@@ -15,6 +15,8 @@ class MenuState extends FlxState
 		add(text);
 		var playButton: FlxButton = new FlxButton(0, 0, "Play", nextState);
 		add(playButton);
+		var npcStateButton: FlxButton = new FlxButton(0, 100, "NPC", npcStateSwitch);
+		add(npcStateButton);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -26,5 +28,10 @@ class MenuState extends FlxState
 	private function nextState():Void 
 	{
 		FlxG.switchState(new PlayState());
+	}
+
+	private function npcStateSwitch():Void 
+	{
+		FlxG.switchState(new NPCTestState());
 	}
 }
