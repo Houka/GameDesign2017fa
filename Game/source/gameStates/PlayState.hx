@@ -6,9 +6,18 @@ import controllers.TowerController;
 import gameObjects.*;
 import flixel.FlxState;
 import flixel.FlxSprite; 
+import flixel.util.FlxColor; 
+import flixel.FlxG; 
+import flixel.math.FlxPoint;
+import flixel.input.mouse.FlxMouseEventManager; 
+using flixel.util.FlxSpriteUtil; 
+import controllers.*; 
+
 
 class PlayState extends FlxState
 {
+	var mouse:MouseController; 
+	var newSpriteList:Array<FlxSprite> = new Array<FlxSprite>();
 	var player: FlxSprite = new FlxSprite(10, 10);
 	var keyboard:KeyboardController;
 	var renderer:RenderBuffer;
@@ -16,6 +25,7 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		super.create();
+		mouse = new MouseController(this); 
 		var text = new flixel.text.FlxText(0, 0, 0, "Play State", 64);
 		text.screenCenter();
 		keyboard = new KeyboardController();
@@ -34,6 +44,8 @@ class PlayState extends FlxState
 	{
 		//keyboard controls 
 		super.update(elapsed);
+		mouse.update(newSpriteList);
+
 		player.animation.play("walk");
 		if(KeyboardController.paused()){
 			trace("paused");
