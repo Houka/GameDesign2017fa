@@ -2,6 +2,7 @@ package gameObjects;
 
 import flixel.FlxSprite;
 import flixel.system.FlxAssets;
+import flixel.math.FlxPoint;
 
 class GameObject extends FlxSprite
 {

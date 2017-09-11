@@ -9,14 +9,13 @@ import controllers.*;
 
 class NPCTestState extends FlxState
 {
-	private var npcs:Array<NPC> = new Array<NPC>();
-	private var npcController:NPCController = new NPCController();
+	private var npcs:Array<Worker> = new Array<Worker>();
+	private var npcController:WorkerController = new WorkerController(20);
 
 	private function testNPC(x:Int):Void{
-		var npc = new NPC(x,10,1,10,AssetPaths.player__png,16,16);
+		var npc = new Worker(x,10,1,10,AssetPaths.player__png,16,16);
 		npc.setGoal(x,200);
-		npc.animation.add("idle", [0], 5, false);
-		npc.animation.add("walk", [0,1,2], 5, true);
+		npcController.addAnimation(npc);
 		add(npc);
 		npcs.push(npc);
 	}
@@ -24,8 +23,10 @@ class NPCTestState extends FlxState
 	private function testNPCUpdate():Void{
 		for(npc in npcs){
 			npcController.update(npc);
+
+			//testing movement function
 			if(npc.isAtGoal())
-				npc.setGoal(400,400);
+				npc.setGoal(100,100);
 		}
 	}
 

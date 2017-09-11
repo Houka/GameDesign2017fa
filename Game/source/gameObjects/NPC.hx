@@ -3,27 +3,19 @@ package gameObjects;
 import Math.*;
 import flixel.system.FlxAssets;
 import interfaces.*;
-import flixel.math.FlxPoint;
+import flixel.math.*;
 
 /***
 * @author: Chang Lu
 */
-@:enum
-abstract NPCState(Int) {
-  var Idle = 0;
-  var Moving = 1;
-}
-
 class NPC extends GameObject implements Attackable implements Movable implements Healable
 {
 	var baseHealth:Int;
-	var goalX:Int;
-	var goalY:Int;
+	var goal:FlxPoint;
 	public var speed:Int;
 	public var healthPoints:Int;
 	public var isDead:Bool;
 	public var canMove:Bool;
-	public var state:NPCState;
 
 	public function new(x:Int, y:Int, speed:Int, health:Int, graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
 		super(x,y,graphicAsset,graphicsWidth,graphicsHeight);
@@ -31,55 +23,50 @@ class NPC extends GameObject implements Attackable implements Movable implements
 		this.healthPoints = health;
 		this.baseHealth = health;
 		this.isDead = false;
-		this.goalX = x;
-		this.goalY = y;
+		this.goal = new FlxPoint(x,y);
 		this.canMove = true;
-		this.state = NPCState.Idle;
 	}
 
 	public function takeDamage(obj:Attacker):Void{
-		if (obj.isAttacking() && !this.isDead){
-			this.health -= obj.attackPoints;
+		if (obj.isAttacking && !this.isDead){
+			this.healthPoints -= obj.attackPoints;
 		}
 
-		if (this.health <= 0){
+		if (this.healthPoints <= 0){
 			this.isDead == true;
 		}
 	}
 	
 	public function setGoal(x:Int, y:Int):Void{
 		if (this.canMove){
-			this.goalX = x;
-			this.goalY = y;
+			this.goal.x = x;
+			this.goal.y = y;
 		}
 	}	
 
 	public function isAtGoal():Bool{
-		return this.goalX == this.x && this.goalY == this.y;
+		return this.goal.x == this.x && this.goal.y == this.y;
 	}
 
-	public function getDistanceToGoal():FlxPoint{
-		return new FlxPoint(Math.abs(this.goalX - this.x),Math.abs(this.goalY - this.y));
-	}
+	public function moveTowardGoal():Void{
+		var dx:Float = (this.goal.x) - this.x;
+		var dy:Float = (this.goal.y) - this.y;
+		var d = FlxMath.vectorLength(dx, dy);
+		var a:Float = Math.atan2(dy, dx);
+		var velocity:FlxPoint = new FlxPoint(Math.cos(a) * this.speed,Math.sin(a) * this.speed);
+		var distance:FlxPoint = new FlxPoint(Math.cos(a) * d,Math.sin(a) * d);
 
-	public function getDirectionToGoal():FlxPoint{
-		var x = 0;
-		var y = 0;
-		if (this.x-this.goalX > 0)
-			x = -1;
-		else if (this.x-this.goalX < 0)
-			x = 1;
-
-		if (this.y-this.goalY > 0)
-			y = -1;
-		else if (this.y-this.goalY < 0)
-			y = 1;
-
-		return new FlxPoint(x,y);
+		if (this.speed < d){
+			this.x += velocity.x;
+			this.y += velocity.y;
+		}
+		else{
+			this.x += distance.x;
+			this.y += distance.y;
+		}
 	}
 
 	public function healBy(health:Int):Void{
-		this.health = min(this.health+health, this.baseHealth);
+		this.healthPoints = Std.int(Math.min(this.healthPoints+health, this.baseHealth));
 	}
-
 }
