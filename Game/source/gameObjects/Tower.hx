@@ -43,7 +43,7 @@ class Tower extends FlxSprite
         {
             trace("bang!");
             this._canFire = 0;
-            var bullet:Projectile = new Projectile(x, y, xTarget, yTarget, attackPoints, muzzleVelocity);
+            var bullet:Projectile = new Projectile(x+origin.x, y+origin.y, xTarget, yTarget, attackPoints, muzzleVelocity);
             RenderBuffer.buffer.add(bullet);
         }
     }

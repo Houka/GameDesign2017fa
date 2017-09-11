@@ -20,6 +20,9 @@ class Projectile extends FlxSprite
         super(X, Y);
         this.attackPoints = attack;
         loadGraphic(AssetPaths.fireball__png, false, 38, 14);
+        centerOffsets(true);
+        centerOrigin();
+        setPosition(x-origin.x, y-origin.y);
 
         var pAngle = FlxAngle.asDegrees(FlxAngle.angleBetweenPoint(this, new FlxPoint(xTarget, yTarget)));
         this.angle = pAngle;
