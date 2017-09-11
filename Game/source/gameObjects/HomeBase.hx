@@ -9,7 +9,7 @@
 
 class HomeBase extends FlxSprite
 {
-    public hitPoints:Int;
+    public healthPoints:Int;
 
     public function new(hitPoints:Int, ?X:Float=0, ?Y:Float=0,
         ?SimpleGraphic:FlxGraphicAsset)

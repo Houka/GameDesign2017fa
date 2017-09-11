@@ -20,7 +20,7 @@ class PlayState extends FlxState
 		text.screenCenter();
 		keyboard = new KeyboardController();
 		renderer = new RenderBuffer();
-		add(renderer);
+		//add(renderer);
 		add(keyboard);
 		//add(text);
 		add(player); 

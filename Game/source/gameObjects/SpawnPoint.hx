@@ -9,28 +9,27 @@
 
 class SpawnPoint extends FlxSprite
 {
-    public hitPoints:Int;
     public spawnRate:Int;
-    public canSpawn:Int;
+    private _spawnCountup:Int;
 
     public function new(?X:Float=0, ?Y:Float=0, ?rate:Int=20;)
     {
         super(X, Y);
         this.spawnRate = rate;
-        this.canSpawn = 0;
+        this._spawnCountup = 0;
     }
 
     /*For throwaway demo, just spawn a stream of basic enemies*/
     override public function update(elapsed:Float)
     {
         super.update(elapsed);
-        if(canSpawn < spawnRate)
+        if(_spawnCountup < spawnRate)
         {
-            canSpawn++;
+            _spawnCountup++;
         }
         else
         {
-            canSpawn = 0;
+            _spawnCountup = 0;
             //spawn();
         }
     }

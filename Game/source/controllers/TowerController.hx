@@ -25,7 +25,7 @@ class TowerController extends Tower
     override public function update(elapsed:Float)
     {
         super.update(elapsed);
-        sight.set(FlxG.mouse.x - x, FlxG.mouse.y - y);
+        sight.set(FlxG.mouse.x - x - origin.x, FlxG.mouse.y - y - origin.y);
         if(sight.length <= this.range){
             this.shoot(FlxG.mouse.x, FlxG.mouse.y);
         }

@@ -17,7 +17,7 @@ class Tower extends FlxSprite
     public var range:Int;
     public var attackPoints:Int;
     public var muzzleVelocity:Float;
-    private var _canFire:Int;
+    private var _fireCountup:Int;
 
     public function new(?X:Float=0, ?Y:Float=0, rate:Int, range:Int,
         muzzle:Float, ?attack:Int=0)
@@ -28,7 +28,7 @@ class Tower extends FlxSprite
         this.attackPoints = attack;
         this.muzzleVelocity = muzzle;
 
-        this._canFire = 0;
+        this._fireCountup = 0;
         loadGraphic(AssetPaths.temp_tower__png, true, 36, 78);
         centerOffsets(true);
         centerOrigin();
@@ -39,10 +39,10 @@ class Tower extends FlxSprite
     public function shoot(xTarget:Float, yTarget:Float)
     {
         animation.play("shooting");
-        if(_canFire>=fireRate)
+        if(_fireCountup>=fireRate)
         {
             trace("bang!");
-            this._canFire = 0;
+            this._fireCountup = 0;
             var bullet:Projectile = new Projectile(x+origin.x, y+origin.y, xTarget, yTarget, attackPoints, muzzleVelocity);
             RenderBuffer.buffer.add(bullet);
         }
@@ -51,9 +51,9 @@ class Tower extends FlxSprite
     override public function update(elapsed:Float)
     {
         super.update(elapsed);
-        if(this._canFire < fireRate)
+        if(this._fireCountup < fireRate)
         {
-            this._canFire++;
+            this._fireCountup++;
         }
     }
 }
