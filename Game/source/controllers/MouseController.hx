@@ -1,33 +1,29 @@
 package controllers;
 
-import flixel.FlxBasic;
-import flixel.FlxG;
 import flixel.FlxState;
 import flixel.FlxSprite; 
 import flixel.util.FlxColor; 
 import flixel.FlxG; 
 import flixel.math.FlxPoint;
-import flixel.input.mouse.FlxMouseEventManager; 
-using flixel.util.FlxSpriteUtil; 
 import controllers.*; 
 
 /**
- * The MouseController 
+ * The MouseController maps mouse input such that it will be read
+ and modified accordingly in the update loop.
  */
 
-class MouseController 
-{
+class MouseController {
+
     var state:FlxState; 
-    var width: Int = 32;
-    var height: Int = 32; 
+    var width:Int = 32;
+    var height:Int = 32; 
     var selectedSprite:FlxSprite = null; 
     var wasJustReleased:Bool = false; 
 
-    public function update(spriteList: Array<FlxSprite>):Void
-    {
+
+    public function update(spriteList: Array<FlxSprite>):Void {
         //if mouse is pressed and object is at mouse location 
         if (FlxG.mouse.justPressed) {
-            trace("pressed");
             //set to false because it was just pressed 
             wasJustReleased = false; 
             var point:FlxPoint = new FlxPoint(FlxG.mouse.x, FlxG.mouse.y);
@@ -46,9 +42,7 @@ class MouseController
 
         //if mouse is released and there's no object there
         if (FlxG.mouse.justReleased) {
-            trace("released");
             if (selectedSprite == null && !wasJustReleased) {
-            // if (selectedSprite == null && !wasJustReleased) {
                 var box = new FlxSprite(FlxG.mouse.x, FlxG.mouse.y); 
                 box.makeGraphic(width, height, FlxColor.GREEN, true);
                 box.setGraphicSize(width, height);
@@ -61,7 +55,7 @@ class MouseController
         }
     }
 
-    public function setState(state:FlxState): Void { 
+    public function setState(state:FlxState):Void { 
         this.state = state; 
     }
 
