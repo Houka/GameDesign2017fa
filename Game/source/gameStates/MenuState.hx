@@ -27,7 +27,7 @@ class MenuState extends FlxState
 
 	private function nextState():Void 
 	{
-		FlxG.switchState(new PlayState());
+		FlxG.switchState(new GameState());
 	}
 
 	private function npcStateSwitch():Void 

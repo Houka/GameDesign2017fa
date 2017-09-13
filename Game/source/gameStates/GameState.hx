@@ -15,7 +15,7 @@ using flixel.util.FlxSpriteUtil;
 import controllers.*; 
 
 
-class PlayState extends FlxState
+class GameState extends FlxState
 {
 	var mouse:MouseController; 
 	var newSpriteList:Array<FlxSprite> = new Array<FlxSprite>();
