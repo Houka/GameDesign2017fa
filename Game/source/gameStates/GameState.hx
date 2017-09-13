@@ -5,6 +5,7 @@ import controllers.RenderBuffer;
 import controllers.TowerController;
 import gameObjects.*;
 import flixel.FlxState;
+import flixel.FlxSubState;
 import flixel.FlxSprite; 
 import flixel.util.FlxColor; 
 import flixel.FlxG; 
@@ -21,6 +22,7 @@ class PlayState extends FlxState
 	var player: FlxSprite = new FlxSprite(10, 10);
 	var keyboard:KeyboardController;
 	var renderer:RenderBuffer;
+	private var PauseSubstate:FlxSubState;
 
 	override public function create():Void
 	{
@@ -45,11 +47,14 @@ class PlayState extends FlxState
 		//keyboard controls 
 		super.update(elapsed);
 		mouse.update(newSpriteList);
+		PauseSubstate = new PauseState();
 
 		player.animation.play("walk");
-		if(KeyboardController.paused()){
-			//trace("paused");
+		
+		if (FlxG.keys.anyJustPressed([P, SPACE])){
+			openSubState(PauseSubstate);
 		}
+		
 		if(KeyboardController.quit()){
 			//trace("quitting");
 		}
@@ -61,4 +66,24 @@ class PlayState extends FlxState
 			add(drawMe);
 		}
 	}
+}
+
+class PauseState extends FlxSubState
+{	
+	override public function create():Void
+	{
+		super.create();
+		var text = new flixel.text.FlxText(0, 0, 0, "Pause State", 64);
+		text.screenCenter();
+		add(text);
+	}
+
+	override public function update(elapsed:Float):Void
+	{
+		super.update(elapsed);
+		if (FlxG.keys.anyJustPressed([P, SPACE])) {
+			close();
+		}
+	}
+	
 }
