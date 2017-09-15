@@ -47,6 +47,8 @@ class GameState extends FlxState
 		add(gbox);
 		var abox:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
 		add(abox);
+		
+		newSpriteList = [turret, fbox, gbox, abox];
 	}
 
 	override public function update(elapsed:Float):Void
