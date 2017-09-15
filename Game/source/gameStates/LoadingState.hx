@@ -9,7 +9,7 @@ class LoadingState extends FlxState
 	override public function create():Void
 	{
 		super.create();
-		var text = new flixel.text.FlxText(0, 0, 0, "Loading State", 64);
+		var text = new flixel.text.FlxText(0, 0, 0, "Loading...", 64);
 		text.screenCenter();
 		add(text);
 	

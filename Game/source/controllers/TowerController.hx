@@ -5,6 +5,8 @@
  import flixel.math.FlxVector;
  import flixel.FlxG;
  import gameObjects.*;
+ import gameStates.GameState;
+ import Math.*; 
 
 /**
  * Tower is an abstract class which provides functionality to the
@@ -25,9 +27,16 @@ class TowerController extends Tower
     override public function update(elapsed:Float)
     {
         super.update(elapsed);
-        sight.set(FlxG.mouse.x - x - origin.x, FlxG.mouse.y - y - origin.y);
+
+        // trace(GameState.npcs[0].getX());
+
+        sight.set(FlxG.mouse.x - x - origin.x, FlxG.mouse.y - y -origin.y); 
         if(sight.length <= this.range){
             this.shoot(FlxG.mouse.x, FlxG.mouse.y);
         }
+    }
+
+    private function random(from:Int, to:Int): Int { 
+        return from + Math.floor(((to - from + 1) * Math.random()));
     }
 }

@@ -19,10 +19,9 @@ class GameState extends FlxState
 {
 	var mouse:MouseController; 
 	var newSpriteList:Array<FlxSprite> = new Array<FlxSprite>();
-	// var player: FlxSprite = new FlxSprite(10, 10);
 	var keyboard:KeyboardController;
 	var renderer:RenderBuffer;
-	private var npcs:Array<Worker> = new Array<Worker>();
+	public static var npcs:Array<Worker> = new Array<Worker>();
 	private var npcController:WorkerController = new WorkerController(20);
 	private var PauseSubstate:FlxSubState;
 
@@ -55,8 +54,6 @@ class GameState extends FlxState
 		super.update(elapsed);
 		mouse.update(newSpriteList);
 		PauseSubstate = new PauseState();
-
-		// player.animation.play("walk");
 		
 		if (FlxG.keys.anyJustPressed([P, SPACE])){
 			openSubState(PauseSubstate);

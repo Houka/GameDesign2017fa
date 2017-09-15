@@ -19,6 +19,8 @@ class NPC extends GameObject implements Attackable implements Movable implements
 
 	public function new(x:Int, y:Int, speed:Int, health:Int, graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
 		super(x,y,graphicAsset,graphicsWidth,graphicsHeight);
+		this.x = x; 
+		this.y = y; 
 		this.speed = speed;
 		this.healthPoints = health;
 		this.baseHealth = health;
@@ -69,4 +71,5 @@ class NPC extends GameObject implements Attackable implements Movable implements
 	public function healBy(health:Int):Void{
 		this.healthPoints = Std.int(Math.min(this.healthPoints+health, this.baseHealth));
 	}
+
 }

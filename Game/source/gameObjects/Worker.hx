@@ -24,6 +24,8 @@ class Worker extends NPC implements Interactable
 		this.state = WorkerState.Idle;
 		this.isHovered = false;
 		this.isSelected = false;
+		this.x = x;
+		this.y = y; 
 	}
 
 	public function hovered():Void{
@@ -38,5 +40,13 @@ class Worker extends NPC implements Interactable
 	public function released():Void{
 		isSelected = false;
 		isHovered = false;
+	}
+
+	public function getX(): Float {
+		return x; 
+	}
+
+	public function getY(): Float { 
+		return y; 
 	}
 }
