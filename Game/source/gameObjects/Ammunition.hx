@@ -6,7 +6,7 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
 
 /**
  * ...
- * @author ...
+ * 
  */
 class Ammunition extends Material
 {

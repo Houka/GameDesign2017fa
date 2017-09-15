@@ -22,6 +22,8 @@ class GameState extends FlxState
 	var player: FlxSprite = new FlxSprite(10, 10);
 	var keyboard:KeyboardController;
 	var renderer:RenderBuffer;
+	private var npcs:Array<Worker> = new Array<Worker>();
+	private var npcController:WorkerController = new WorkerController(20);
 	private var PauseSubstate:FlxSubState;
 
 	override public function create():Void
@@ -49,6 +51,7 @@ class GameState extends FlxState
 		add(abox);
 		
 		newSpriteList = [turret, fbox, gbox, abox];
+		
 	}
 
 	override public function update(elapsed:Float):Void
