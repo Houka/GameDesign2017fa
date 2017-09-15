@@ -37,7 +37,7 @@ class MouseController {
         }
         
         if (selectedSprite != null) {
-                selectedSprite.setPosition(FlxG.mouse.x, FlxG.mouse.y);
+            selectedSprite.setPosition(FlxG.mouse.x, FlxG.mouse.y);
         }
 
         //if mouse is released and there's no object there

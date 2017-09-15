@@ -22,6 +22,8 @@ class GameState extends FlxState
 	var player: FlxSprite = new FlxSprite(10, 10);
 	var keyboard:KeyboardController;
 	var renderer:RenderBuffer;
+	private var npcs:Array<Worker> = new Array<Worker>();
+	private var npcController:WorkerController = new WorkerController(20);
 	private var PauseSubstate:FlxSubState;
 
 	override public function create():Void
@@ -40,6 +42,16 @@ class GameState extends FlxState
 		player.animation.add("walk", [0, 1, 2, 3, 4, 5], 5, true);
 		var turret:TowerController = new TowerController(300, 200, 40, 150, 400);
 		add(turret);
+		
+		var fbox:Foundation = new Foundation(50, 400, "wood", 1, 1);
+		add(fbox);
+		var gbox:GunBase = new GunBase(100, 400, "normal", 1, 1);
+		add(gbox);
+		var abox:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
+		add(abox);
+		
+		newSpriteList = [turret, fbox, gbox, abox];
+		
 	}
 
 	override public function update(elapsed:Float):Void
