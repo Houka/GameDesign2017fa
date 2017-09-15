@@ -19,7 +19,7 @@ class GameState extends FlxState
 {
 	var mouse:MouseController; 
 	var newSpriteList:Array<FlxSprite> = new Array<FlxSprite>();
-	var player: FlxSprite = new FlxSprite(10, 10);
+	// var player: FlxSprite = new FlxSprite(10, 10);
 	var keyboard:KeyboardController;
 	var renderer:RenderBuffer;
 	private var npcs:Array<Worker> = new Array<Worker>();
@@ -34,12 +34,7 @@ class GameState extends FlxState
 		text.screenCenter();
 		keyboard = new KeyboardController();
 		renderer = new RenderBuffer();
-		//add(renderer);
 		add(keyboard);
-		//add(text);
-		add(player); 
-		player.loadGraphic(AssetPaths.player__png, true, 16, 16);
-		player.animation.add("walk", [0, 1, 2, 3, 4, 5], 5, true);
 		var turret:TowerController = new TowerController(300, 200, 40, 150, 400);
 		add(turret);
 		
@@ -61,7 +56,7 @@ class GameState extends FlxState
 		mouse.update(newSpriteList);
 		PauseSubstate = new PauseState();
 
-		player.animation.play("walk");
+		// player.animation.play("walk");
 		
 		if (FlxG.keys.anyJustPressed([P, SPACE])){
 			openSubState(PauseSubstate);
@@ -71,6 +66,16 @@ class GameState extends FlxState
 			//trace("quitting");
 		}
 
+		if (FlxG.mouse.justReleasedRight) {
+            var npc = new Worker(FlxG.mouse.x,FlxG.mouse.y,1,10,AssetPaths.player__png,16,16);
+            npc.setGoal(400, 400);
+            add(npc);
+            npcController.addAnimation(npc);
+            npcs.push(npc);
+        }
+
+        testNPCUpdate();
+
 		//render sprites
 		while(RenderBuffer.buffer.first() != null)
 		{
@@ -78,6 +83,18 @@ class GameState extends FlxState
 			add(drawMe);
 		}
 	}
+
+	private function testNPCUpdate():Void{
+        for(npc in npcs){
+            npcController.update(npc);
+
+            //testing movement function
+            if(npc.isAtGoal())
+                npc.setGoal(100,100);
+        }
+    }
+
+
 }
 
 class PauseState extends FlxSubState

@@ -6,6 +6,8 @@ import flixel.util.FlxColor;
 import flixel.FlxG; 
 import flixel.math.FlxPoint;
 import controllers.*; 
+import gameObjects.*; 
+import interfaces.Movable;
 
 /**
  * The MouseController maps mouse input such that it will be read
@@ -44,12 +46,8 @@ class MouseController {
         if (FlxG.mouse.justReleased) {
             if (selectedSprite == null && !wasJustReleased) {
                 var turret:TowerController = new TowerController(FlxG.mouse.x, FlxG.mouse.y, 40, 150, 400);
-                // var box = new FlxSprite(FlxG.mouse.x, FlxG.mouse.y); 
-                // box.makeGraphic(width, height, FlxColor.GREEN, true);
-                // box.setGraphicSize(width, height);
                 turret.updateHitbox();
                 state.add(turret);
-                // state.add(box);
                 spriteList.push(turret);
                 wasJustReleased = true; 
             }
@@ -64,4 +62,5 @@ class MouseController {
     public function new(state:FlxState):Void {
         this.state = state; 
     }
+
 }
