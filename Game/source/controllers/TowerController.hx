@@ -28,11 +28,6 @@ class TowerController extends Tower
     {
         super.update(elapsed);
 		
-        /*sight.set(FlxG.mouse.x - x - origin.x, FlxG.mouse.y - y -origin.y);
-		if(sight.length <= this.range){
-            this.shoot(FlxG.mouse.x, FlxG.mouse.y);
-        }*/
-		
 		if (GameState.npcs[0] != null) {
 			trace(GameState.npcs[0].getX());
 			for (npc in GameState.npcs) {
