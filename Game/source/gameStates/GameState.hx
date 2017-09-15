@@ -40,8 +40,11 @@ class GameState extends FlxState
 		player.animation.add("walk", [0, 1, 2, 3, 4, 5], 5, true);
 		var turret:TowerController = new TowerController(300, 200, 40, 150, 400);
 		add(turret);
-		var fbox:Foundation = new Foundation(10, 300, "wood", 1, 1);
+		
+		var fbox:Foundation = new Foundation(50, 400, "wood", 1, 1);
 		add(fbox);
+		var gbox:GunBase = new GunBase(100, 400, "normal", 1, 1);
+		add(gbox);
 	}
 
 	override public function update(elapsed:Float):Void

@@ -19,15 +19,19 @@ class GunBase extends Material
 		super(X, Y, healthPoints, attackPoints);
 		gunbaseTypes = ["normal", "spray", "heavy"];
 		this.gunbase = gunbase;
+		
+		loadGraphic(AssetPaths.gunbase__png, true, 40, 40);
+        centerOffsets(true);
+        centerOrigin();
 	}
 	
-	static public function setGunbase(chosenGunbase:Int): Void { 
+	public function setGunbase(chosenGunbase:Int): Void { 
 		if (chosenGunbase < gunbaseTypes.length) {
 			gunbase = gunbaseTypes[chosenGunbase];
 		} 
 	}
 	
-	static public function getGunbase(): String { 
+	public function getGunbase(): String { 
 		return gunbase;
 	}
 	
