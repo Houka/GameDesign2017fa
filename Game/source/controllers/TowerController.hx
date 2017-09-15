@@ -27,16 +27,25 @@ class TowerController extends Tower
     override public function update(elapsed:Float)
     {
         super.update(elapsed);
-
-        // trace(GameState.npcs[0].getX());
-
-        sight.set(FlxG.mouse.x - x - origin.x, FlxG.mouse.y - y -origin.y); 
-        if(sight.length <= this.range){
+		
+        /*sight.set(FlxG.mouse.x - x - origin.x, FlxG.mouse.y - y -origin.y);
+		if(sight.length <= this.range){
             this.shoot(FlxG.mouse.x, FlxG.mouse.y);
-        }
+        }*/
+		
+		if (GameState.npcs[0] != null) {
+			trace(GameState.npcs[0].getX());
+			sight.set(GameState.npcs[0].getX() - x - origin.x, GameState.npcs[0].getY() - y - origin.y);
+			
+			if(sight.length <= this.range) {
+				this.shoot(GameState.npcs[0].getX(), GameState.npcs[0].getY());
+			}
+		}
+		
     }
 
     private function random(from:Int, to:Int): Int { 
         return from + Math.floor(((to - from + 1) * Math.random()));
     }
+	
 }
