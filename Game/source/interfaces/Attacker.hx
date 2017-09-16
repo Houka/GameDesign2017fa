@@ -4,6 +4,7 @@ package interfaces;
 abstract AttackType(Int) {
   var Ground = 0;
   var Air = 1;
+  var Both = 2;
 }
 
 interface Attacker

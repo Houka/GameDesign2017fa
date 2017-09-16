@@ -41,12 +41,4 @@ class Worker extends NPC implements Interactable
 		isSelected = false;
 		isHovered = false;
 	}
-
-	public function getX(): Float {
-		return x; 
-	}
-
-	public function getY(): Float { 
-		return y; 
-	}
 }

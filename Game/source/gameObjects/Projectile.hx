@@ -1,36 +1,46 @@
- package gameObjects;
+package gameObjects;
 
- import flixel.FlxSprite;
- import flixel.system.FlxAssets.FlxGraphicAsset;
- import flixel.math.FlxAngle;
- import flixel.math.FlxPoint;
- import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.system.FlxAssets.FlxGraphicAsset;
+import flixel.math.FlxAngle;
+import flixel.math.FlxPoint;
+import flixel.FlxG;
+import interfaces.Attacker;
 
-/**
- * SpawnPoints read the Level Data Json to create enemies as needed.
- */
+/***
+* @author: Chang Lu
+*/
+@:enum
+abstract ProjectileState(Int) {
+  var Moving = 0;
+  var Dying = 1;
+}
 
-class Projectile extends FlxSprite
+class Projectile extends GameObject implements Attacker
 {
     public var attackPoints:Int;
+    public var attackType:AttackType=AttackType.Both; 
+    public var attackRange:Int=0;
+    public var isAttacking:Bool=true;
 
-    public function new(?X:Float=0, ?Y:Float=0, ?xTarget:Float=0, 
-        ?yTarget:Float=0, ?attack:Int=0, ?speed:Float=0)
+    public var state:ProjectileState;
+    public var isEnemyProjectile:Bool;
+
+    public function new(X:Float, Y:Float, xTarget:Float, yTarget:Float, attack:Int, speed:Float, isEnemyProjectile:Bool,
+        graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
     {
-        super(X, Y);
+        super(X, Y, graphicAsset,graphicsWidth,graphicsHeight);
         this.attackPoints = attack;
-        loadGraphic(AssetPaths.fireball__png, false, 38, 14);
-        centerOffsets(true);
-        centerOrigin();
-        setPosition(x-origin.x, y-origin.y);
+        this.isEnemyProjectile = isEnemyProjectile;
+        centerToOrigin();
 
-        var pAngle = FlxAngle.asDegrees(FlxAngle.angleBetweenPoint(this, new FlxPoint(xTarget, yTarget)));
-        this.angle = pAngle;
+        this.angle = FlxAngle.asDegrees(FlxAngle.angleBetweenPoint(this, new FlxPoint(xTarget, yTarget)));
         velocity.set(speed, 0);
-        velocity.rotate(FlxPoint.weak(0,0), pAngle);
+        velocity.rotate(FlxPoint.weak(0,0), this.angle);
+
+        state = Moving;
     }
 
-    /*For throwaway demo, just spawn a stream of basic enemies*/
     override public function update(elapsed:Float)
     {
         super.update(elapsed);

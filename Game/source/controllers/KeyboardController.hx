@@ -1,6 +1,5 @@
 package controllers;
 
-import flixel.FlxBasic;
 import flixel.FlxG;
 
 /**
@@ -8,14 +7,13 @@ import flixel.FlxG;
  * controllers to read in sync with the update step.
  */
 
-class KeyboardController extends FlxBasic
+class KeyboardController
 {
     static private var _quit:Bool;
     static private var _paused:Bool;
 
     public function new()
     {
-        super();
         _quit = false;
         _paused = false;
     }
@@ -30,9 +28,8 @@ class KeyboardController extends FlxBasic
         return _paused;
     }
 
-    override public function update(elapsed:Float):Void
+    public function update(elapsed:Float):Void
     {
-        super.update(elapsed);
         if(FlxG.keys.anyJustPressed([P, SPACE]))
         {
             _paused = !_paused;

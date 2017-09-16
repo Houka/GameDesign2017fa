@@ -28,19 +28,13 @@ class TowerController extends Tower
     {
         super.update(elapsed);
 		
-        /*sight.set(FlxG.mouse.x - x - origin.x, FlxG.mouse.y - y -origin.y);
-		if(sight.length <= this.range){
-            this.shoot(FlxG.mouse.x, FlxG.mouse.y);
-        }*/
-		
-		if (GameState.npcs[0] != null) {
-			trace(GameState.npcs[0].getX());
-			sight.set(GameState.npcs[0].getX() - x - origin.x, GameState.npcs[0].getY() - y - origin.y);
+        for(npc in GameState.npcs){
+			sight.set(npc.x - x - origin.x, npc.y - y - origin.y);
 			
 			if(sight.length <= this.range) {
-				this.shoot(GameState.npcs[0].getX(), GameState.npcs[0].getY());
+				this.shoot(npc.x, npc.y);
 			}
-		}
+        }
 		
     }
 
