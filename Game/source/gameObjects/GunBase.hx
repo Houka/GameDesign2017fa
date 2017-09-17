@@ -8,7 +8,7 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
  * ...
  * 
  */
-class GunBase extends Material 
+class GunBase extends TowerBlock 
 {
 
 	static public var gunbaseTypes: Array<String> = ["normal", "spray", "heavy"];

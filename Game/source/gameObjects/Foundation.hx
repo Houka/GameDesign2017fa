@@ -8,7 +8,7 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
  * ...
  * 
  */
-class Foundation extends Material 
+class Foundation extends TowerBlock 
 {
 	static public var foundationTypes: Array<String> = ["wood", "metal"];
 	public var foundation:String;
