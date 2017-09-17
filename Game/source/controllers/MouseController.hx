@@ -8,6 +8,7 @@ import flixel.math.FlxPoint;
 import controllers.*; 
 import gameObjects.*; 
 import interfaces.Movable;
+import gameStates.GameState;
 
 /**
  * The MouseController maps mouse input such that it will be read
@@ -54,15 +55,15 @@ class MouseController {
             selectedSprite = null; 
         }
 
-        // if (FlxG.mouse.justReleasedRight) {
-        //     // if (canPlace(FlxG.mouse.x, FlxG.mouse.y)) {
-        //         var npc = new Worker(FlxG.mouse.x,FlxG.mouse.y,1,10,AssetPaths.player__png,16,16);
-        //         npc.setGoal(400, 400);
-        //         add(npc);
-        //         npcController.addAnimation(npc);
-        //         npcs.push(npc);
-        //     // }
-        // }
+        if (FlxG.mouse.justReleasedRight) {
+            // if (canPlace(FlxG.mouse.x, FlxG.mouse.y)) {
+                var npc = new Worker(FlxG.mouse.x,FlxG.mouse.y,1,10,AssetPaths.player__png,16,16);
+                npc.setGoal(400, 400);
+                state.add(npc);
+                GameState.npcController.addAnimation(npc);
+                GameState.npcs.push(npc);
+            // }
+        }
 
         // testNPCUpdate();
     }

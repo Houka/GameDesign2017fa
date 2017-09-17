@@ -22,7 +22,7 @@ class GameState extends FlxState
 	var newSpriteList:Array<FlxSprite> = new Array<FlxSprite>();
 	var keyboard:KeyboardController;
 	var renderer:RenderBuffer;
-	private var npcController:WorkerController = new WorkerController(20);
+	public static var npcController:WorkerController = new WorkerController(20);
 	private var PauseSubstate:FlxSubState;
 	private var map: Array<Int>; 
 	public static var npcs:Array<Worker> = new Array<Worker>();
@@ -76,16 +76,6 @@ class GameState extends FlxState
 		if(KeyboardController.quit()){
 			//trace("quitting");
 		}
-
-		if (FlxG.mouse.justReleasedRight) {
-			if (canPlace(FlxG.mouse.x, FlxG.mouse.y)) {
-	            var npc = new Worker(FlxG.mouse.x,FlxG.mouse.y,1,10,AssetPaths.player__png,16,16);
-	            npc.setGoal(400, 400);
-	            add(npc);
-	            npcController.addAnimation(npc);
-	            npcs.push(npc);
-	        }
-        }
 
         testNPCUpdate();
 
