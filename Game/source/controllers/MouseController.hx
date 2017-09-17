@@ -53,6 +53,18 @@ class MouseController {
             }
             selectedSprite = null; 
         }
+
+        // if (FlxG.mouse.justReleasedRight) {
+        //     // if (canPlace(FlxG.mouse.x, FlxG.mouse.y)) {
+        //         var npc = new Worker(FlxG.mouse.x,FlxG.mouse.y,1,10,AssetPaths.player__png,16,16);
+        //         npc.setGoal(400, 400);
+        //         add(npc);
+        //         npcController.addAnimation(npc);
+        //         npcs.push(npc);
+        //     // }
+        // }
+
+        // testNPCUpdate();
     }
 
     public function setState(state:FlxState):Void { 

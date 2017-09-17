@@ -28,32 +28,25 @@ class GameState extends FlxState
 	public static var npcs:Array<Worker> = new Array<Worker>();
 	public static var TILE_WIDTH = 60; 
 	public static var TILE_HEIGHT = 60; 
-	public static var SCREEN_WIDTH = 600; 
-	public static var SCREEN_HEIGHT = 360; 
+	public static var SCREEN_WIDTH = 660; 
+	public static var SCREEN_HEIGHT = 400; 
 
 	override public function create():Void
 	{
 		super.create();
 		mouse = new MouseController(this); 
-		var text = new flixel.text.FlxText(0, 0, 0, "Play State", 64);
-		text.screenCenter();
+		// var text = new flixel.text.FlxText(0, 0, 0, "Play State", 64);
+		// text.screenCenter();
 		keyboard = new KeyboardController();
 		renderer = new RenderBuffer();
 		add(keyboard);
 
-		map = new Array<Int>(); 
-		map = [];
-		var w = Std.int(SCREEN_WIDTH/TILE_WIDTH);
-		var h = Std.int(SCREEN_HEIGHT/TILE_HEIGHT); 
-
-		for (i in 0...w*h) {
-			var tile = new Tile(); 
-			var x = i % w; 
-			var y = Math.floor(i/w); 
-			tile.setLoc(x, y); 
-			add(tile);
-			// map[i] = 1; 
-		}
+		createTilemap([ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+						0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+						0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
 		var turret:TowerController = new TowerController(300, 200, 40, 150, 400);
 		add(turret);
@@ -85,11 +78,13 @@ class GameState extends FlxState
 		}
 
 		if (FlxG.mouse.justReleasedRight) {
-            var npc = new Worker(FlxG.mouse.x,FlxG.mouse.y,1,10,AssetPaths.player__png,16,16);
-            npc.setGoal(400, 400);
-            add(npc);
-            npcController.addAnimation(npc);
-            npcs.push(npc);
+			if (canPlace(FlxG.mouse.x, FlxG.mouse.y)) {
+	            var npc = new Worker(FlxG.mouse.x,FlxG.mouse.y,1,10,AssetPaths.player__png,16,16);
+	            npc.setGoal(400, 400);
+	            add(npc);
+	            npcController.addAnimation(npc);
+	            npcs.push(npc);
+	        }
         }
 
         testNPCUpdate();
@@ -111,6 +106,27 @@ class GameState extends FlxState
                 npc.setGoal(100,100);
         }
     }
+
+    private function createTilemap(map: Array<Int>){
+    var w = Std.int(SCREEN_WIDTH/TILE_WIDTH);
+		var h = Std.int(SCREEN_HEIGHT/TILE_HEIGHT); 
+
+		for (i in 0...w*h) {
+			if (map[i] == 0) {
+				var tile = new Tile(); 
+				var x = i % w; 
+				var y = Math.floor(i/w); 
+				tile.setLoc(x, y); 
+				add(tile);
+			}
+		}
+	}
+
+	private function canPlace(x: Float, y: Float): Bool {
+		var screenHeight: Int = FlxG.height; 
+		var screenWidth: Int = FlxG.width;
+		return true; 
+	}
 
 }
 
