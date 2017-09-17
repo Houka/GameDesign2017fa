@@ -13,6 +13,7 @@ import flixel.math.FlxPoint;
 import flixel.input.mouse.FlxMouseEventManager; 
 using flixel.util.FlxSpriteUtil; 
 import controllers.*; 
+import Tile; 
 
 
 class GameState extends FlxState
@@ -24,6 +25,11 @@ class GameState extends FlxState
 	public static var npcs:Array<Worker> = new Array<Worker>();
 	private var npcController:WorkerController = new WorkerController(20);
 	private var PauseSubstate:FlxSubState;
+	private var map: Array<Int>; 
+	public static var TILE_WIDTH = 60; 
+	public static var TILE_HEIGHT = 60; 
+	public static var SCREEN_WIDTH = 600; 
+	public static var SCREEN_HEIGHT = 360; 
 
 	override public function create():Void
 	{
@@ -45,6 +51,21 @@ class GameState extends FlxState
 		add(abox);
 		
 		newSpriteList = [turret, fbox, gbox, abox];
+
+		var tile = new Tile(); 
+		add(tile);
+		map = new Array<Int>(); 
+		var w = Std.int(SCREEN_WIDTH/TILE_WIDTH);
+		var h = Std.int(SCREEN_HEIGHT/TILE_HEIGHT); 
+
+		for (i in 0...w*h) {
+			var tile = new Tile(); 
+			var x = i % w; 
+			var y = Math.floor(i/w); 
+			tile.setLoc(x, y); 
+			add(tile);
+			// map[i] = 1; 
+		}
 		
 	}
 
@@ -90,7 +111,6 @@ class GameState extends FlxState
                 npc.setGoal(100,100);
         }
     }
-
 
 }
 

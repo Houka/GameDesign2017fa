@@ -34,7 +34,6 @@ class TowerController extends Tower
         }*/
 		
 		if (GameState.npcs[0] != null) {
-			trace(GameState.npcs[0].getX());
 			sight.set(GameState.npcs[0].getX() - x - origin.x, GameState.npcs[0].getY() - y - origin.y);
 			
 			if(sight.length <= this.range) {
