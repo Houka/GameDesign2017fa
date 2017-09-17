@@ -22,10 +22,10 @@ class GameState extends FlxState
 	var newSpriteList:Array<FlxSprite> = new Array<FlxSprite>();
 	var keyboard:KeyboardController;
 	var renderer:RenderBuffer;
-	public static var npcs:Array<Worker> = new Array<Worker>();
 	private var npcController:WorkerController = new WorkerController(20);
 	private var PauseSubstate:FlxSubState;
 	private var map: Array<Int>; 
+	public static var npcs:Array<Worker> = new Array<Worker>();
 	public static var TILE_WIDTH = 60; 
 	public static var TILE_HEIGHT = 60; 
 	public static var SCREEN_WIDTH = 600; 
@@ -40,21 +40,9 @@ class GameState extends FlxState
 		keyboard = new KeyboardController();
 		renderer = new RenderBuffer();
 		add(keyboard);
-		var turret:TowerController = new TowerController(300, 200, 40, 150, 400);
-		add(turret);
-		
-		var fbox:Foundation = new Foundation(50, 400, "wood", 1, 1);
-		add(fbox);
-		var gbox:GunBase = new GunBase(100, 400, "normal", 1, 1);
-		add(gbox);
-		var abox:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
-		add(abox);
-		
-		newSpriteList = [turret, fbox, gbox, abox];
 
-		var tile = new Tile(); 
-		add(tile);
 		map = new Array<Int>(); 
+		map = [];
 		var w = Std.int(SCREEN_WIDTH/TILE_WIDTH);
 		var h = Std.int(SCREEN_HEIGHT/TILE_HEIGHT); 
 
@@ -66,6 +54,18 @@ class GameState extends FlxState
 			add(tile);
 			// map[i] = 1; 
 		}
+
+		var turret:TowerController = new TowerController(300, 200, 40, 150, 400);
+		add(turret);
+		
+		var fbox:Foundation = new Foundation(50, 400, "wood", 1, 1);
+		add(fbox);
+		var gbox:GunBase = new GunBase(100, 400, "normal", 1, 1);
+		add(gbox);
+		var abox:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
+		add(abox);
+		
+		newSpriteList = [turret, fbox, gbox, abox];
 		
 	}
 
