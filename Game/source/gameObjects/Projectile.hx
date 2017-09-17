@@ -15,7 +15,7 @@ class Projectile extends FlxSprite
     public var attackPoints:Int;
 
     public function new(?X:Float=0, ?Y:Float=0, ?xTarget:Float=0, 
-        ?yTarget:Float=0, ?attack:Int=0, ?speed:Float=0)
+        ?yTarget:Float=0, ?attack:Int=1, ?speed:Float=250)
     {
         super(X, Y);
         this.attackPoints = attack;

@@ -3,11 +3,12 @@ package controllers;
 import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.math.FlxVector;
-import flixel.FlxG;
 import controllers.GameObjectController;
 import gameObjects.*;
+import gameObjects.Constants;
 import gameStates.GameState;
-import Math.*; 
+import interfaces.Attacker;
+import views.RenderBuffer;
 
 /**
  * TowerController oversees all towers and contains functions to manipulate
@@ -18,30 +19,43 @@ import Math.*;
 
 class TowerController extends GameObjectController<Tower>
 {
-    public function new(frameRate:Int=60):Void{
+    private var _sight:FlxVector;
+
+    public function new(frameRate:Int=60):Void
+    {
         super(frameRate);
+        _sight = new FlxVector();
     }
 
-    public function buildTower(materialsList:List<Material>, x:Float, y:Float):Bool
+    public function buildTower(materialsList:List<Material>, ammoType:Ammunition, x:Float, y:Float):Null<Tower>
     {
         if(materialsList.length<=0 || materialsList.length>Constants.MAX_HEIGHT){
-            return false;
+            return null;
         }
-        var tower = new(materialsList:List<Material>, x, y);
+        var tower:Tower = new Tower(materialsList, ammoType, x, y);
+        RenderBuffer.buffer.add(tower);
 
         var level:Int = 0;
-        for(m in tower.materialsList)
+        var newLayer:TowerLayer;
+        var xpos:Float;
+        var ypos:Float;
+        for(m in tower.rawMaterials)
         {
-            var xpos = tower.x+tower.origin.x;
-            var ypos = tower.y+tower.origin.y+level*Constants.HEIGHT_OFFSET;
+            xpos = tower.x+tower.origin.x;
+            ypos = tower.y+tower.origin.y+level*Constants.HEIGHT_OFFSET;
+
             level++;
-            if(getClassName(m) == Constants.FOUNDATION_CLASSPATH){
-                //tower.layers.add(new TowerLayer(xpos, ypos, AssetPaths));
+            if(Type.getClassName(m) == Constants.FOUNDATION_CLASSPATH){
+                newLayer = new TowerLayer(xpos, ypos, AssetPaths.tower_layer__png, m.healthPoints);
             }
-            else if(getClassName(m) == Constants.GUNLAYER_CLASSPATH){
-                //tower.layers.add(new GunLayer(xpos, ypos, ));
+            else if(Type.getClassName(m) == Constants.GUNLAYER_CLASSPATH){
+                newLayer = new GunLayer(xpos, ypos, AssetPaths.gun_layer__png, m.healthPoints, m.attackPoints, level);
             }
+
+            tower.layers.add(newLayer);
+            RenderBuffer.buffer.add(newLayer);
         }
+        return tower;
     }
 
     public function takeDamage(obj:Attacker, tower:Tower):Void
@@ -76,7 +90,7 @@ class TowerController extends GameObjectController<Tower>
         for(l in tower.layers)
         {
             level++;
-            l.changeHeight();
+            l.changeLayerHeight(level);
         }
         return dequeued;
     }
@@ -90,28 +104,43 @@ class TowerController extends GameObjectController<Tower>
         return popped;
     }
 
-    override public function update(elapsed:Float)
+    public function shoot(tower:Tower, dist:Float, xTarget:Float, yTarget:Float):Void
     {
-        super.update(elapsed);
-		
-        /*sight.set(FlxG.mouse.x - x - origin.x, FlxG.mouse.y - y -origin.y);
-		if(sight.length <= this.range){
-            this.shoot(FlxG.mouse.x, FlxG.mouse.y);
-        }*/
-		
-		if (GameState.npcs[0] != null) {
-			//trace(GameState.npcs[0].getX());
-			sight.set(GameState.npcs[0].getX() - x - origin.x, GameState.npcs[0].getY() - y - origin.y);
-			
-			if(sight.length <= this.range) {
-				this.shoot(GameState.npcs[0].getX(), GameState.npcs[0].getY());
-			}
-		}
-		
+        for(gun in tower.layers)
+        {
+            if(Type.getClassName(gun)==Constants.GUNLAYER_CLASSPATH)
+            {
+                if(gun.shoot() || dist<=gun.attackRange){
+                    //create bullet type specified by gun.ammoType
+                    var bullet:Projectile = new Projectile(gun.x+gun.origin.x, gun.y+gun.origin.y, xTarget, yTarget);
+                    RenderBuffer.buffer.add(bullet);
+                }
+            }
+        }
     }
 
-    private function random(from:Int, to:Int): Int { 
-        return from + Math.floor(((to - from + 1) * Math.random()));
+    override public function update(tower:Tower):Void
+    {
+        super.update(tower);
+		
+		if (GameState.npcs[0] != null) {
+			_sight.set(GameState.npcs[0].getX() - tower.x - tower.origin.x, GameState.npcs[0].getY() - tower.y - tower.origin.y);
+			
+			if(_sight.length <= tower.layers.length*Constants.RANGE_MULTIPLIER) {
+				this.shoot(tower, _sight.length, GameState.npcs[0].getX(), GameState.npcs[0].getY());
+			}
+		}
     }
-	
+
+    override private function updateState(tower:Tower):Void
+    {
+        super.updateState(tower);
+
+        //tower death sequence
+        if(tower.isDead)
+        {
+            tower.kill();
+            //spawn rawMaterials
+        }
+    }
 }

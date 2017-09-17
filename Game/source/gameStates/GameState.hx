@@ -22,7 +22,9 @@ class GameState extends FlxState
 	var keyboard:KeyboardController;
 	var renderer:RenderBuffer;
 	public static var npcs:Array<Worker> = new Array<Worker>();
+	public static var towers:Array<Tower> = new Array<Tower>();
 	private var npcController:WorkerController = new WorkerController(20);
+	public var towerController:TowerController = new TowerController(60);
 	private var PauseSubstate:FlxSubState;
 
 	override public function create():Void
@@ -34,8 +36,6 @@ class GameState extends FlxState
 		keyboard = new KeyboardController();
 		renderer = new RenderBuffer();
 		add(keyboard);
-		var turret:TowerController = new TowerController(300, 200, 40, 150, 400);
-		add(turret);
 		
 		var fbox:Foundation = new Foundation(50, 400, "wood", 1, 1);
 		add(fbox);
@@ -44,7 +44,7 @@ class GameState extends FlxState
 		var abox:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
 		add(abox);
 		
-		newSpriteList = [turret, fbox, gbox, abox];
+		newSpriteList = [fbox, gbox, abox];
 		
 	}
 
@@ -72,6 +72,11 @@ class GameState extends FlxState
         }
 
         testNPCUpdate();
+
+        for(t in towers)
+        {
+        	towerController.update(t);
+        }
 
 		//render sprites
 		while(RenderBuffer.buffer.first() != null)

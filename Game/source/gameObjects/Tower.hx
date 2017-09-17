@@ -17,6 +17,7 @@ class Tower extends FlxSprite
 {
     public var layers:List<TowerLayer>;
     public var ammoType:Ammunition;
+    public var numWorkers:Int;
     public var rawMaterials:List<Material>; //materials to give back when dismantled
     public var isDead:Bool;
 
@@ -26,6 +27,7 @@ class Tower extends FlxSprite
     {
         super(X,Y);
         this.ammoType = ammoType;
+        this.numWorkers = 0;
         this.rawMaterials = materialsList;
         this.isDead = false;
         //initialize layers in TowerController

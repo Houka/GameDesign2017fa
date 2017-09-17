@@ -3,6 +3,7 @@ package gameObjects;
 import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import interfaces.Attackable;
+import interfaces.Attacker;
 import gameObjects.GameObject;
 
 /**
@@ -34,7 +35,7 @@ class TowerLayer implements Attackable extends GameObject
         }
     }
 
-    public function changeHeight(height:Int):Void
+    public function changeLayerHeight(layerHeight:Int):Void
     {
 
     }

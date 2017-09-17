@@ -1,4 +1,4 @@
-package controllers;
+package views;
 
 import flixel.FlxObject;
 
