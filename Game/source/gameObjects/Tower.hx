@@ -26,10 +26,10 @@ class Tower extends FlxSprite
     public function new(materialsList:List<Material>, ammoType:Ammunition, ?X:Float=0, ?Y:Float=0)
     {
         super(X,Y);
+        layers = new List<TowerLayer>(); //populate layers in TowerController
         this.ammoType = ammoType;
         this.numWorkers = 0;
         this.rawMaterials = materialsList;
         this.isDead = false;
-        //initialize layers in TowerController
     }
 }

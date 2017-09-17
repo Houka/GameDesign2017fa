@@ -42,18 +42,19 @@ class TowerController extends GameObjectController<Tower>
         for(m in tower.rawMaterials)
         {
             xpos = tower.x+tower.origin.x;
-            ypos = tower.y+tower.origin.y+level*Constants.HEIGHT_OFFSET;
+            ypos = tower.y+tower.origin.y-level*Constants.HEIGHT_OFFSET;
 
             level++;
-            if(Type.getClassName(m) == Constants.FOUNDATION_CLASSPATH){
+            if(Type.getClass(m) == Foundation){
                 newLayer = new TowerLayer(xpos, ypos, AssetPaths.tower_layer__png, m.healthPoints);
+                tower.layers.add(newLayer);
+                RenderBuffer.buffer.add(newLayer);
             }
-            else if(Type.getClassName(m) == Constants.GUNLAYER_CLASSPATH){
+            else if(Type.getClass(m) == GunBase){
                 newLayer = new GunLayer(xpos, ypos, AssetPaths.gun_layer__png, m.healthPoints, m.attackPoints, level);
+                tower.layers.add(newLayer);
+                RenderBuffer.buffer.add(newLayer);
             }
-
-            tower.layers.add(newLayer);
-            RenderBuffer.buffer.add(newLayer);
         }
         return tower;
     }
@@ -108,9 +109,10 @@ class TowerController extends GameObjectController<Tower>
     {
         for(gun in tower.layers)
         {
-            if(Type.getClassName(gun)==Constants.GUNLAYER_CLASSPATH)
+            if(Type.getClass(gun)==GunLayer)
             {
-                if(gun.shoot() || dist<=gun.attackRange){
+                //cast(gun, GunLayer);
+                if(cast(gun, GunLayer).shoot() && dist<=cast(gun, GunLayer).attackRange){
                     //create bullet type specified by gun.ammoType
                     var bullet:Projectile = new Projectile(gun.x+gun.origin.x, gun.y+gun.origin.y, xTarget, yTarget);
                     RenderBuffer.buffer.add(bullet);

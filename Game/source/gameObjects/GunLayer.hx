@@ -25,11 +25,11 @@ class GunLayer implements Attacker extends TowerLayer
     public var bullet:Projectile;
     private var _shootCooldown:Int;
 
-    public function new(x:Int, y:Int, graphicAsset:FlxGraphicAsset, hp:Int, atk:Int, layerHeight:Int, ?rate:Int=40)
+    public function new(x:Float, y:Float, graphicAsset:FlxGraphicAsset, hp:Int, atk:Int, layerHeight:Int, ?rate:Int=40)
     {
         super(x,y,graphicAsset,hp);
         this.attackPoints = atk;
-        this.attackRange = layerHeight*Constants.RANGE_MULITPLIER;
+        this.attackRange = layerHeight*Constants.RANGE_MULTIPLIER;
         this.isAttacking = false;
         this.attackRate = rate;
         this._shootCooldown = 0;
@@ -59,7 +59,7 @@ class GunLayer implements Attacker extends TowerLayer
 
     override public function changeLayerHeight(layerHeight:Int):Void
     {
-        attackRange = layerHeight*RANGE_MULITPLIER;
+        attackRange = layerHeight*Constants.RANGE_MULTIPLIER;
     }
 
     override public function changeWorkers(numWorkers:Int):Void

@@ -18,7 +18,7 @@ class TowerLayer implements Attackable extends GameObject
     public var healthPoints:Int;
     public var isDead:Bool;
 
-    public function new(x:Int, y:Int, graphicAsset:FlxGraphicAsset, hp:Int)
+    public function new(x:Float, y:Float, graphicAsset:FlxGraphicAsset, hp:Int)
     {
         super(x,y,graphicAsset);
         this.baseHealth = hp;
