@@ -29,7 +29,7 @@ class GunLayer implements Attacker extends TowerLayer
     {
         super(x,y,graphicAsset,hp);
         this.attackPoints = atk;
-        this.attackRange = height*RANGE_MULITPLIER;
+        this.attackRange = height*Constants.RANGE_MULITPLIER;
         this.isAttacking = false;
         this.attackRate = rate;
         this._shootCooldown = 0;

@@ -24,7 +24,7 @@ class TowerController extends GameObjectController<Tower>
 
     public function buildTower(materialsList:List<Material>, x:Float, y:Float):Bool
     {
-        if(materialsList.length<=0 || materialsList.length>MAX_HEIGHT){
+        if(materialsList.length<=0 || materialsList.length>Constants.MAX_HEIGHT){
             return false;
         }
         var tower = new(materialsList:List<Material>, x, y);
@@ -32,14 +32,14 @@ class TowerController extends GameObjectController<Tower>
         var level:Int = 0;
         for(m in tower.materialsList)
         {
-            var xpos = x+origin.x;
-            var ypos = y+origin.y+level*HEIGHT_OFFSET;
+            var xpos = tower.x+tower.origin.x;
+            var ypos = tower.y+tower.origin.y+level*Constants.HEIGHT_OFFSET;
             level++;
-            if(getClassName(m) == FOUNDATION_CLASSPATH){
-                //layers.add(new TowerLayer(xpos, ypos, AssetPaths));
+            if(getClassName(m) == Constants.FOUNDATION_CLASSPATH){
+                //tower.layers.add(new TowerLayer(xpos, ypos, AssetPaths));
             }
-            else if(getClassName(m) == GUNLAYER_CLASSPATH){
-                //layers.add(new GunLayer(xpos, ypos, ));
+            else if(getClassName(m) == Constants.GUNLAYER_CLASSPATH){
+                //tower.layers.add(new GunLayer(xpos, ypos, ));
             }
         }
     }
