@@ -3,7 +3,7 @@ package gameObjects;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
-import controllers.RenderBuffer;
+import views.RenderBuffer;
 
 /**
  * Material is an abstract class for Foundation, GunBase, and Ammunition.

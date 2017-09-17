@@ -1,7 +1,7 @@
 package gameStates;
 
 import controllers.KeyboardController;
-import controllers.RenderBuffer;
+import views.RenderBuffer;
 import controllers.TowerController;
 import gameObjects.*;
 import flixel.FlxState;
