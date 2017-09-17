@@ -1,15 +1,47 @@
 package gameObjects;
 
+import flixel.FlxSprite;
+import flixel.system.FlxAssets.FlxGraphicAsset;
 import interfaces.Attackable;
 import gameObjects.GameObject;
 
 /**
- * A TowerLayer represents a material when it is used as part of a Tower.
+ * A TowerLayer represents a material in action as part of a Tower.
  *
  * @author Yiming Li
  */
 
 class TowerLayer implements Attackable extends GameObject
 {
+    private var baseHealth:Int; //please change to _baseHealth
+    public var healthPoints:Int;
+    public var isDead:Bool;
+
+    public function new(x:Int, y:Int, graphicAsset:FlxGraphicAsset, hp:Int)
+    {
+        super(x,y,graphicAsset);
+        this.baseHealth = hp;
+        this.healthPoints = hp;
+        this.isDead = false;
+    }
+
+    public function takeDamage(obj:Attacker):Void
+    {
+        healthPoints -= obj.attackPoints;
+        if(healthPoints <= 0)
+        {
+            isDead = true;
+        }
+    }
+
+    public function changeHeight(height:Int):Void
+    {
+
+    }
+
+    public function changeWorkers(numWorkers:Int):Void
+    {
+
+    }
 
 }
