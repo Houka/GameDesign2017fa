@@ -28,14 +28,14 @@ class TowerController extends Tower
     {
         super.update(elapsed);
 		
+
         for(npc in GameState.npcs){
 			sight.set(npc.x - x - origin.x, npc.y - y - origin.y);
 			
-			if(sight.length <= this.range) {
-				this.shoot(npc.x, npc.y);
-			}
+			      if(sight.length <= this.range) {
+			          this.shoot(npc.x, npc.y);
+			      }
         }
-		
     }
 
     private function random(from:Int, to:Int): Int { 
