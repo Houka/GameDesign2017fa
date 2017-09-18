@@ -22,7 +22,6 @@ class Projectile extends GameObject implements Attacker
     public var attackType:AttackType=AttackType.Both; 
     public var attackRange:Int=0;
     public var isAttacking:Bool=true;
-
     public var state:ProjectileState;
     public var isEnemyProjectile:Bool;
 

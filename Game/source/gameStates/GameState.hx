@@ -1,7 +1,7 @@
 package gameStates;
 
 import controllers.KeyboardController;
-import controllers.RenderBuffer;
+import views.RenderBuffer;
 import controllers.TowerController;
 import gameObjects.*;
 import flixel.FlxState;
@@ -24,7 +24,11 @@ class GameState extends FlxState
 	var keyboard:KeyboardController;
 	var renderer:RenderBuffer;
 	public static var npcs:Array<Worker> = new Array<Worker>();
+	public static var towers:Array<Tower> = new Array<Tower>();
 	private var npcController:WorkerController = new WorkerController(20);
+	public var towerController:TowerController = new TowerController(60);
+	public var projectileController:controllers.ProjectileController = new controllers.ProjectileController(60);
+	private var PauseSubstate:FlxSubState;
 
 	override public function create():Void
 	{
@@ -34,6 +38,17 @@ class GameState extends FlxState
 		renderer = new RenderBuffer();
 		controller = new Controller();
 		pauseSubstate = new PauseState();
+		add(keyboard);
+		
+		// var fbox:Foundation = new Foundation(50, 400, "wood", 1, 1);
+		// add(fbox);
+		// var gbox:GunBase = new GunBase(100, 400, "normal", 1, 1);
+		// add(gbox);
+		// var abox:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
+		// add(abox);
+		
+		// newSpriteList = [fbox, gbox, abox];
+		
 	}
 
 	override public function update(elapsed:Float):Void
@@ -60,12 +75,21 @@ class GameState extends FlxState
             npcs.push(npc);
         }
 
+        testNPCUpdate();
+
+        for(t in towers)
+        {
+        	towerController.update(t);
+        }
+
 		//render sprites
 		while(RenderBuffer.buffer.first() != null)
 		{
 			var drawMe = RenderBuffer.buffer.pop();
 			add(drawMe);
-			controller.addProjectile(cast(drawMe,gameObjects.Projectile));
+			if (Std.is(drawMe, gameObjects.Projectile)) {
+				controller.addProjectile(cast(drawMe,gameObjects.Projectile));
+			}
 		}
 
 		for(npc in npcs)
@@ -83,8 +107,8 @@ class GameState extends FlxState
     }
 
     private function createGameObjects():Void{
-		var turret:TowerController = new TowerController(300, 200, 40, 150, 400);
-		add(turret);
+		// var turret:TowerController = new TowerController(300, 200, 40, 150, 400);
+		// add(turret);
 		
 		var fbox:Foundation = new Foundation(50, 400, "wood", 1, 1);
 		add(fbox);
@@ -93,6 +117,7 @@ class GameState extends FlxState
 		var abox:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
 		add(abox);
 		
-		newSpriteList = [turret, fbox, gbox, abox];
+		// newSpriteList = [turret, fbox, gbox, abox];
+		newSpriteList = [fbox, gbox, abox];
     }
 }

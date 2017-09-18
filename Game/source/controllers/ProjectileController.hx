@@ -53,7 +53,7 @@ class ProjectileController extends GameObjectController<Projectile>
 
 	/** smarter implementation of state switching with collision detechtion */
 	private function smartUpdateState(obj:Projectile,terrains:Array<GameObject>,
-										?workers:Array<Worker>,?enemies:Array<Enemy>):Void{
+										?enemies:Array<Enemy>, ?workers:Array<Worker>):Void{
 		switch (obj.state){
 			case Moving: 
         		if(!obj.isOnScreen())

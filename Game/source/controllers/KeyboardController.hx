@@ -1,19 +1,21 @@
 package controllers;
 
 import flixel.FlxG;
+import flixel.FlxBasic;
 
 /**
  * The KeyboardController maps key presses to various flags for other
  * controllers to read in sync with the update step.
  */
 
-class KeyboardController
+class KeyboardController extends FlxBasic
 {
     static private var _quit:Bool;
     static private var _paused:Bool;
 
     public function new()
     {
+        super();
         _quit = false;
         _paused = false;
     }
@@ -28,7 +30,7 @@ class KeyboardController
         return _paused;
     }
 
-    public function update(elapsed:Float):Void
+    override public function update(elapsed:Float):Void
     {
         if(FlxG.keys.anyJustPressed([P, SPACE]))
         {

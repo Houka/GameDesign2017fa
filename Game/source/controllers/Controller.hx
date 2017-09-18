@@ -29,10 +29,11 @@ class Controller
 	public function update(): Void{
 		for(w in workers)
 			workerController.update(w,cast([terrains]));
-		for(e in enemies)
+		for(e in enemies) 
 			enemyController.update(e,cast([cast(terrains),cast(workers)]));
-		for(p in projectiles)
+		for(p in projectiles) 
 			projectileController.update(p,cast([cast(terrains),cast(enemies),cast(workers)]));
+		
 
 		// clean up arrays
 		for(w in workers)
