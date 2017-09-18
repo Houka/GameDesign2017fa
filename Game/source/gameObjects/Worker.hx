@@ -2,6 +2,7 @@ package gameObjects;
 
 import flixel.system.FlxAssets;
 import interfaces.*;
+import flixel.math.FlxPoint; 
 
 /***
 * @author: Chang Lu
@@ -32,7 +33,7 @@ class Worker extends NPC implements Interactable
 		isHovered = true;
 	}
 
-	public function selected():Void{
+	public function selected(point: FlxPoint):Void{
 		isHovered = false;
 		isSelected = true;
 	}

@@ -112,7 +112,6 @@ class TowerController extends GameObjectController<Tower>
         {
             if(Type.getClass(gun)==GunLayer)
             {
-                //cast(gun, GunLayer);
                 if(cast(gun, GunLayer).shoot() && dist<=cast(gun, GunLayer).attackRange){
                     //create bullet type specified by gun.ammoType
                     var bullet:Projectile = new Projectile(gun.x+gun.origin.x, gun.y+gun.origin.y, xTarget, yTarget, 5, 100, true, AssetPaths.fireball__png);
@@ -130,7 +129,6 @@ class TowerController extends GameObjectController<Tower>
             _sight.set(npc.x - tower.x - tower.origin.x, npc.y - tower.y - tower.origin.y);
             
                   if(_sight.length <= tower.layers.length*Constants.RANGE_MULTIPLIER) {
-                      // this.shoot(npc.x, npc.y);
                       this.shoot(tower, _sight.length, npc.x, npc.y);
                   }
         }

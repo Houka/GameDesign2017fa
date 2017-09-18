@@ -13,7 +13,7 @@ import flixel.math.FlxPoint;
 import flixel.input.mouse.FlxMouseEventManager; 
 using flixel.util.FlxSpriteUtil; 
 import controllers.*; 
-import Tile; 
+import interfaces.Interactable; 
 
 
 class GameState extends FlxState
@@ -30,30 +30,28 @@ class GameState extends FlxState
 	public static var towers:Array<Tower> = new Array<Tower>();
 	public var towerController:TowerController = new TowerController(60);
 	private var PauseSubstate:FlxSubState;
-	public static var map: Array<Int>; 
-	public static var TILE_WIDTH = 60; 
-	public static var TILE_HEIGHT = 60; 
-	public static var SCREEN_WIDTH = 660; 
-	public static var SCREEN_HEIGHT = 400; 
+	private var ammoType:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
+    private var towerPreset:List<Material> = new List<Material>();
+
 
 	override public function create():Void
 	{
 		super.create();
 
-		mouse = new MouseController(this);
+		var map = [ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+					0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+					0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 
+					1, 1, 0, 0, 0, 1, 0, 1, 0, 1,
+					1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+					1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+
+		mouse = new MouseController(map);
 		keyboard = new KeyboardController();
 		renderer = new RenderBuffer();
 		controller = new Controller();
 		pauseSubstate = new PauseState();
 		add(keyboard);
-
-		map = [ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 
-				1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0,
-				1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-				1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
+		createTowerPresets(); 
 		createTilemap(map);	
 	}
 
@@ -61,7 +59,13 @@ class GameState extends FlxState
 	{
 		//keyboard controls 
 		super.update(elapsed);
-		mouse.update(newSpriteList);
+		var interactables: Array<Interactable> = []; 
+		for (i in 0...newSpriteList.length) {
+			if (Std.is(newSpriteList[i], Interactable)) {
+				interactables.push(cast(newSpriteList[i], Interactable));
+			}
+		}
+		mouse.update(interactables);
 		keyboard.update(elapsed);
 		controller.update();
 		
@@ -80,6 +84,14 @@ class GameState extends FlxState
             controller.addWorker(npc);
             npcs.push(npc);
         }
+
+        if (mouse.leftClicked && mouse.canPlace()) {
+
+            var turret: Tower = towerController.buildTower(towerPreset, ammoType, FlxG.mouse.x, FlxG.mouse.y);
+            turret.updateHitbox();
+            towers.push(turret);
+            newSpriteList.push(turret);
+        } 
 
         testNPCUpdate();
 
@@ -111,43 +123,24 @@ class GameState extends FlxState
         }
     }
 
-
     private function createTilemap(map: Array<Int>){
-    	var w = Std.int(SCREEN_WIDTH/TILE_WIDTH);
-		var h = Std.int(SCREEN_HEIGHT/TILE_HEIGHT); 
+        var w = Std.int(FlxG.width/Constants.TILE_WIDTH);
+        var h = Std.int(FlxG.height/Constants.TILE_HEIGHT); 
 
-		for (i in 0...w*h) {
-			if (map[i] == 0) {
-				var tile = new Tile(); 
-				var x = i % w; 
-				var y = Math.floor(i/w); 
-				tile.setLoc(x, y); 
-				add(tile);
-			}
-		}
-	}
+        for (i in 0...w*h) {
+            if (map[i] == 0) {
+            	var x = i % w; 
+                var y = Math.floor(i/w); 
+                var tile = new Tile(x, y, AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+                tile.setLocation(x, y); 
+                add(tile);
+            }
+        }
+    }
 
-	//Given a point, determines whether point is 0 or 1; returns true if 0, false otherwise
-	public static function canPlace(x: Float, y: Float): Bool {
-		if (map[indexClicked(x,y)] == 0) {
-			return true; 
-		}
-		return false;
-	}
-
-	//Returns index in map array of tile that has been clicked 
-	public static function indexClicked(x: Float, y: Float):Int {  
-		var numHorizTiles: Int = Math.floor(SCREEN_WIDTH/TILE_WIDTH); 
-		var numVertTiles: Int = Math.floor(SCREEN_HEIGHT/TILE_HEIGHT);
-		var tileCoordX: Int = Math.floor(x/TILE_WIDTH);
-		var tileCoordY: Int = Math.floor(y/TILE_HEIGHT); 
-		
-		return ((tileCoordY * numHorizTiles) + tileCoordX); 
-	}
 
 
     private function createGameObjects():Void{
-		
 		var fbox:Foundation = new Foundation(50, 400, "wood", 1, 1);
 		add(fbox);
 		var gbox:GunBase = new GunBase(100, 400, "normal", 1, 1);
@@ -156,5 +149,12 @@ class GameState extends FlxState
 		add(abox);
 		
 		newSpriteList = [fbox, gbox, abox];
+    }
+
+    private function createTowerPresets(): Void { 
+    	towerPreset.add(new GunBase(100, 400, "normal", 1, 1));
+        towerPreset.add(new Foundation(50, 400, "wood", 1, 1));
+        towerPreset.add(new Foundation(50, 400, "wood", 1, 1));
+        towerPreset.add(new GunBase(100, 400, "normal", 1, 1));
     }
 }
