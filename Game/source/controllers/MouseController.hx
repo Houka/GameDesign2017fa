@@ -45,27 +45,26 @@ class MouseController {
 
         //if mouse is released and there's no object there
         if (FlxG.mouse.justReleased) {
-            if (selectedSprite == null && !wasJustReleased) {
-                var turret:TowerController = new TowerController(FlxG.mouse.x, FlxG.mouse.y, 40, 150, 400);
-                turret.updateHitbox();
-                state.add(turret);
-                spriteList.push(turret);
-                wasJustReleased = true; 
+            if (GameState.canPlace(FlxG.mouse.x, FlxG.mouse.y)) {
+                if (selectedSprite == null && !wasJustReleased) {
+                    var turret:TowerController = new TowerController(FlxG.mouse.x, FlxG.mouse.y, 40, 150, 400);
+                    turret.updateHitbox();
+                    state.add(turret);
+                    spriteList.push(turret);
+                    wasJustReleased = true; 
+                }
+                selectedSprite = null; 
             }
-            selectedSprite = null; 
         }
 
         if (FlxG.mouse.justReleasedRight) {
-            // if (canPlace(FlxG.mouse.x, FlxG.mouse.y)) {
                 var npc = new Worker(FlxG.mouse.x,FlxG.mouse.y,1,10,AssetPaths.player__png,16,16);
                 npc.setGoal(400, 400);
                 state.add(npc);
                 GameState.npcController.addAnimation(npc);
                 GameState.npcs.push(npc);
-            // }
         }
 
-        // testNPCUpdate();
     }
 
     public function setState(state:FlxState):Void { 

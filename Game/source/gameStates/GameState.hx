@@ -24,7 +24,7 @@ class GameState extends FlxState
 	var renderer:RenderBuffer;
 	public static var npcController:WorkerController = new WorkerController(20);
 	private var PauseSubstate:FlxSubState;
-	private var map: Array<Int>; 
+	public static var map: Array<Int>; 
 	public static var npcs:Array<Worker> = new Array<Worker>();
 	public static var TILE_WIDTH = 60; 
 	public static var TILE_HEIGHT = 60; 
@@ -35,22 +35,21 @@ class GameState extends FlxState
 	{
 		super.create();
 		mouse = new MouseController(this); 
-		// var text = new flixel.text.FlxText(0, 0, 0, "Play State", 64);
-		// text.screenCenter();
 		keyboard = new KeyboardController();
 		renderer = new RenderBuffer();
 		add(keyboard);
 
-		createTilemap([ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		map = [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 					    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
 						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 						0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
 						0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+		createTilemap(map);
 
 		var turret:TowerController = new TowerController(300, 200, 40, 150, 400);
 		add(turret);
-		
 		var fbox:Foundation = new Foundation(50, 400, "wood", 1, 1);
 		add(fbox);
 		var gbox:GunBase = new GunBase(100, 400, "normal", 1, 1);
@@ -98,7 +97,7 @@ class GameState extends FlxState
     }
 
     private function createTilemap(map: Array<Int>){
-    var w = Std.int(SCREEN_WIDTH/TILE_WIDTH);
+    	var w = Std.int(SCREEN_WIDTH/TILE_WIDTH);
 		var h = Std.int(SCREEN_HEIGHT/TILE_HEIGHT); 
 
 		for (i in 0...w*h) {
@@ -112,10 +111,24 @@ class GameState extends FlxState
 		}
 	}
 
-	private function canPlace(x: Float, y: Float): Bool {
-		var screenHeight: Int = FlxG.height; 
-		var screenWidth: Int = FlxG.width;
-		return true; 
+	//Given a point, determines whether point is 0 or 1; returns true if 0, false otherwise
+	public static function canPlace(x: Float, y: Float): Bool {
+		if (map[indexClicked(x,y)] == 0) {
+			return true; 
+		}
+
+		return false;
+	}
+
+	//Returns index in map array of tile that has been clicked 
+	public static function indexClicked(x: Float, y: Float):Int {  
+		var numHorizTiles: Int = Math.floor(SCREEN_WIDTH/TILE_WIDTH); 
+		var numVertTiles: Int = Math.floor(SCREEN_HEIGHT/TILE_HEIGHT);
+
+		var tileCoordX: Int = Math.floor(x/TILE_WIDTH);
+		var tileCoordY: Int = Math.floor(y/TILE_HEIGHT); 
+		
+		return ((tileCoordY * numHorizTiles) + tileCoordX); 
 	}
 
 }
