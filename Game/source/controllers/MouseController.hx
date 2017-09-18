@@ -45,7 +45,7 @@ class MouseController {
         //if mouse is released and there's no object there
         if (FlxG.mouse.justReleased) {
             if (selectedSprite == null && !wasJustReleased) {
-                var turret:TowerController = new TowerController(FlxG.mouse.x, FlxG.mouse.y, 40, 150, 400);
+                var turret:TowerController = new TowerController(FlxG.mouse.x, FlxG.mouse.y, 40, 150, 400, 5);
                 turret.updateHitbox();
                 state.add(turret);
                 spriteList.push(turret);
