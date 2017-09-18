@@ -9,6 +9,7 @@ import controllers.*;
 import gameObjects.*;
 import gameStates.GameState;
 import interfaces.Movable;
+import gameStates.GameState;
 
 /**
  * The MouseController maps mouse input such that it will be read
@@ -47,16 +48,27 @@ class MouseController {
 
         //if mouse is released and there's no object there
         if (FlxG.mouse.justReleased) {
-            if (selectedSprite == null && !wasJustReleased) {
-                var turret: Tower = state.towerController.buildTower(towerPreset, ammoType, FlxG.mouse.x, FlxG.mouse.y);
-                // var turret:TowerController = new TowerController(FlxG.mouse.x, FlxG.mouse.y, 40, 150, 400, 5);
-                turret.updateHitbox();
-                GameState.towers.push(turret);
-                spriteList.push(turret);
-                wasJustReleased = true; 
+            if (GameState.canPlace(FlxG.mouse.x, FlxG.mouse.y)) {
+                if (selectedSprite == null && !wasJustReleased) {
+                  var turret: Tower = state.towerController.buildTower(towerPreset, ammoType, FlxG.mouse.x, FlxG.mouse.y);
+                  turret.updateHitbox();
+                  GameState.towers.push(turret);
+                  spriteList.push(turret);
+                  wasJustReleased = true; 
+                }
             }
             selectedSprite = null; 
+            }
         }
+
+        if (FlxG.mouse.justReleasedRight) {
+                var npc = new Worker(FlxG.mouse.x,FlxG.mouse.y,1,10,AssetPaths.player__png,16,16);
+                npc.setGoal(400, 400);
+                state.add(npc);
+                GameState.npcController.addAnimation(npc);
+                GameState.npcs.push(npc);
+        }
+
     }
 
     public function setState(state:GameState):Void { 

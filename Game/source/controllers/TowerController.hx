@@ -134,14 +134,6 @@ class TowerController extends GameObjectController<Tower>
                       this.shoot(tower, _sight.length, npc.x, npc.y);
                   }
         }
-		
-		// if (GameState.npcs[0] != null) {
-		// 	_sight.set(GameState.npcs[0].getX() - tower.x - tower.origin.x, GameState.npcs[0].getY() - tower.y - tower.origin.y);
-			
-		// 	if(_sight.length <= tower.layers.length*Constants.RANGE_MULTIPLIER) {
-		// 		this.shoot(tower, _sight.length, GameState.npcs[0].getX(), GameState.npcs[0].getY());
-		// 	}
-		// }
     }
 
     override private function updateState(tower:Tower, ?extraArguments:Array<Expr>):Void
