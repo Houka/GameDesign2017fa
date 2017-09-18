@@ -14,7 +14,6 @@ class NPC extends GameObject implements Attackable implements Movable implements
 	var goal:FlxPoint;
 	public var speed:Int;
 	public var healthPoints:Int;
-	public var isDead:Bool;
 	public var canMove:Bool;
 
 	public function new(x:Int, y:Int, speed:Int, health:Int, graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
@@ -24,18 +23,18 @@ class NPC extends GameObject implements Attackable implements Movable implements
 		this.speed = speed;
 		this.healthPoints = health;
 		this.baseHealth = health;
-		this.isDead = false;
 		this.goal = new FlxPoint(x,y);
 		this.canMove = true;
+		this.immovable=true;
 	}
 
 	public function takeDamage(obj:Attacker):Void{
-		if (obj.isAttacking && !this.isDead){
+		if (obj.isAttacking && this.alive){
 			this.healthPoints -= obj.attackPoints;
 		}
 
 		if (this.healthPoints <= 0){
-			this.isDead == true;
+			kill();
 		}
 	}
 	

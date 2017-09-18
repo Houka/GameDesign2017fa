@@ -9,7 +9,7 @@ import flixel.FlxObject;
 
 class RenderBuffer
 {
-    static public var buffer:List<FlxObject>;
+    static public var buffer:List<FlxObject> = new List<FlxObject>();
 
     public function new(){
         if(buffer == null){

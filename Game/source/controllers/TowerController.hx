@@ -28,19 +28,14 @@ class TowerController extends Tower
     {
         super.update(elapsed);
 		
-		if (GameState.npcs[0] != null) {
-			trace(GameState.npcs[0].getX());
-			for (npc in GameState.npcs) {
-				sight.set(npc.getX() - x - origin.x, npc.getY() - y - origin.y);
-				
-				if(sight.length <= this.range) {
-					this.shoot(npc.getX(), npc.getY());
-					break;
-				}
-			}
+
+        for(npc in GameState.npcs){
+			sight.set(npc.x - x - origin.x, npc.y - y - origin.y);
 			
-		}
-		
+			      if(sight.length <= this.range) {
+			          this.shoot(npc.x, npc.y);
+			      }
+        }
     }
 
     private function random(from:Int, to:Int): Int { 
