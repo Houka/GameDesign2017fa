@@ -31,7 +31,6 @@ class GameState extends FlxState
 	public var towerController:TowerController = new TowerController(60);
 	private var PauseSubstate:FlxSubState;
 	public static var map: Array<Int>; 
-	public static var npcs:Array<Worker> = new Array<Worker>();
 	public static var TILE_WIDTH = 60; 
 	public static var TILE_HEIGHT = 60; 
 	public static var SCREEN_WIDTH = 660; 
@@ -145,7 +144,7 @@ class GameState extends FlxState
 		
 		return ((tileCoordY * numHorizTiles) + tileCoordX); 
 	}
-}
+
 
     private function createGameObjects():Void{
 		

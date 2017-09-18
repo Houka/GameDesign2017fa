@@ -58,7 +58,6 @@ class MouseController {
                 }
             }
             selectedSprite = null; 
-            }
         }
 
         if (FlxG.mouse.justReleasedRight) {
