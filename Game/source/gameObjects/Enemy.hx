@@ -11,7 +11,7 @@ abstract EnemyState(Int) {
   var Idle = 0;
   var Moving = 1;
   var Attacking = 2;
-  var Dying = 2;
+  var Dying = 3;
 }
 
 class Enemy extends NPC implements Attacker  
@@ -19,10 +19,10 @@ class Enemy extends NPC implements Attacker
 	public var state:EnemyState;
 	public var attackPoints:Int;
 	public var attackRange:Int;
-	public var attackType:AttackType; 
+	public var attackType:Attacker.AttackType; 
 	public var isAttacking:Bool;
 
-	public function new(x:Int, y:Int, speed:Int, health:Int,attackPoints:Int,attackRange:Int,attackType:AttackType, 
+	public function new(x:Int, y:Int, speed:Int, health:Int,attackPoints:Int,attackRange:Int,attackType:Attacker.AttackType, 
 							graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
 		super(x,y,speed,health,graphicAsset,graphicsWidth,graphicsHeight);
 		this.attackPoints = attackPoints;

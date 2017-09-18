@@ -1,7 +1,7 @@
 package controllers;
 
-import flixel.FlxBasic;
 import flixel.FlxG;
+import flixel.FlxBasic;
 
 /**
  * The KeyboardController maps key presses to various flags for other
@@ -32,7 +32,6 @@ class KeyboardController extends FlxBasic
 
     override public function update(elapsed:Float):Void
     {
-        super.update(elapsed);
         if(FlxG.keys.anyJustPressed([P, SPACE]))
         {
             _paused = !_paused;

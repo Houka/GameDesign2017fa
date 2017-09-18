@@ -1,7 +1,7 @@
 package controllers;
 
 import gameObjects.Worker;
-import interfaces.*;
+import haxe.macro.Expr;
 
 class WorkerController extends GameObjectController<Worker>
 {
@@ -9,11 +9,8 @@ class WorkerController extends GameObjectController<Worker>
 		super(frameRate);
 	}
 
-	override private function updateState(obj:Worker): Void{
+	override private function updateState(obj:Worker,?extraArguments:Array<Expr>): Void{
 		super.updateState(obj);
-		if (obj.isDead)
-			obj.state = WorkerState.Dying;
-
 		switch (obj.state){
 			case Idle: 
 				if(obj.canMove && !obj.isAtGoal())
@@ -24,6 +21,7 @@ class WorkerController extends GameObjectController<Worker>
 					obj.state = WorkerState.Idle;
 			case Dying:
 				obj.canMove = false;
+				obj.kill();
 		}
 	}
 

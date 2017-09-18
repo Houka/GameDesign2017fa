@@ -6,7 +6,8 @@ import flixel.util.FlxColor;
 import flixel.FlxG; 
 import flixel.math.FlxPoint;
 import controllers.*; 
-import gameObjects.*; 
+import gameObjects.*;
+import gameStates.GameState;
 import interfaces.Movable;
 import gameStates.GameState;
 
@@ -17,12 +18,14 @@ import gameStates.GameState;
 
 class MouseController {
 
-    var state:FlxState; 
+    var state:GameState; 
     var width:Int = 32;
     var height:Int = 32; 
     var selectedSprite:FlxSprite = null; 
     var wasJustReleased:Bool = false; 
 
+    private var ammoType:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
+    private var towerPreset:List<Material> = new List<Material>();
 
     public function update(spriteList: Array<FlxSprite>):Void {
         //if mouse is pressed and object is at mouse location 
@@ -47,12 +50,13 @@ class MouseController {
         if (FlxG.mouse.justReleased) {
             if (GameState.canPlace(FlxG.mouse.x, FlxG.mouse.y)) {
                 if (selectedSprite == null && !wasJustReleased) {
-                    var turret:TowerController = new TowerController(FlxG.mouse.x, FlxG.mouse.y, 40, 150, 400);
-                    turret.updateHitbox();
-                    state.add(turret);
-                    spriteList.push(turret);
-                    wasJustReleased = true; 
+                  var turret: Tower = state.towerController.buildTower(towerPreset, ammoType, FlxG.mouse.x, FlxG.mouse.y);
+                  turret.updateHitbox();
+                  GameState.towers.push(turret);
+                  spriteList.push(turret);
+                  wasJustReleased = true; 
                 }
+            }
             selectedSprite = null; 
             }
         }
@@ -67,12 +71,17 @@ class MouseController {
 
     }
 
-    public function setState(state:FlxState):Void { 
+    public function setState(state:GameState):Void { 
         this.state = state; 
     }
 
-    public function new(state:FlxState):Void {
+    public function new(state:GameState):Void {
         this.state = state; 
+
+        towerPreset.add(new GunBase(100, 400, "normal", 1, 1));
+        towerPreset.add(new Foundation(50, 400, "wood", 1, 1));
+        towerPreset.add(new Foundation(50, 400, "wood", 1, 1));
+        towerPreset.add(new GunBase(100, 400, "normal", 1, 1));
     }
 
 }

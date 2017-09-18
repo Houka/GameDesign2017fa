@@ -1,7 +1,7 @@
 package gameStates;
 
 import controllers.KeyboardController;
-import controllers.RenderBuffer;
+import views.RenderBuffer;
 import controllers.TowerController;
 import gameObjects.*;
 import flixel.FlxState;
@@ -18,11 +18,17 @@ import Tile;
 
 class GameState extends FlxState
 {
+	private var pauseSubstate:FlxSubState;
+	private var controller:Controller;
 	var mouse:MouseController; 
 	var newSpriteList:Array<FlxSprite> = new Array<FlxSprite>();
 	var keyboard:KeyboardController;
 	var renderer:RenderBuffer;
+
 	public static var npcController:WorkerController = new WorkerController(20);
+	public static var npcs:Array<Worker> = new Array<Worker>();
+	public static var towers:Array<Tower> = new Array<Tower>();
+	public var towerController:TowerController = new TowerController(60);
 	private var PauseSubstate:FlxSubState;
 	public static var map: Array<Int>; 
 	public static var npcs:Array<Worker> = new Array<Worker>();
@@ -34,9 +40,12 @@ class GameState extends FlxState
 	override public function create():Void
 	{
 		super.create();
-		mouse = new MouseController(this); 
+
+		mouse = new MouseController(this);
 		keyboard = new KeyboardController();
 		renderer = new RenderBuffer();
+		controller = new Controller();
+		pauseSubstate = new PauseState();
 		add(keyboard);
 
 		map = [ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -46,19 +55,7 @@ class GameState extends FlxState
 				1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-		createTilemap(map);
-
-		var turret:TowerController = new TowerController(300, 200, 40, 150, 400);
-		add(turret);
-		var fbox:Foundation = new Foundation(50, 400, "wood", 1, 1);
-		add(fbox);
-		var gbox:GunBase = new GunBase(100, 400, "normal", 1, 1);
-		add(gbox);
-		var abox:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
-		add(abox);
-		
-		newSpriteList = [turret, fbox, gbox, abox];
-		
+		createTilemap(map);	
 	}
 
 	override public function update(elapsed:Float):Void
@@ -66,24 +63,44 @@ class GameState extends FlxState
 		//keyboard controls 
 		super.update(elapsed);
 		mouse.update(newSpriteList);
-		PauseSubstate = new PauseState();
+		keyboard.update(elapsed);
+		controller.update();
 		
 		if (FlxG.keys.anyJustPressed([P, SPACE])){
-			openSubState(PauseSubstate);
+			openSubState(pauseSubstate);
 		}
 		
 		if(KeyboardController.quit()){
 			//trace("quitting");
 		}
 
+		if (FlxG.mouse.justReleasedRight) {
+            var npc = new Worker(FlxG.mouse.x,FlxG.mouse.y,1,10,AssetPaths.player__png,16,16);
+            npc.setGoal(400, 400);
+            add(npc);
+            controller.addWorker(npc);
+            npcs.push(npc);
+        }
+
         testNPCUpdate();
+
+        for(t in towers)
+        {
+        	towerController.update(t);
+        }
 
 		//render sprites
 		while(RenderBuffer.buffer.first() != null)
 		{
 			var drawMe = RenderBuffer.buffer.pop();
 			add(drawMe);
+			if (Std.is(drawMe, gameObjects.Projectile)) {
+				controller.addProjectile(cast(drawMe,gameObjects.Projectile));
+			}
 		}
+
+		for(npc in npcs)
+			if(!npc.exists) npcs.remove(npc);
 	}
 
 	private function testNPCUpdate():Void{
@@ -94,6 +111,7 @@ class GameState extends FlxState
                 npc.setGoal(100,100);
         }
     }
+
 
     private function createTilemap(map: Array<Int>){
     	var w = Std.int(SCREEN_WIDTH/TILE_WIDTH);
@@ -129,22 +147,15 @@ class GameState extends FlxState
 	}
 }
 
-class PauseState extends FlxSubState
-{	
-	override public function create():Void
-	{
-		super.create();
-		var text = new flixel.text.FlxText(0, 0, 0, "Pause State", 64);
-		text.screenCenter();
-		add(text);
-	}
-
-	override public function update(elapsed:Float):Void
-	{
-		super.update(elapsed);
-		if (FlxG.keys.anyJustPressed([P, SPACE])) {
-			close();
-		}
-	}
-	
+    private function createGameObjects():Void{
+		
+		var fbox:Foundation = new Foundation(50, 400, "wood", 1, 1);
+		add(fbox);
+		var gbox:GunBase = new GunBase(100, 400, "normal", 1, 1);
+		add(gbox);
+		var abox:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
+		add(abox);
+		
+		newSpriteList = [fbox, gbox, abox];
+    }
 }
