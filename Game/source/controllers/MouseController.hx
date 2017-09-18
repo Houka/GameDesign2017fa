@@ -53,7 +53,7 @@ class MouseController {
                     spriteList.push(turret);
                     wasJustReleased = true; 
                 }
-                selectedSprite = null; 
+            selectedSprite = null; 
             }
         }
 

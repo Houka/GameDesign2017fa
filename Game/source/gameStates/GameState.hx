@@ -39,12 +39,12 @@ class GameState extends FlxState
 		renderer = new RenderBuffer();
 		add(keyboard);
 
-		map = [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-					    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-						0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-						0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+		map = [ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 
+				1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0,
+				1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 		createTilemap(map);
 
@@ -89,7 +89,6 @@ class GameState extends FlxState
 	private function testNPCUpdate():Void{
         for(npc in npcs){
             npcController.update(npc);
-
             //testing movement function
             if(npc.isAtGoal())
                 npc.setGoal(100,100);
@@ -116,7 +115,6 @@ class GameState extends FlxState
 		if (map[indexClicked(x,y)] == 0) {
 			return true; 
 		}
-
 		return false;
 	}
 
@@ -124,13 +122,11 @@ class GameState extends FlxState
 	public static function indexClicked(x: Float, y: Float):Int {  
 		var numHorizTiles: Int = Math.floor(SCREEN_WIDTH/TILE_WIDTH); 
 		var numVertTiles: Int = Math.floor(SCREEN_HEIGHT/TILE_HEIGHT);
-
 		var tileCoordX: Int = Math.floor(x/TILE_WIDTH);
 		var tileCoordY: Int = Math.floor(y/TILE_HEIGHT); 
 		
 		return ((tileCoordY * numHorizTiles) + tileCoordX); 
 	}
-
 }
 
 class PauseState extends FlxSubState
