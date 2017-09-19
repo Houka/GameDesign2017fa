@@ -18,4 +18,12 @@ class Constants
     //MouseController 
     static public inline var TILE_WIDTH = 60; 
 	static public inline var TILE_HEIGHT = 60; 
+
+	// TEST Vars
+	public static var TEST_MAP:Array<Int> = [ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+									0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+									0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 
+									1, 1, 0, 0, 0, 1, 0, 1, 0, 1,
+									1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+									1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
 }

@@ -30,6 +30,7 @@ class MouseController {
 
     public function new(levelMap: Array<Int>):Void {
         this.levelMap = levelMap; 
+        mouse = new FlxPoint(FlxG.mouse.x, FlxG.mouse.y);
     }
 
     public function setLevelMap(levelMap: Array<Int>):Void { 
@@ -37,9 +38,9 @@ class MouseController {
     }
 
     public function update(spriteList: Array<Interactable>):Void {
-        var point:FlxPoint = new FlxPoint(FlxG.mouse.x, FlxG.mouse.y);
+        mouse = new FlxPoint(FlxG.mouse.x, FlxG.mouse.y);
         for (i in 0...(spriteList.length)) { 
-            if (spriteList[i].overlapsPoint(point)) { 
+            if (spriteList[i].overlapsPoint(mouse)) { 
                 if (FlxG.mouse.justPressed) {
                     //set to false because it was just pressed 
                     selected = spriteList[i];
@@ -70,10 +71,8 @@ class MouseController {
         leftClicked = FlxG.mouse.justPressed && !prevLeftClicked;
     }
 
-
-    //Given a point, determines whether point is 0 or 1; returns true if 0, false otherwise
     public function canPlace(): Bool {
-        if (levelMap[indexClicked(FlxG.mouse.x, FlxG.mouse.y)] == 0) {
+        if (levelMap[indexClicked(mouse.x, mouse.y)] == 0) {
             return true; 
         }
         return false;
@@ -81,8 +80,8 @@ class MouseController {
 
     //Returns index in map array of tile that has been clicked 
     private function indexClicked(x: Float, y: Float):Int {  
-        var numHorizTiles: Int = Math.floor(FlxG.width/Constants.TILE_WIDTH); 
-        var numVertTiles: Int = Math.floor(FlxG.height/Constants.TILE_HEIGHT);
+        var numHorizTiles: Int = Math.floor(FlxG.width/Constants.TILE_WIDTH); //TODO: make this not derived from the screen size
+        var numVertTiles: Int = Math.floor(FlxG.height/Constants.TILE_HEIGHT); //TODO: make this not derived from the screen size
         var tileCoordX: Int = Math.floor(x/Constants.TILE_WIDTH);
         var tileCoordY: Int = Math.floor(y/Constants.TILE_HEIGHT); 
         

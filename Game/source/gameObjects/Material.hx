@@ -3,7 +3,6 @@ package gameObjects;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
-import views.RenderBuffer;
 
 /**
  * Material is an abstract class for Foundation, GunBase, and Ammunition.
@@ -11,7 +10,7 @@ import views.RenderBuffer;
  * TODO: Crafting/combining materials
  * 
  */
-class Material extends FlxSprite
+class Material extends GameObject
 {
 	public var healthPoints:Int;
 	public var attackPoints:Int;

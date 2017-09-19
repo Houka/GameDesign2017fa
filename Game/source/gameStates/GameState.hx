@@ -1,9 +1,9 @@
 package gameStates;
 
 import controllers.KeyboardController;
-import views.RenderBuffer;
 import controllers.TowerController;
 import gameObjects.*;
+import gameObjects.Tile;
 import flixel.FlxState;
 import flixel.FlxSubState;
 import flixel.FlxSprite; 
@@ -14,22 +14,18 @@ import flixel.input.mouse.FlxMouseEventManager;
 using flixel.util.FlxSpriteUtil; 
 import controllers.*; 
 import interfaces.Interactable; 
+import interfaces.Attacker; 
 
 
 class GameState extends FlxState
 {
 	private var pauseSubstate:FlxSubState;
 	private var controller:Controller;
-	var mouse:MouseController; 
-	var newSpriteList:Array<FlxSprite> = new Array<FlxSprite>();
-	var keyboard:KeyboardController;
-	var renderer:RenderBuffer;
+	private var mouse:MouseController; 
+	private var keyboard:KeyboardController;
 
-	public static var npcController:WorkerController = new WorkerController(20);
-	public static var npcs:Array<Worker> = new Array<Worker>();
-	public static var towers:Array<Tower> = new Array<Tower>();
-	public var towerController:TowerController = new TowerController(60);
-	private var PauseSubstate:FlxSubState;
+	// TODO: Remove test vars
+	private var towerController:TowerController = new TowerController(60);
 	private var ammoType:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
     private var towerPreset:List<Material> = new List<Material>();
 
@@ -38,91 +34,54 @@ class GameState extends FlxState
 	{
 		super.create();
 
-		var map = [ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-					0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-					0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 
-					1, 1, 0, 0, 0, 1, 0, 1, 0, 1,
-					1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-					1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
-
-		mouse = new MouseController(map);
+		mouse = new MouseController(Constants.TEST_MAP);
 		keyboard = new KeyboardController();
-		renderer = new RenderBuffer();
-		controller = new Controller();
+		controller = new Controller(this);
 		pauseSubstate = new PauseState();
-		add(keyboard);
+
+		// TODO Remove tests
 		createTowerPresets(); 
-		createTilemap(map);	
+		createTilemap(Constants.TEST_MAP);	
 	}
 
 	override public function update(elapsed:Float):Void
 	{
-		//keyboard controls 
 		super.update(elapsed);
-		var interactables: Array<Interactable> = []; 
-		for (i in 0...newSpriteList.length) {
-			if (Std.is(newSpriteList[i], Interactable)) {
-				interactables.push(cast(newSpriteList[i], Interactable));
-			}
-		}
-		mouse.update(interactables);
+		
+		// Keyboard short cut updates
 		keyboard.update(elapsed);
-		controller.update();
-		
-		if (FlxG.keys.anyJustPressed([P, SPACE])){
+		if (KeyboardController.isPaused())
 			openSubState(pauseSubstate);
-		}
-		
-		if(KeyboardController.quit()){
-			//trace("quitting");
-		}
 
-		if (FlxG.mouse.justReleasedRight) {
-            var npc = new Worker(FlxG.mouse.x,FlxG.mouse.y,1,10,AssetPaths.player__png,16,16);
+		// Mouse updates
+		mouse.update(controller.getInteractables());
+		
+		// Main Controller updates
+		controller.update();
+
+		testMouseDemo(); //TODO remove test
+
+		// post update: empty out buffer queue and add it to state
+		while(!RenderBuffer.isEmpty())
+			controller.add(RenderBuffer.pop());
+	}
+
+    // TODO: remove test function... This function adds towers and enemies to the map when left and right mouse buttons are clicked
+	private function testMouseDemo():Void{
+		if (mouse.rightClicked) {
+            var npc = new Enemy(FlxG.mouse.x,FlxG.mouse.y,1,10,1,2,AttackType.Ground,AssetPaths.player__png,16,16);
             npc.setGoal(400, 400);
-            add(npc);
-            controller.addWorker(npc);
-            npcs.push(npc);
+            controller.add(npc);
         }
 
         if (mouse.leftClicked && mouse.canPlace()) {
-
             var turret: Tower = towerController.buildTower(towerPreset, ammoType, FlxG.mouse.x, FlxG.mouse.y);
             turret.updateHitbox();
-            towers.push(turret);
-            newSpriteList.push(turret);
-        } 
-
-        testNPCUpdate();
-
-        for(t in towers)
-        {
-        	towerController.update(t);
+            controller.add(turret);
         }
-
-		//render sprites
-		while(RenderBuffer.buffer.first() != null)
-		{
-			var drawMe = RenderBuffer.buffer.pop();
-			add(drawMe);
-			if (Std.is(drawMe, gameObjects.Projectile)) {
-				controller.addProjectile(cast(drawMe,gameObjects.Projectile));
-			}
-		}
-
-		for(npc in npcs)
-			if(!npc.exists) npcs.remove(npc);
 	}
 
-	private function testNPCUpdate():Void{
-        for(npc in npcs){
-            npcController.update(npc);
-            //testing movement function
-            if(npc.isAtGoal())
-                npc.setGoal(100,100);
-        }
-    }
-
+    // TODO: remove test function
     private function createTilemap(map: Array<Int>){
         var w = Std.int(FlxG.width/Constants.TILE_WIDTH);
         var h = Std.int(FlxG.height/Constants.TILE_HEIGHT); 
@@ -131,15 +90,15 @@ class GameState extends FlxState
             if (map[i] == 0) {
             	var x = i % w; 
                 var y = Math.floor(i/w); 
-                var tile = new Tile(x, y, AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+                var tile = new Tile(x, y, TileType.Background, AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
                 tile.setLocation(x, y); 
-                add(tile);
+                controller.add(tile);
             }
         }
     }
 
 
-
+    // TODO: remove test function
     private function createGameObjects():Void{
 		var fbox:Foundation = new Foundation(50, 400, "wood", 1, 1);
 		add(fbox);
@@ -147,10 +106,13 @@ class GameState extends FlxState
 		add(gbox);
 		var abox:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
 		add(abox);
-		
-		newSpriteList = [fbox, gbox, abox];
+
+		controller.add(fbox);
+		controller.add(gbox);
+		controller.add(abox);
     }
 
+    // TODO: remove test function
     private function createTowerPresets(): Void { 
     	towerPreset.add(new GunBase(100, 400, "normal", 1, 1));
         towerPreset.add(new Foundation(50, 400, "wood", 1, 1));

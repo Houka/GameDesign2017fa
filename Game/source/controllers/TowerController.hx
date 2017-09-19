@@ -8,7 +8,6 @@ import gameObjects.*;
 import gameObjects.Constants;
 import gameStates.GameState;
 import interfaces.Attacker;
-import views.RenderBuffer;
 import haxe.macro.Expr;
 
 /**
@@ -34,7 +33,7 @@ class TowerController extends GameObjectController<Tower>
             return null;
         }
         var tower:Tower = new Tower(materialsList, ammoType, x, y);
-        RenderBuffer.buffer.add(tower);
+        RenderBuffer.add(tower);
 
         var level:Int = 0;
         var newLayer:TowerLayer;
@@ -49,12 +48,12 @@ class TowerController extends GameObjectController<Tower>
             if(Type.getClass(m) == Foundation){
                 newLayer = new TowerLayer(xpos, ypos, AssetPaths.tower_layer__png, m.healthPoints);
                 tower.layers.add(newLayer);
-                RenderBuffer.buffer.add(newLayer);
+                RenderBuffer.add(newLayer);
             }
             else if(Type.getClass(m) == GunBase){
                 newLayer = new GunLayer(xpos, ypos, AssetPaths.gun_layer__png, m.healthPoints, m.attackPoints, level);
                 tower.layers.add(newLayer);
-                RenderBuffer.buffer.add(newLayer);
+                RenderBuffer.add(newLayer);
             }
         }
         return tower;
@@ -114,23 +113,35 @@ class TowerController extends GameObjectController<Tower>
             {
                 if(cast(gun, GunLayer).shoot() && dist<=cast(gun, GunLayer).attackRange){
                     //create bullet type specified by gun.ammoType
-                    var bullet:Projectile = new Projectile(gun.x+gun.origin.x, gun.y+gun.origin.y, xTarget, yTarget, 5, 100, true, AssetPaths.fireball__png);
-                    RenderBuffer.buffer.add(bullet);
+                    var bullet:Projectile = new Projectile(gun.x+gun.origin.x, gun.y+gun.origin.y, xTarget, yTarget, 5, 100, false, AssetPaths.fireball__png);
+                    RenderBuffer.add(bullet);
                 }
             }
         }
     }
 
+    /**
+    *  extraArguments = <list of terrain objs>, ?<list of enemies>
+    */
     override public function update(tower:Tower, ?extraArguments:Array<Expr>):Void
     {
         super.update(tower);
 
-        for(npc in GameState.npcs){
-            _sight.set(npc.x - tower.x - tower.origin.x, npc.y - tower.y - tower.origin.y);
-            
-                  if(_sight.length <= tower.layers.length*Constants.RANGE_MULTIPLIER) {
-                      this.shoot(tower, _sight.length, npc.x, npc.y);
-                  }
+        if (extraArguments == null){
+            trace("Error: enemy needs <list of terrain objs>, ?<list of workers> for its update... using naive update for enemies");
+            //nativeUpdateState(obj);
+        }
+        else{
+            var terrains:Array<Tile> = cast(extraArguments[0]);
+            var enemies:Array<Enemy> = cast(extraArguments[1]);
+
+            for(npc in enemies){
+                _sight.set(npc.x - tower.x - tower.origin.x, npc.y - tower.y - tower.origin.y);
+                
+                if(_sight.length <= tower.layers.length*Constants.RANGE_MULTIPLIER) {
+                  this.shoot(tower, _sight.length, npc.x, npc.y);
+                }
+            }
         }
     }
 

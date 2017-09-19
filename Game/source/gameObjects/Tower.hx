@@ -1,6 +1,7 @@
 package gameObjects;
 
-import flixel.FlxSprite;
+import flixel.system.FlxAssets;
+import gameObjects.GameObject;
 import gameObjects.TowerLayer;
 import gameObjects.Material;
 import gameObjects.Ammunition;
@@ -13,7 +14,7 @@ import gameObjects.Ammunition;
  * @author Yiming Li
  */
 
-class Tower extends FlxSprite
+class Tower extends GameObject
 {
     public var layers:List<TowerLayer>;
     public var ammoType:Ammunition;
@@ -23,7 +24,7 @@ class Tower extends FlxSprite
 
     /** Initialize each component of the tower based on materialsList
      */
-    public function new(materialsList:List<Material>, ammoType:Ammunition, ?X:Float=0, ?Y:Float=0)
+    public function new(materialsList:List<Material>, ammoType:Ammunition, X:Float, Y:Float)
     {
         super(X,Y);
         layers = new List<TowerLayer>(); //populate layers in TowerController

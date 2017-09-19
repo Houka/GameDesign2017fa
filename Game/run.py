@@ -2,7 +2,7 @@ import os
 import sys
 
 if __name__ == "__main__":
-	build_language = "html5"
+	build_language = "neko"
 	try:
 		if len(sys.argv) > 1:
 			build_language = sys.argv[1]
