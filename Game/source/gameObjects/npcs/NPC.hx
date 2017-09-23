@@ -1,4 +1,4 @@
-package gameObjects;
+package gameObjects.npcs;
 
 import Math.*;
 import flixel.system.FlxAssets;
@@ -10,13 +10,14 @@ import flixel.math.*;
 */
 class NPC extends GameObject implements Attackable implements Movable implements Healable
 {
-	var baseHealth:Int;
-	var goal:FlxPoint;
 	public var speed:Int;
 	public var healthPoints:Int;
 	public var canMove:Bool;
 
-	public function new(x:Int, y:Int, speed:Int, health:Int, graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
+	private var baseHealth:Int;
+	private var goal:FlxPoint;
+
+	public function new(x:Float, y:Float, speed:Int, health:Int, graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
 		super(x,y,graphicAsset,graphicsWidth,graphicsHeight);
 		this.x = x; 
 		this.y = y; 
@@ -26,16 +27,6 @@ class NPC extends GameObject implements Attackable implements Movable implements
 		this.goal = new FlxPoint(x,y);
 		this.canMove = true;
 		this.immovable=true;
-	}
-
-	public function takeDamage(obj:Attacker):Void{
-		if (obj.isAttacking && this.alive){
-			this.healthPoints -= obj.attackPoints;
-		}
-
-		if (this.healthPoints <= 0){
-			kill();
-		}
 	}
 	
 	public function setGoal(x:Int, y:Int):Void{
@@ -70,5 +61,14 @@ class NPC extends GameObject implements Attackable implements Movable implements
 	public function healBy(health:Int):Void{
 		this.healthPoints = Std.int(Math.min(this.healthPoints+health, this.baseHealth));
 	}
+	
+	public function takeDamage(obj:Attacker):Void{
+		if (obj.isAttacking && this.alive){
+			this.healthPoints -= obj.attackPoints;
+		}
 
+		if (this.healthPoints <= 0){
+			kill();
+		}
+	}
 }

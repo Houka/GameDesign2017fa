@@ -1,12 +1,12 @@
 package controllers;
 
 import haxe.macro.Expr;
-import gameObjects.Projectile;
 import gameObjects.GameObject;
-import gameObjects.Worker;
-import gameObjects.Enemy;
+import gameObjects.mapObjects.Projectile;
+import gameObjects.mapObjects.Tile;
+import gameObjects.npcs.Worker;
+import gameObjects.npcs.Enemy;
 import flixel.FlxG;
-import gameObjects.Tile;
 
 class ProjectileController extends GameObjectController<Projectile>
 {

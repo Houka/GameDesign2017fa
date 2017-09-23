@@ -2,7 +2,9 @@ package gameStates;
 
 import flixel.FlxState;
 import flixel.ui.FlxButton;
+import flixel.text.FlxText;
 import flixel.FlxG; 
+import openfl.Lib;
 
 class MenuState extends FlxState
 {
@@ -10,18 +12,26 @@ class MenuState extends FlxState
 	override public function create():Void
 	{
 		super.create();
-		var text = new flixel.text.FlxText(140, 50, 0, "Modular Tower Defense", 25);
+
+		var text = new flixel.text.FlxText(0, 0, 0, "eMpTy Defense", 50);
+		text.alignment = FlxTextAlign.CENTER;
+		text.screenCenter();
+		text.y -=100;
 		add(text);
+		
 		var playButton: FlxButton = new FlxButton(0, 0, "Play", nextState);
-		playButton.label.size = 10;
 		playButton.screenCenter();
 		add(playButton);
+
+		var quitButton: FlxButton = new FlxButton(0, 0, "Quit", quitGame);
+		quitButton.screenCenter();
+		quitButton.y += 50;
+		add(quitButton);
 	}
 
-	override public function update(elapsed:Float):Void
+	private function quitGame():Void 
 	{
-		super.update(elapsed);
-
+        Lib.close();
 	}
 
 	private function nextState():Void 

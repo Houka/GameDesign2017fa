@@ -1,4 +1,4 @@
-package gameObjects;
+package gameObjects.npcs;
 
 import flixel.system.FlxAssets;
 import interfaces.*;
@@ -22,7 +22,7 @@ class Enemy extends NPC implements Attacker
 	public var attackType:Attacker.AttackType; 
 	public var isAttacking:Bool;
 
-	public function new(x:Int, y:Int, speed:Int, health:Int,attackPoints:Int,attackRange:Int,attackType:Attacker.AttackType, 
+	public function new(x:Float, y:Float, speed:Int, health:Int,attackPoints:Int,attackRange:Int,attackType:Attacker.AttackType, 
 							graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
 		super(x,y,speed,health,graphicAsset,graphicsWidth,graphicsHeight);
 		this.attackPoints = attackPoints;

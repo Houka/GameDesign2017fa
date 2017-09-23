@@ -1,7 +1,7 @@
 package controllers;
 
-import gameObjects.Worker;
 import haxe.macro.Expr;
+import gameObjects.npcs.Worker;
 
 class WorkerController extends GameObjectController<Worker>
 {

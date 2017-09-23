@@ -1,7 +1,12 @@
 package controllers;
 
 import haxe.macro.Expr;
-import gameObjects.*;
+import gameObjects.GameObject;
+import gameObjects.npcs.Worker;
+import gameObjects.npcs.Enemy;
+import gameObjects.mapObjects.Projectile;
+import gameObjects.mapObjects.Tile;
+import gameObjects.mapObjects.Tower;
 import flixel.FlxState;
 import interfaces.Interactable;
 
@@ -48,7 +53,7 @@ class Controller
 		for(w in workers)
 			workerController.update(w,cast([cast(terrains)]));
 		for(e in enemies) 
-			enemyController.update(e,cast([cast(terrains),cast(workers)]));
+			enemyController.update(e,cast([cast(terrains),cast(workers),cast(other)]));
 		for(p in projectiles) 
 			projectileController.update(p,cast([cast(terrains),cast(enemies),cast(workers)]));
 		for(t in towers) 

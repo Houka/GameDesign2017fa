@@ -1,11 +1,9 @@
-package gameObjects;
+package gameObjects.materials;
 
 import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
+import gameObjects.mapObjects.Projectile;
 import interfaces.Attacker;
-import gameObjects.TowerLayer;
-import gameObjects.Projectile;
-import gameObjects.Constants;
 
 /**
  * A GunLayer is a TowerLayer that can shoot

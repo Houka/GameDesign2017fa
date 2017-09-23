@@ -1,4 +1,4 @@
-package gameObjects;
+package gameObjects.npcs;
 
 import flixel.system.FlxAssets;
 import interfaces.*;
@@ -20,7 +20,7 @@ class Worker extends NPC implements Interactable
 	private var isSelected:Bool;
 	public var state:WorkerState;
 
-	public function new(x:Int, y:Int, speed:Int, health:Int, graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
+	public function new(x:Float, y:Float, speed:Int, health:Int, graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
 		super(x,y,speed,health,graphicAsset,graphicsWidth,graphicsHeight);
 		this.state = WorkerState.Idle;
 		this.isHovered = false;

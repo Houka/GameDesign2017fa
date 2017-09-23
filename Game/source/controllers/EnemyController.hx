@@ -1,10 +1,11 @@
 package controllers;
 
 import haxe.macro.Expr;
-import gameObjects.Enemy;
-import gameObjects.GameObject;
-import gameObjects.Worker;
 import flixel.FlxG;
+import gameObjects.GameObject;
+import gameObjects.npcs.Enemy;
+import gameObjects.npcs.Worker;
+import gameObjects.mapObjects.HomeBase;
 
 class EnemyController extends GameObjectController<Enemy>
 {
@@ -13,7 +14,7 @@ class EnemyController extends GameObjectController<Enemy>
 	}
 
 	/**
-	*  extraArguments = <list of terrain objs>, ?<list of workers>
+	*  extraArguments = <list of terrain objs>, ?<list of workers> ?<list of other game objs>
 	*/
 	override private function updateState(obj:Enemy,?extraArguments:Array<Expr>): Void{
 		super.updateState(obj,extraArguments);
@@ -23,7 +24,7 @@ class EnemyController extends GameObjectController<Enemy>
 		 	nativeUpdateState(obj);
 		}
 		else{
-			smartUpdateState(obj,cast(extraArguments[0]),cast(extraArguments[1]));
+			smartUpdateState(obj,cast(extraArguments[0]),cast(extraArguments[1]),cast(extraArguments[2]));
 		}
 	}
 
@@ -64,7 +65,7 @@ class EnemyController extends GameObjectController<Enemy>
 
 
 	/** smarter implementation of state switching with enemies. With path planning. */
-	private function smartUpdateState(obj:Enemy,terrains:Array<GameObject>,?workers:Array<Worker>):Void{
+	private function smartUpdateState(obj:Enemy,terrains:Array<GameObject>,?workers:Array<Worker>,?objs:Array<GameObject>):Void{
 		switch (obj.state){
 			case Idle: 
 				if(obj.canMove && !obj.isAtGoal())
@@ -80,5 +81,11 @@ class EnemyController extends GameObjectController<Enemy>
 				obj.canMove = false;
 				obj.kill();
 		}
+
+		for (o in objs)
+			if (Type.getClass(o) == HomeBase && FlxG.overlap(obj,o)){
+				cast(o,HomeBase).takeDamage(obj);
+				obj.kill();
+			}
 	}
 }

@@ -1,8 +1,7 @@
-package gameObjects; 
+package gameObjects.mapObjects; 
 
 import gameStates.GameState; 
 import flixel.system.FlxAssets;
-import gameObjects.Constants;
 import flixel.math.FlxPoint;
 
 

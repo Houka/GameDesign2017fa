@@ -5,12 +5,8 @@ import flixel.FlxSprite;
 import flixel.util.FlxColor; 
 import flixel.FlxG; 
 import flixel.math.FlxPoint;
-import controllers.*; 
-import gameObjects.*;
 import gameStates.GameState;
 import interfaces.Movable;
-import gameStates.GameState;
-import gameObjects.Constants; 
 import interfaces.Interactable; 
 
 /**
