@@ -6,9 +6,9 @@ import flixel.math.FlxPoint;
 
 class GameObject extends FlxSprite
 {
-	public function new(x:Float,y:Float,graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int): Void { 		
+	public function new(x:Float,y:Float,?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int): Void { 		
 		super(x,y);
-		loadGraphic(graphicAsset, true, graphicsWidth, graphicsHeight);
+		if (graphicAsset != null) loadGraphic(graphicAsset, true, graphicsWidth, graphicsHeight);
 	}
 
 	public function centerToOrigin():Void{

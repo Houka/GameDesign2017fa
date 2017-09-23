@@ -6,6 +6,7 @@ import gameObjects.GameObject;
 import gameObjects.Worker;
 import gameObjects.Enemy;
 import flixel.FlxG;
+import gameObjects.Tile;
 
 class ProjectileController extends GameObjectController<Projectile>
 {
@@ -52,7 +53,7 @@ class ProjectileController extends GameObjectController<Projectile>
 
 
 	/** smarter implementation of state switching with collision detechtion */
-	private function smartUpdateState(obj:Projectile,terrains:Array<GameObject>,
+	private function smartUpdateState(obj:Projectile,terrains:Array<Tile>,
 										?enemies:Array<Enemy>, ?workers:Array<Worker>):Void{
 		switch (obj.state){
 			case Moving: 
@@ -76,7 +77,7 @@ class ProjectileController extends GameObjectController<Projectile>
 				}
 
 				for(t in terrains){
-					if (FlxG.collide(obj,t))
+					if (t.type != TileType.Background && FlxG.collide(obj,t))
 						obj.state = ProjectileState.Dying;
 				}
 

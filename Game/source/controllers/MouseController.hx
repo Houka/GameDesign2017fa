@@ -10,6 +10,8 @@ import gameObjects.*;
 import gameStates.GameState;
 import interfaces.Movable;
 import gameStates.GameState;
+import gameObjects.Constants; 
+import interfaces.Interactable; 
 
 /**
  * The MouseController maps mouse input such that it will be read
@@ -18,69 +20,72 @@ import gameStates.GameState;
 
 class MouseController {
 
-    var state:GameState; 
-    var width:Int = 32;
-    var height:Int = 32; 
-    var selectedSprite:FlxSprite = null; 
-    var wasJustReleased:Bool = false; 
+    public var selected:Interactable = null; 
+    public var rightClicked:Bool = false; 
+    public var leftClicked:Bool = false; 
+    private var mouse:FlxPoint = null; 
+    private var levelMap: Array<Int> = null; 
+    private var prevRightClicked: Bool = false; 
+    private var prevLeftClicked:Bool = false; 
 
-    private var ammoType:Ammunition = new Ammunition(150, 400, "normal", 1, 1);
-    private var towerPreset:List<Material> = new List<Material>();
+    public function new(levelMap: Array<Int>):Void {
+        this.levelMap = levelMap; 
+        mouse = new FlxPoint(FlxG.mouse.x, FlxG.mouse.y);
+    }
 
-    public function update(spriteList: Array<FlxSprite>):Void {
-        //if mouse is pressed and object is at mouse location 
-        if (FlxG.mouse.justPressed) {
-            //set to false because it was just pressed 
-            wasJustReleased = false; 
-            var point:FlxPoint = new FlxPoint(FlxG.mouse.x, FlxG.mouse.y);
-            //go through sprite list and see if there is a sprite at this location
-            for (i in 0...(spriteList.length)) { 
-                if (spriteList[i].overlapsPoint(point)) { 
-                    selectedSprite = spriteList[i];
-                    break;
+    public function setLevelMap(levelMap: Array<Int>):Void { 
+        this.levelMap = levelMap; 
+    }
+
+    public function update(spriteList: Array<Interactable>):Void {
+        mouse = new FlxPoint(FlxG.mouse.x, FlxG.mouse.y);
+        for (i in 0...(spriteList.length)) { 
+            if (spriteList[i].overlapsPoint(mouse)) { 
+                if (FlxG.mouse.justPressed) {
+                    //set to false because it was just pressed 
+                    selected = spriteList[i];
                 }
+                else { 
+                    spriteList[i].hovered(); 
+                }
+                break; 
             }
         }
-        
-        if (selectedSprite != null) {
-            selectedSprite.setPosition(FlxG.mouse.x, FlxG.mouse.y);
+        //if mouse is pressed and object is at mouse location 
+        if (selected != null) {
+            selected.selected(mouse);
         }
 
         //if mouse is released and there's no object there
         if (FlxG.mouse.justReleased) {
-            if (GameState.canPlace(FlxG.mouse.x, FlxG.mouse.y)) {
-                if (selectedSprite == null && !wasJustReleased) {
-                  var turret: Tower = state.towerController.buildTower(towerPreset, ammoType, FlxG.mouse.x, FlxG.mouse.y);
-                  turret.updateHitbox();
-                  GameState.towers.push(turret);
-                  spriteList.push(turret);
-                  wasJustReleased = true; 
-                }
+            if (selected != null) {
+                selected.released(); 
+                selected = null; 
             }
-            selectedSprite = null; 
         }
 
-        if (FlxG.mouse.justReleasedRight) {
-                var npc = new Worker(FlxG.mouse.x,FlxG.mouse.y,1,10,AssetPaths.player__png,16,16);
-                npc.setGoal(400, 400);
-                state.add(npc);
-                GameState.npcController.addAnimation(npc);
-                GameState.npcs.push(npc);
+        prevRightClicked = rightClicked; 
+        rightClicked = FlxG.mouse.justPressedRight && !prevRightClicked; 
+
+        prevLeftClicked = leftClicked; 
+        leftClicked = FlxG.mouse.justPressed && !prevLeftClicked;
+    }
+
+    public function canPlace(): Bool {
+        if (levelMap[indexClicked(mouse.x, mouse.y)] == 0) {
+            return true; 
         }
-
+        return false;
     }
 
-    public function setState(state:GameState):Void { 
-        this.state = state; 
-    }
-
-    public function new(state:GameState):Void {
-        this.state = state; 
-
-        towerPreset.add(new GunBase(100, 400, "normal", 1, 1));
-        towerPreset.add(new Foundation(50, 400, "wood", 1, 1));
-        towerPreset.add(new Foundation(50, 400, "wood", 1, 1));
-        towerPreset.add(new GunBase(100, 400, "normal", 1, 1));
+    //Returns index in map array of tile that has been clicked 
+    private function indexClicked(x: Float, y: Float):Int {  
+        var numHorizTiles: Int = Math.floor(FlxG.width/Constants.TILE_WIDTH); //TODO: make this not derived from the screen size
+        var numVertTiles: Int = Math.floor(FlxG.height/Constants.TILE_HEIGHT); //TODO: make this not derived from the screen size
+        var tileCoordX: Int = Math.floor(x/Constants.TILE_WIDTH);
+        var tileCoordY: Int = Math.floor(y/Constants.TILE_HEIGHT); 
+        
+        return ((tileCoordY * numHorizTiles) + tileCoordX); 
     }
 
 }

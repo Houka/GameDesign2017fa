@@ -5,10 +5,12 @@ import openfl.display.Sprite;
 
 class Main extends Sprite
 {
+	var previous:Bool; 
+	var rightClicked: Bool; 
 	public function new()
 	{
 		super();
-		testNestedOptionalArg("test");
+		addChild(new FlxGame(0, 0, MenuState, 1,60,60,true,false));
 	}
 
 	public function testOptionalArg(?i:Int):Void{
