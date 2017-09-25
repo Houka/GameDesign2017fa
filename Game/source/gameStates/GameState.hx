@@ -22,7 +22,6 @@ import interfaces.Attacker;
 
 class GameState extends FlxState
 {
-	private var pauseSubstate:FlxSubState;
 	private var controller:Controller;
 	private var mouse:MouseController; 
 	private var keyboard:KeyboardController;
@@ -31,12 +30,13 @@ class GameState extends FlxState
 	{
 		super.create();
 
-		mouse = new MouseController(Constants.TEST_MAP);
-		keyboard = new KeyboardController();
-		controller = new Controller(this);
-		pauseSubstate = new PauseState();
+        controller = new Controller(this);
+        mouse = new MouseController(Constants.TEST_MAP);
+        keyboard = new KeyboardController();
+        keyboard.addKeyAndCallback([P,SPACE],function() openSubState(new PauseState()));
 
 		// TODO Remove tests 
+        keyboard.addKeyAndCallback([T], addTowerAtMouse);
 		createTilemap(Constants.TEST_MAP);	
 	}
 
@@ -46,8 +46,6 @@ class GameState extends FlxState
 		
 		// Keyboard short cut updates
 		keyboard.update(elapsed);
-		if (KeyboardController.isPaused())
-			openSubState(pauseSubstate);
 
 		// Mouse updates
 		mouse.update(controller.getInteractables());
@@ -55,12 +53,16 @@ class GameState extends FlxState
 		// Main Controller updates
 		controller.update();
 
-		testMouseDemo(); //TODO remove test
+		testTowerBuilding(); //TODO remove test
 
 		// post update: empty out buffer queue and add it to state
 		while(!RenderBuffer.isEmpty())
 			controller.add(RenderBuffer.pop());
 	}
+
+    // TODO: remove test function... Allows for tower building but no creation of objects with mouse
+    private function testTowerBuilding(){
+    }
 
     // TODO: remove test function... This function adds towers and enemies to the map when left and right mouse buttons are clicked
 	private function testMouseDemo():Void{
@@ -71,12 +73,16 @@ class GameState extends FlxState
         }
 
         if (mouse.leftClicked && mouse.canPlace()) {
-            var turret: Tower = GameObjectFactory.createTower(createTowerPresets(), 
-            	new Ammunition(150, 400, "normal", 1, 1), FlxG.mouse.x, FlxG.mouse.y);
-            turret.updateHitbox();
-            controller.add(turret);
+            addTowerAtMouse();
         }
 	}
+
+    private function addTowerAtMouse():Void{
+        var turret: Tower = GameObjectFactory.createTower(createTowerPresets(), 
+            new Ammunition(150, 400, "normal", 1, 1), FlxG.mouse.x, FlxG.mouse.y);
+        turret.updateHitbox();
+        controller.add(turret);        
+    }
 
     // TODO: remove test function
     private function createTilemap(map: Array<Int>){

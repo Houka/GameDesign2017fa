@@ -6,6 +6,7 @@ import gameObjects.materials.Material;
 import gameObjects.materials.Ammunition;
 import interfaces.Attackable;
 import interfaces.Attacker;
+import interfaces.Interactable;
 
 /**
  * Tower contains a collection of TowerLayers; it also holds the position and
