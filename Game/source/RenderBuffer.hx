@@ -1,6 +1,7 @@
 package;
 
 import gameObjects.GameObject;
+import haxe.ds.GenericStack;
 
 /**
  * The RenderBuffer holds a static queue of GameObject that needs to be added to the main game state
@@ -8,7 +9,7 @@ import gameObjects.GameObject;
 
 class RenderBuffer
 {
-    static private var buffer:List<GameObject> = new List<GameObject>();
+    static private var buffer:GenericStack<GameObject> = new GenericStack<GameObject>();
 
     public static function isEmpty():Bool{
     	return buffer.isEmpty();
@@ -23,6 +24,7 @@ class RenderBuffer
     }
 
     public static function reset():Void{
-    	buffer.clear();
+    	for (i in buffer)
+            buffer.remove(i);
     }
 }

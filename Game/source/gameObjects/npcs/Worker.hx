@@ -14,32 +14,15 @@ abstract WorkerState(Int) {
   var Dying = 2;
 }
 
-class Worker extends NPC implements Interactable  
+class Worker extends NPC  
 {
-	private var isHovered:Bool;
-	private var isSelected:Bool;
 	public var state:WorkerState;
 
 	public function new(x:Float, y:Float, speed:Int, health:Int, graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
 		super(x,y,speed,health,graphicAsset,graphicsWidth,graphicsHeight);
 		this.state = WorkerState.Idle;
-		this.isHovered = false;
-		this.isSelected = false;
 		this.x = x;
 		this.y = y; 
-	}
-
-	public function hovered():Void{
-		isHovered = true;
-	}
-
-	public function selected(point: FlxPoint):Void{
-		isHovered = false;
-		isSelected = true;
-	}
-
-	public function released():Void{
-		isSelected = false;
-		isHovered = false;
+		enableInteractable();
 	}
 }

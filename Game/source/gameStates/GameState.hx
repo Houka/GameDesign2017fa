@@ -16,7 +16,6 @@ import gameObjects.mapObjects.SpawnPoint;
 import gameObjects.mapObjects.Tower;
 import gameObjects.mapObjects.HomeBase;
 import gameObjects.npcs.Enemy;
-import interfaces.Interactable; 
 import interfaces.Attacker; 
 
 
@@ -48,8 +47,8 @@ class GameState extends FlxState
 		keyboard.update(elapsed);
 
 		// Mouse updates
-		mouse.update(controller.getInteractables());
-		
+		mouse.update(); // TODO: remove as we move into FlxExtendedSprite 
+
 		// Main Controller updates
 		controller.update();
 

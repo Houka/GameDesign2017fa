@@ -9,7 +9,7 @@ class WorkerController extends GameObjectController<Worker>
 		super(frameRate);
 	}
 
-	override private function updateState(obj:Worker,?extraArguments:Array<Expr>): Void{
+	override private function updateState(obj:Worker): Void{
 		super.updateState(obj);
 		switch (obj.state){
 			case Idle: 

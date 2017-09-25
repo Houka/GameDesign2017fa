@@ -6,7 +6,6 @@ import gameObjects.materials.Material;
 import gameObjects.materials.Ammunition;
 import interfaces.Attackable;
 import interfaces.Attacker;
-import interfaces.Interactable;
 
 /**
  * Tower contains a collection of TowerLayers; it also holds the position and
@@ -22,7 +21,6 @@ class Tower extends GameObject implements Attackable
     public var ammoType:Ammunition;
     public var numWorkers:Int;
     public var rawMaterials:List<Material>; //materials to give back when dismantled
-    public var isDead:Bool;
     public var healthPoints:Int;
 
     private var baseHealth:Int;
@@ -36,9 +34,20 @@ class Tower extends GameObject implements Attackable
         this.ammoType = ammoType;
         this.numWorkers = 0;
         this.rawMaterials = materialsList;
-        this.isDead = false;
         this.healthPoints = getHealth();
         this.baseHealth = this.healthPoints;
+        enableInteractable();
+    }
+
+    override public function update(elapsed:Float):Void{
+        var level:Int = 0;
+        for (m in layers){
+            var xpos = this.x+this.origin.x;
+            var ypos = this.y+this.origin.y-level*Constants.HEIGHT_OFFSET;
+            level++;
+            m.x = xpos;
+            m.y = ypos;
+        }
     }
 
     public function takeDamage(obj:Attacker):Void
@@ -60,7 +69,6 @@ class Tower extends GameObject implements Attackable
 
         if(this.layers.first() == null)
         {
-            this.isDead = true;
             kill();
         }
     }

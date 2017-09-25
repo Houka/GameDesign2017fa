@@ -12,7 +12,7 @@ abstract TileType(Int) {
   var Destructible = 2;
 }
 
-class Tile extends GameObject implements interfaces.Interactable {
+class Tile extends GameObject{
 
 	public var type:TileType;
 	
@@ -20,15 +20,11 @@ class Tile extends GameObject implements interfaces.Interactable {
 		super(x, y, graphicAsset, graphicsWidth, graphicsHeight); 
 		this.type = type;
 		this.immovable=true;
+		enableInteractable();
 	}
 
 	public function setLocation(x:Int, y:Int) {
 		this.x = x * Constants.TILE_WIDTH; 
 		this.y = y * Constants.TILE_HEIGHT;
 	}
-
-	public function hovered():Void{}
-	public function selected(point: FlxPoint):Void {}
-	public function released():Void{}
-
 }
