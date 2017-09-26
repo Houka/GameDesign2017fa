@@ -34,7 +34,7 @@ class SpawnPoint extends GameObject
             _spawnCountup = 0;
 
             // TODO: remove test code
-            var npc = new Enemy(this.x+this.origin.x,this.y+this.origin.y,1,10,1,2,AttackType.Ground,AssetPaths.player__png,16,16);
+            var npc = GameObjectFactory.createEnemy(this.x+this.origin.x,this.y+this.origin.y);
             npc.setGoal(400, 400);
             RenderBuffer.add(npc);
         }

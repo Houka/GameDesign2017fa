@@ -17,7 +17,6 @@ class MouseController {
 
     public var rightClicked:Bool = false; 
     public var leftClicked:Bool = false; 
-    private var mouse:FlxPoint = null; 
     private var levelMap: Array<Int> = null; 
     private var prevRightClicked: Bool = false; 
     private var prevLeftClicked:Bool = false; 
@@ -26,19 +25,14 @@ class MouseController {
         if (FlxG.plugins.get(flixel.addons.plugin.FlxMouseControl) == null)
             FlxG.plugins.add(new flixel.addons.plugin.FlxMouseControl());
         this.levelMap = levelMap; 
-        mouse = new FlxPoint(FlxG.mouse.x, FlxG.mouse.y);
     }
 
     public function setLevelMap(levelMap: Array<Int>):Void { 
         this.levelMap = levelMap; 
     }
 
-    public function update():Void {
-        mouse = new FlxPoint(FlxG.mouse.x, FlxG.mouse.y);
-    }
-
     public function canPlace(): Bool {
-        if (levelMap[indexClicked(mouse.x, mouse.y)] == 0) {
+        if (levelMap[indexClicked(FlxG.mouse.x, FlxG.mouse.y)] == 0) {
             return true; 
         }
         return false;

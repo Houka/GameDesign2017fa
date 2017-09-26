@@ -1,7 +1,11 @@
 package gameObjects;
 
+import gameObjects.npcs.Enemy;
 import gameObjects.mapObjects.Projectile;
 import gameObjects.mapObjects.Tower;
+import gameObjects.mapObjects.Tile;
+import gameObjects.mapObjects.HomeBase;
+import gameObjects.mapObjects.SpawnPoint;
 import gameObjects.materials.TowerBlock;
 import gameObjects.materials.Foundation;
 import gameObjects.materials.GunBase;
@@ -63,5 +67,21 @@ class GameObjectFactory
 
     public static function createAmmunition(x:Float,y:Float):Ammunition{
         return new Ammunition(x,y,AmmoType.Normal,1,AssetPaths.ammo__png, 40, 40);
+    }
+
+    public static function createEnemy(x:Float,y:Float):Enemy{
+        return new Enemy(x,y,1,10,1,2,AttackType.Ground,AssetPaths.player__png,16,16);
+    }
+
+    public static function createTile(x:Float,y:Float):Tile{
+        return new Tile(x, y, TileType.Indestructible, AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+    }
+
+    public static function createSpawnPoint(x:Float,y:Float):SpawnPoint{
+        return new SpawnPoint(x,y, 100, AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+    }
+ 
+    public static function createHomeBase(x:Float,y:Float):HomeBase{
+        return new HomeBase(x,y, Constants.PLAYER_TEST_HEALTH, AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
 }
