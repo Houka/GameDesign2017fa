@@ -8,6 +8,8 @@ import flixel.math.FlxVector;
 import gameObjects.mapObjects.Tower;
 import gameObjects.mapObjects.Tile;
 import gameObjects.materials.GunBase;
+import gameObjects.materials.TowerBlock;
+import gameObjects.materials.Ammunition;
 import gameObjects.npcs.Enemy;
 import gameObjects.GameObjectFactory;
 import interfaces.Attacker;
@@ -27,6 +29,15 @@ class TowerController extends GameObjectController<Tower>
     {
         super(maxSize,frameRate);
         _sight = new FlxVector();
+    }
+
+    public function collideTowerBlock(tower:Tower, m:TowerBlock):Void{
+        if (tower.children.length < Constants.MAX_HEIGHT)
+            tower.addTowerBlock(m);
+    }
+
+    public function collideAmmo(tower:Tower, ammo:Ammunition):Void{
+        tower.ammo = ammo;
     }
 
     public function canTargetEnemy(tower:Tower, enemy:Enemy):Bool{

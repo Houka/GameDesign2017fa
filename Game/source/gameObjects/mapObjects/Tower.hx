@@ -32,10 +32,22 @@ class Tower extends GameObject implements Attackable
         super(X,Y,graphicAsset,graphicsWidth,graphicsHeight);
         this.ammo = ammo;
         this.numWorkers = workers;
-        this.children = materials;
+        this.children = new List<TowerBlock>();
+        for (m in materials)
+            addTowerBlock(m);
         this.healthPoints = getHealth();
         this.baseHealth = this.healthPoints;
         enableInteractable();
+    }
+
+    public function addTowerBlock(obj:TowerBlock):Bool{
+        if (!obj.inTower){
+            obj.inTower = true;
+            children.add(obj);
+            return true;
+        }
+
+        return false;
     }
 
     override public function update(elapsed:Float):Void{

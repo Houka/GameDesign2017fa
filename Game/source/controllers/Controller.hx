@@ -7,12 +7,15 @@ import flixel.FlxObject;
 import flixel.group.FlxGroup;
 import flixel.util.FlxSort;
 import gameObjects.GameObject;
+import gameObjects.GameObjectFactory;
 import gameObjects.npcs.Worker;
 import gameObjects.npcs.Enemy;
 import gameObjects.mapObjects.Projectile;
 import gameObjects.mapObjects.Tile;
 import gameObjects.mapObjects.Tower;
 import gameObjects.mapObjects.HomeBase;
+import gameObjects.materials.TowerBlock;
+import gameObjects.materials.Ammunition;
 using Lambda;
 
 /**
@@ -100,5 +103,23 @@ class Controller
 		FlxG.overlap(projectileController,enemyController,projectileController.collideNPC);
 		FlxG.overlap(projectileController,workerController,projectileController.collideNPC);
 		FlxG.overlap(projectileController,terrains,projectileController.collideTerrain);
+		FlxG.overlap(towerController,other,function(t,o) {
+			if (Std.is(o,TowerBlock))
+			 	towerController.collideTowerBlock(t,cast(o,TowerBlock));
+			else if (Std.is(o,Ammunition))
+			 	towerController.collideAmmo(t,cast(o,Ammunition));
+		});
+		FlxG.overlap(other,other,collideMaterials);
+	}
+
+	private function collideMaterials(obj1:GameObject, obj2:GameObject){
+		if(Std.is(obj1, TowerBlock) && Std.is(obj2, TowerBlock) && 
+			!cast(obj1,TowerBlock).inTower && !cast(obj2,TowerBlock).inTower){
+			var matList = new List<TowerBlock>();
+			matList.add(cast(obj1));
+			matList.add(cast(obj2));
+			add(GameObjectFactory.createTower(obj2.x, obj2.y, matList, 
+				GameObjectFactory.createAmmunition(obj2.x, obj2.y)));
+		}
 	}
 }

@@ -42,6 +42,7 @@ class GunBase extends TowerBlock
 
     override public function update(elapsed:Float)
     {
+        super.update(elapsed);
         _shootCooldown++;
     }
 

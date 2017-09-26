@@ -31,4 +31,14 @@ class Enemy extends NPC implements Attacker
 		this.isAttacking = false;
 		this.state = EnemyState.Idle;
 	}
+
+	override public function takeDamage(obj:Attacker):Void{
+		if (obj.isAttacking && this.alive){
+			this.healthPoints -= obj.attackPoints;
+		}
+
+		if (this.healthPoints <= 0){
+			state = Dying;
+		}
+	}
 }

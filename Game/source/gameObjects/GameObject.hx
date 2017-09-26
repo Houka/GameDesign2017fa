@@ -28,7 +28,7 @@ class GameObject extends FlxExtendedSprite
 		}
 	}
 
-	private function enableInteractable():Void{
+	public function enableInteractable():Void{
 		enableMouseClicks(true);
 		enableMouseDrag(true);
 		enableMouseSnap(Constants.TILE_WIDTH, Constants.TILE_HEIGHT,false,true);

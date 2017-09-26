@@ -12,6 +12,7 @@ import interfaces.Attacker;
 class TowerBlock extends Material implements Attackable
 {
 	public var healthPoints:Int;
+	public var inTower:Bool;
 
 	private var baseHealth:Int;
 
@@ -21,6 +22,7 @@ class TowerBlock extends Material implements Attackable
 		super(X, Y,graphicAsset,graphicsWidth,graphicsHeight);
 		this.baseHealth = healthPoints;
 		this.healthPoints = healthPoints;
+		inTower = false;
 	}
 
 	public function takeDamage(obj:Attacker):Void{

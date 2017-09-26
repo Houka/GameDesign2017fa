@@ -17,6 +17,8 @@ import gameObjects.mapObjects.Tile;
 import gameObjects.mapObjects.SpawnPoint;
 import gameObjects.mapObjects.Tower;
 import gameObjects.mapObjects.HomeBase;
+import gameObjects.mapObjects.Inventory;
+import gameObjects.mapObjects.BuildArea;
 import gameObjects.npcs.Enemy;
 import interfaces.Attacker; 
 using flixel.util.FlxSpriteUtil; 
@@ -40,8 +42,9 @@ class GameState extends FlxState
         keyboard.addKeyAndCallback([ESCAPE],function() FlxG.switchState(new MenuState()));
 
 		// TODO Remove tests 
-        keyboard.addKeyAndCallback([T], addTowerAtMouse);
+        keyboard.addKeyAndCallback([T], addTowerBlockAtMouse);
 		createTilemap(Constants.TEST_MAP);	
+        createStartingMaterials();
 	}
 
 	override public function update(elapsed:Float):Void
@@ -57,16 +60,10 @@ class GameState extends FlxState
 		// Main Controller updates
 		controller.update();
 
-		testTowerBuilding(); //TODO remove test
-
 		// post update: empty out buffer queue and add it to state
 		while(!RenderBuffer.isEmpty())
 			controller.add(RenderBuffer.pop());
 	}
-
-    // TODO: remove test function... Allows for tower building but no creation of objects with mouse
-    private function testTowerBuilding(){
-    }
 
     // TODO: remove test function... This function adds towers and enemies to the map when left and right mouse buttons are clicked
 	private function testMouseDemo():Void{
@@ -81,6 +78,12 @@ class GameState extends FlxState
         }
 	}
 
+    // TODO: Remove test function
+    private function addTowerBlockAtMouse():Void{
+        controller.add(GameObjectFactory.createRandomTowerBlock(FlxG.mouse.x, FlxG.mouse.y));
+    }
+
+    // TODO: Remove test function
     private function addTowerAtMouse():Void{
         var turret: Tower = GameObjectFactory.createTower(FlxG.mouse.x, FlxG.mouse.y,
             createTowerPresets(), new Ammunition(0,0,AmmoType.Normal,1,AssetPaths.ammo__png, 40, 40));
@@ -130,5 +133,13 @@ class GameState extends FlxState
         towerPreset.add(new GunBase(0,0,10, GunType.Normal,1, AttackType.Ground, 40, 100, 
                         AssetPaths.tower_layer__png));
         return towerPreset;
+    }
+
+    // TODO: Remove test function
+    private function createStartingMaterials():Void{
+        controller.add(GameObjectFactory.createGunBase(100,FlxG.height*3/4));
+        controller.add(GameObjectFactory.createGunBase(150,FlxG.height*3/4));
+        controller.add(GameObjectFactory.createFoundation(200,FlxG.height*3/4));
+        controller.add(GameObjectFactory.createFoundation(250,FlxG.height*3/4));
     }
 }
