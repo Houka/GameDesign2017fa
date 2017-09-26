@@ -2,19 +2,24 @@ package controllers;
 
 import flixel.FlxG;
 import openfl.Lib;
+using Lambda;
 
 /**
- * The KeyboardController maps key presses to various flags for other
- * controllers to read in sync with the update step.
+ * @author: Changxu Lu
  */
-
+typedef KeyAndCallback = {
+    var keys: Array<flixel.input.keyboard.FlxKey>;
+    var callback:Void->Void;
+}
 class KeyboardController
 {
-    static private var _paused:Bool;
+
+    private var _keyAndCallbackList:Array<KeyAndCallback>;
 
     public function new()
     {
-        _paused = false;
+        _keyAndCallbackList = [];
+        addKeyAndCallback([Q],KeyboardController.quit);
     }
 
     static public function quit():Void
@@ -22,17 +27,21 @@ class KeyboardController
         Lib.close();
     }
 
-    static public function isPaused():Bool
-    {
-        return _paused;
+    /**
+    *   Adds into the list of keyboard updates a check for the <keys>. If any of the <keys> are 
+    *   pressed, then it will call the corresponding <callback> function. 
+    *
+    *   <keys>: list of Keys (i.e. [P, SPACE])
+    *   <callback>: a function that has no arguments and no returns (i.e. function test():Void {trace("test");})
+    */
+    public function addKeyAndCallback(keys:Array<flixel.input.keyboard.FlxKey>, callback:Void->Void):Void{
+        _keyAndCallbackList.push({keys:keys, callback:callback});
     }
 
     public function update(elapsed:Float):Void
     {
-        if(FlxG.keys.anyJustPressed([P, SPACE]))
-            _paused = !_paused;
-        
-        if(FlxG.keys.anyJustPressed([Q]))
-            quit();
+        for (i in _keyAndCallbackList)
+            if(FlxG.keys.anyJustPressed(i.keys))
+                i.callback();
     }
 }

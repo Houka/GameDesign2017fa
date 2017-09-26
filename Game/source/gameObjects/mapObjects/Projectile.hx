@@ -1,4 +1,4 @@
-package gameObjects;
+package gameObjects.mapObjects;
 
 import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
