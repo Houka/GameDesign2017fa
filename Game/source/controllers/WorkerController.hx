@@ -5,8 +5,8 @@ import gameObjects.npcs.Worker;
 
 class WorkerController extends GameObjectController<Worker>
 {
-	public function new(frameRate:Int=60):Void{
-		super(frameRate);
+	public function new(maxSize:Int=0, frameRate:Int=60):Void{
+		super(maxSize, frameRate);
 	}
 
 	override private function updateState(obj:Worker): Void{

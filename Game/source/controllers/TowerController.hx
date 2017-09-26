@@ -23,15 +23,10 @@ class TowerController extends GameObjectController<Tower>
 {
     private var _sight:FlxVector;
 
-    public function new(frameRate:Int=60):Void
+    public function new(maxSize:Int=0, frameRate:Int=60):Void
     {
-        super(frameRate);
+        super(maxSize,frameRate);
         _sight = new FlxVector();
-    }
-
-    override public function update(tower:Tower):Void
-    {
-        super.update(tower);
     }
 
     public function canTargetEnemy(tower:Tower, enemy:Enemy):Bool{
