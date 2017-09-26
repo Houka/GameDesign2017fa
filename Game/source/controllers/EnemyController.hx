@@ -1,29 +1,37 @@
 package controllers;
 
 import haxe.macro.Expr;
-import gameObjects.Enemy;
-import gameObjects.GameObject;
-import gameObjects.Worker;
+import haxe.ds.GenericStack;
 import flixel.FlxG;
+import gameObjects.GameObject;
+import gameObjects.GameObjectFactory;
+import gameObjects.npcs.Enemy;
+import gameObjects.npcs.Worker;
+import gameObjects.mapObjects.HomeBase;
 
 class EnemyController extends GameObjectController<Enemy>
 {
-	public function new(frameRate:Int=60):Void{
-		super(frameRate);
+	public function new(maxSize:Int=0, frameRate:Int=60):Void{
+		super(maxSize, frameRate);
 	}
 
-	/**
-	*  extraArguments = <list of terrain objs>, ?<list of workers>
-	*/
-	override private function updateState(obj:Enemy,?extraArguments:Array<Expr>): Void{
-		super.updateState(obj,extraArguments);
-		// makes sure there are extra arguments being passed in
-		if (extraArguments == null){
-		 	trace("Error: enemy needs <list of terrain objs>, ?<list of workers> for its update... using naive update for enemies");
-		 	nativeUpdateState(obj);
-		}
-		else{
-			smartUpdateState(obj,cast(extraArguments[0]),cast(extraArguments[1]));
+	override private function updateState(obj:Enemy): Void{
+		super.updateState(obj);
+		switch (obj.state){
+			case Idle: 
+				if(obj.canMove && !obj.isAtGoal())
+					obj.state = EnemyState.Moving;
+			case Moving: 
+				obj.moveTowardGoal();
+				if(!obj.canMove || obj.isAtGoal())
+					obj.state = EnemyState.Idle;
+			case Attacking:
+				// TODO: make attacking collision
+			case Dying:
+				obj.canMove = false;
+				if (Std.random(2) == 1) 
+					RenderBuffer.add(GameObjectFactory.createRandomTowerBlock(obj.x, obj.y));
+				obj.kill();
 		}
 	}
 
@@ -45,40 +53,10 @@ class EnemyController extends GameObjectController<Enemy>
 		obj.animation.add("attack", [0,3,6], frameRate, true);
 	}
 
-	/** very naive and simple implementation of state switching with enemies. No path planning. */
-	private function nativeUpdateState(obj:Enemy):Void{
-		switch (obj.state){
-			case Idle: 
-				if(obj.canMove && !obj.isAtGoal())
-					obj.state = EnemyState.Moving;
-			case Moving: 
-				obj.moveTowardGoal();
-				if(!obj.canMove || obj.isAtGoal())
-					obj.state = EnemyState.Idle;
-			case Attacking:
-			case Dying:
-				obj.canMove = false;
-				obj.kill();
-		}
-	}
 
-
-	/** smarter implementation of state switching with enemies. With path planning. */
-	private function smartUpdateState(obj:Enemy,terrains:Array<GameObject>,?workers:Array<Worker>):Void{
-		switch (obj.state){
-			case Idle: 
-				if(obj.canMove && !obj.isAtGoal())
-					obj.state = EnemyState.Moving;
-			case Moving: 
-				obj.moveTowardGoal();
-				if(!obj.canMove || obj.isAtGoal())
-					obj.state = EnemyState.Idle;
-			case Attacking:
-				for(w in workers)
-					if (FlxG.collide(obj,w)) w.takeDamage(obj);
-			case Dying:
-				obj.canMove = false;
-				obj.kill();
-		}
+	/***********************************Collison Functions*****************************************/
+	public function collideHomebase(enemy:Enemy, homeBase:HomeBase):Void{
+		homeBase.takeDamage(enemy);
+		enemy.kill();
 	}
 }

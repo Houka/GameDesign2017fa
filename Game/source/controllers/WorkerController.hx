@@ -1,15 +1,15 @@
 package controllers;
 
-import gameObjects.Worker;
 import haxe.macro.Expr;
+import gameObjects.npcs.Worker;
 
 class WorkerController extends GameObjectController<Worker>
 {
-	public function new(frameRate:Int=60):Void{
-		super(frameRate);
+	public function new(maxSize:Int=0, frameRate:Int=60):Void{
+		super(maxSize, frameRate);
 	}
 
-	override private function updateState(obj:Worker,?extraArguments:Array<Expr>): Void{
+	override private function updateState(obj:Worker): Void{
 		super.updateState(obj);
 		switch (obj.state){
 			case Idle: 

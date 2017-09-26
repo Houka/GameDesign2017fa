@@ -1,32 +1,29 @@
 package controllers;
 
 import haxe.macro.Expr;
-import gameObjects.Projectile;
+import haxe.ds.GenericStack;
 import gameObjects.GameObject;
-import gameObjects.Worker;
-import gameObjects.Enemy;
+import gameObjects.mapObjects.Projectile;
+import gameObjects.mapObjects.Tile;
+import gameObjects.npcs.NPC;
+import gameObjects.npcs.Worker;
+import gameObjects.npcs.Enemy;
 import flixel.FlxG;
-import gameObjects.Tile;
 
 class ProjectileController extends GameObjectController<Projectile>
 {
-	public function new(frameRate:Int=60):Void{
-		super(frameRate);
+	public function new(maxSize:Int=0, frameRate:Int=60):Void{
+		super(maxSize,frameRate);
 	}
 
-	/**
-	*  extraArguments = <list of terrain objs>, ?<list of enemies>, ?<list of workers>
-	*/
-	override private function updateState(obj:Projectile,?extraArguments:Array<Expr>): Void{
-		super.updateState(obj,extraArguments);
-		// makes sure there are extra arguments being passed in
-		if (extraArguments == null){
-		 	trace("Error: Projectile needs <list of terrain objs>, ?<list of enemies> ?<list of workers> 
-		 			for its update... using naive update for Projectile");
-		 	nativeUpdateState(obj);
-		}
-		else{
-			smartUpdateState(obj,cast(extraArguments[0]), cast(extraArguments[1]), cast(extraArguments[2]));
+	override private function updateState(obj:Projectile): Void{
+		super.updateState(obj);
+		switch (obj.state){
+			case Moving: 
+        		if(!obj.isOnScreen())
+					obj.state = ProjectileState.Dying;
+			case Dying:
+				obj.kill();
 		}
 	}
 
@@ -40,49 +37,17 @@ class ProjectileController extends GameObjectController<Projectile>
 		// Nothing to implement unless we want an animation for when a projectile hits a target or if there's animation as it movies
 	}
 
-	/** very naive and simple implementation with no collision detection */
-	private function nativeUpdateState(obj:Projectile):Void{
-		switch (obj.state){
-			case Moving: 
-        		if(!obj.isOnScreen())
-					obj.state = ProjectileState.Dying;
-			case Dying:
-				obj.kill();
+	/***********************************Collison Functions*****************************************/
+	public function collideNPC(projectile:Projectile, npc:NPC):Void{
+		if ((projectile.isEnemyProjectile && Type.getClass(npc) == Worker) ||
+			(!projectile.isEnemyProjectile && Type.getClass(npc) == Enemy)){
+			npc.takeDamage(projectile);
+			projectile.state = ProjectileState.Dying;
 		}
 	}
 
-
-	/** smarter implementation of state switching with collision detechtion */
-	private function smartUpdateState(obj:Projectile,terrains:Array<Tile>,
-										?enemies:Array<Enemy>, ?workers:Array<Worker>):Void{
-		switch (obj.state){
-			case Moving: 
-        		if(!obj.isOnScreen())
-					obj.state = ProjectileState.Dying;
-
-				if (obj.isEnemyProjectile){
-					for(w in workers){
-						if (FlxG.collide(obj,w)){
-							w.takeDamage(obj);
-							obj.state = ProjectileState.Dying;
-						}
-					}
-				}else{
-					for(e in enemies){
-						if (FlxG.collide(obj,e)){
-							e.takeDamage(obj);
-							obj.state = ProjectileState.Dying;
-						}
-					}
-				}
-
-				for(t in terrains){
-					if (t.type != TileType.Background && FlxG.collide(obj,t))
-						obj.state = ProjectileState.Dying;
-				}
-
-			case Dying:
-				obj.kill();
-		}
+	public function collideTerrain(projectile:Projectile, terrain:Tile):Void{
+		if (terrain.type != TileType.Background)
+			projectile.state = ProjectileState.Dying;
 	}
 }

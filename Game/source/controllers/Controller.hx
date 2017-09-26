@@ -1,9 +1,22 @@
 package controllers;
 
 import haxe.macro.Expr;
-import gameObjects.*;
+import flixel.FlxG;
 import flixel.FlxState;
-import interfaces.Interactable;
+import flixel.FlxObject;
+import flixel.group.FlxGroup;
+import flixel.util.FlxSort;
+import gameObjects.GameObject;
+import gameObjects.GameObjectFactory;
+import gameObjects.npcs.Worker;
+import gameObjects.npcs.Enemy;
+import gameObjects.mapObjects.Projectile;
+import gameObjects.mapObjects.Tile;
+import gameObjects.mapObjects.Tower;
+import gameObjects.mapObjects.HomeBase;
+import gameObjects.materials.TowerBlock;
+import gameObjects.materials.Ammunition;
+using Lambda;
 
 /**
 * @author: Chang Lu
@@ -14,13 +27,11 @@ class Controller
 {
 	private var frameRate:Int;
 	private var state:FlxState;
+	private var gameObjects:FlxTypedGroup<FlxObject>;
 
-	private var workers:Array<Worker>;
-	private var enemies:Array<Enemy>;
-	private var terrains:Array<Tile>;
-	private var projectiles:Array<Projectile>;
-	private var towers:Array<Tower>;
-	private var other:Array<GameObject>;
+	private var homeBases:FlxTypedGroup<HomeBase>;
+	private var terrains:FlxTypedGroup<Tile>;
+	private var other:FlxTypedGroup<GameObject>;
 
 	private var projectileController:ProjectileController;
 	private var enemyController:EnemyController;
@@ -30,102 +41,85 @@ class Controller
 	public function new(state:FlxState,frameRate:Int=60): Void{
 		this.frameRate = frameRate;
 		this.state = state;
+		this.gameObjects = new FlxTypedGroup<FlxObject>(Constants.MAX_GAME_OBJECTS);
 
-		this.workers = new Array<Worker>();
-		this.enemies = new Array<Enemy>();
-		this.terrains = new Array<Tile>();
-		this.projectiles = new Array<Projectile>();
-		this.towers = new Array<Tower>();
-		this.other = new Array<GameObject>();
+		this.terrains = new FlxTypedGroup<Tile>(Constants.MAX_GAME_OBJECTS);
+		this.homeBases = new FlxTypedGroup<HomeBase>(Constants.MAX_GAME_OBJECTS);
+		this.other = new FlxTypedGroup<GameObject>(Constants.MAX_GAME_OBJECTS);
 
-		projectileController = new ProjectileController(frameRate);
-		enemyController = new EnemyController(frameRate);
-		workerController = new WorkerController(frameRate);
-		towerController = new TowerController(frameRate);
+		projectileController = new ProjectileController(Constants.MAX_GAME_OBJECTS,frameRate);
+		enemyController = new EnemyController(Constants.MAX_GAME_OBJECTS,frameRate);
+		workerController = new WorkerController(Constants.MAX_GAME_OBJECTS,frameRate);
+		towerController = new TowerController(Constants.MAX_GAME_OBJECTS,frameRate);
+
+		state.add(gameObjects);
+		state.add(projectileController);
+		state.add(enemyController);
+		state.add(workerController);
+		state.add(towerController);
 	}
 
 	public function update(): Void{
-		for(w in workers)
-			workerController.update(w,cast([cast(terrains)]));
-		for(e in enemies) 
-			enemyController.update(e,cast([cast(terrains),cast(workers)]));
-		for(p in projectiles) 
-			projectileController.update(p,cast([cast(terrains),cast(enemies),cast(workers)]));
-		for(t in towers) 
-			towerController.update(t,cast([cast(terrains),cast(enemies)]));
-		
+		towerController.forEachAlive( function(t) {
+			enemyController.forEachAlive( function(e) towerController.canTargetEnemy(t,e) );
+		});
 
-		// clean up arrays
-		cleanUp(cast(workers));
-		cleanUp(cast(enemies));
-		cleanUp(cast(projectiles));
-		cleanUp(cast(terrains));
-		cleanUp(cast(towers));
-		cleanUp(cast(other));
+		collide();
 	}
 
 	public function add(obj:GameObject):Void{
+		var canAdd = false;
 		switch (Type.getClass(obj)){
 			case Worker:
-				addWorker(cast(obj, Worker));
+				workerController.add(cast(obj, Worker));
 			case Enemy:
-				addEnemy(cast(obj, Enemy));
+				enemyController.add(cast(obj, Enemy));
 			case Projectile:
-				addProjectile(cast(obj, Projectile));
-			case Tile:
-				addTerrain(cast(obj, Tile));
+				projectileController.add(cast(obj, Projectile));
 			case Tower:
-				addTower(cast(obj, Tower));
+				towerController.add(cast(obj, Tower));
+			case Tile:
+				terrains.add(cast(obj, Tile));
+				canAdd = true;
+			case HomeBase:
+				homeBases.add(cast(obj, HomeBase));
+				canAdd = true;
 			default:
-				addOther(obj); 
+				other.add(obj); 
+				canAdd = true;
 		}
 
-		state.add(obj);
-	}
-
-	public function getInteractables():Array<Interactable>{
-		var interactables: Array<Interactable> = []; 
-		for (i in getAll()) {
-			if (Std.is(i, Interactable)) {
-				interactables.push(cast(i, Interactable));
-			}
+		if (canAdd){
+			gameObjects.add(obj);
+			gameObjects.sort(FlxSort.byY, FlxSort.ASCENDING);
 		}
-
-		return interactables;
 	}
 
-	private function getAll():Array<GameObject>{
-		return other.concat(cast(workers.concat(cast(enemies.concat(cast(projectiles.concat(cast(terrains.concat(cast(towers))))))))));
+	/**
+	* Main collision function
+	*/
+	private function collide():Void{
+		FlxG.overlap(enemyController,homeBases,enemyController.collideHomebase);
+		FlxG.overlap(projectileController,enemyController,projectileController.collideNPC);
+		FlxG.overlap(projectileController,workerController,projectileController.collideNPC);
+		FlxG.overlap(projectileController,terrains,projectileController.collideTerrain);
+		FlxG.overlap(towerController,other,function(t,o) {
+			if (Std.is(o,TowerBlock))
+			 	towerController.collideTowerBlock(t,cast(o,TowerBlock));
+			else if (Std.is(o,Ammunition))
+			 	towerController.collideAmmo(t,cast(o,Ammunition));
+		});
+		FlxG.overlap(other,other,collideMaterials);
 	}
 
-	private function cleanUp(list:Array<GameObject>){
-		for(i in list)
-			if(!i.exists) list.remove(i);
-	}
-
-	private function addWorker(obj:Worker):Void{ 
-		workers.push(obj); 
-		workerController.addAnimation(obj);
-	}
-
-	private function addEnemy(obj:Enemy):Void{ 
-		enemies.push(obj);
-		enemyController.addAnimation(obj); 
-	}
-
-	private function addTerrain(obj:Tile):Void{ 
-		terrains.push(obj); 
-	}
-
-	private function addTower(obj:Tower):Void{ 
-		towers.push(obj); 
-	}
-
-	private function addProjectile(obj:Projectile):Void{ 
-		projectiles.push(obj); 
-	}
-
-	private function addOther(obj:GameObject):Void{ 
-		other.push(obj); 
+	private function collideMaterials(obj1:GameObject, obj2:GameObject){
+		if(Std.is(obj1, TowerBlock) && Std.is(obj2, TowerBlock) && 
+			!cast(obj1,TowerBlock).inTower && !cast(obj2,TowerBlock).inTower){
+			var matList = new List<TowerBlock>();
+			matList.add(cast(obj1));
+			matList.add(cast(obj2));
+			add(GameObjectFactory.createTower(obj2.x, obj2.y, matList, 
+				GameObjectFactory.createAmmunition(obj2.x, obj2.y)));
+		}
 	}
 }
