@@ -17,6 +17,7 @@ class Constants
 
     //GunLayer
     static public inline var RANGE_MULTIPLIER:Int = 50;
+    static public inline var MAX_FIRE_RATE_MULTIPLIER:Int = 3;
 
     //MouseController 
     static public inline var TILE_WIDTH = 60; 

@@ -14,7 +14,8 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
 class Material extends GameObject
 {
 	
-	public function new(?X:Float = 0, ?Y:Float = 0,?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
+	public function new(?X:Float = 0, ?Y:Float = 0,
+		?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
 	{
 		super(X, Y,graphicAsset,graphicsWidth,graphicsHeight);
 		enableInteractable();

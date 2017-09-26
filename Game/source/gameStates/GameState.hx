@@ -7,16 +7,19 @@ import flixel.FlxG;
 import flixel.util.FlxColor; 
 import flixel.math.FlxPoint;
 import flixel.input.mouse.FlxMouseEventManager; 
-using flixel.util.FlxSpriteUtil; 
 import controllers.*; 
 import gameObjects.GameObjectFactory;
-import gameObjects.materials.*;
+import gameObjects.materials.GunBase;
+import gameObjects.materials.Foundation;
+import gameObjects.materials.TowerBlock;
+import gameObjects.materials.Ammunition;
 import gameObjects.mapObjects.Tile;
 import gameObjects.mapObjects.SpawnPoint;
 import gameObjects.mapObjects.Tower;
 import gameObjects.mapObjects.HomeBase;
 import gameObjects.npcs.Enemy;
 import interfaces.Attacker; 
+using flixel.util.FlxSpriteUtil; 
 
 
 class GameState extends FlxState
@@ -33,6 +36,8 @@ class GameState extends FlxState
         mouse = new MouseController(Constants.TEST_MAP);
         keyboard = new KeyboardController();
         keyboard.addKeyAndCallback([P,SPACE],function() openSubState(new PauseState()));
+        keyboard.addKeyAndCallback([R],function() FlxG.switchState(new GameState()));
+        keyboard.addKeyAndCallback([ESCAPE],function() FlxG.switchState(new MenuState()));
 
 		// TODO Remove tests 
         keyboard.addKeyAndCallback([T], addTowerAtMouse);
@@ -77,10 +82,10 @@ class GameState extends FlxState
 	}
 
     private function addTowerAtMouse():Void{
-        var turret: Tower = GameObjectFactory.createTower(createTowerPresets(), 
-            new Ammunition(150, 400, "normal", 1, 1), FlxG.mouse.x, FlxG.mouse.y);
+        var turret: Tower = GameObjectFactory.createTower(FlxG.mouse.x, FlxG.mouse.y,
+            createTowerPresets(), new Ammunition(0,0,AmmoType.Normal,1,AssetPaths.ammo__png, 40, 40));
         turret.updateHitbox();
-        controller.add(turret);        
+        controller.add(turret);       
     }
 
     // TODO: remove test function
@@ -114,12 +119,16 @@ class GameState extends FlxState
     }
 
     // TODO: remove test function
-    private function createTowerPresets(): List<Material> { 
-    	var towerPreset:List<Material> = new List<Material>();
-    	towerPreset.add(new GunBase(100, 400, "normal", 1, 1));
-        towerPreset.add(new Foundation(50, 400, "wood", 1, 1));
-        towerPreset.add(new Foundation(50, 400, "wood", 1, 1));
-        towerPreset.add(new GunBase(100, 400, "normal", 1, 1));
+    private function createTowerPresets(): List<TowerBlock> { 
+    	var towerPreset:List<TowerBlock> = new List<TowerBlock>();
+        towerPreset.add(new Foundation(0,0,10, FoundationType.Wood, 
+                        AssetPaths.gun_layer__png));
+        towerPreset.add(new GunBase(0,0,10, GunType.Normal,1, AttackType.Ground, 40, 100, 
+                        AssetPaths.tower_layer__png));
+        towerPreset.add(new Foundation(0,0,10, FoundationType.Wood, 
+                        AssetPaths.gun_layer__png));
+        towerPreset.add(new GunBase(0,0,10, GunType.Normal,1, AttackType.Ground, 40, 100, 
+                        AssetPaths.tower_layer__png));
         return towerPreset;
     }
 }

@@ -49,11 +49,11 @@ class Controller
 		workerController = new WorkerController(Constants.MAX_GAME_OBJECTS,frameRate);
 		towerController = new TowerController(Constants.MAX_GAME_OBJECTS,frameRate);
 
+		state.add(gameObjects);
 		state.add(projectileController);
 		state.add(enemyController);
 		state.add(workerController);
 		state.add(towerController);
-		state.add(gameObjects);
 	}
 
 	public function update(): Void{

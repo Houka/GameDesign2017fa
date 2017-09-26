@@ -7,37 +7,23 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
 /**
  * ...
  * 
- */
+ */@:enum
+abstract AmmoType(Int) {
+  var Normal = 0;
+  var Explosive = 1;
+}
+
 class Ammunition extends Material
 {
 
-	static public var ammoTypes: Array<String> = ["normal", "explosive"];
-	public var ammo:String;
+	public var type: AmmoType;
+	public var attackPoints:Int;
 	
-	public function new(?X:Float = 0, ?Y:Float = 0, ammo:String, healthPoints:Int, attackPoints:Int)
+	public function new(X:Float = 0, Y:Float = 0, type:AmmoType, attackPoints:Int,
+		?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
 	{
-		super(X, Y, healthPoints, attackPoints);
-		ammoTypes = ["normal", "explosive"];
-		this.ammo = ammo;
-		
-		loadGraphic(AssetPaths.ammo__png, true, 40, 40);
-        centerOffsets(true);
-        centerOrigin();
+		super(X, Y, graphicAsset,graphicsWidth,graphicsHeight);
+		this.type = type;
+		this.attackPoints = attackPoints;
 	}
-	
-	public function setAmmo(chosenAmmo:Int): Void { 
-		if (chosenAmmo < ammoTypes.length) {
-			ammo = ammoTypes[chosenAmmo];
-		} 
-	}
-	
-	public function getAmmo(): String { 
-		return ammo;
-	}
-	
-	override public function update(elapsed:Float)
-    {
-        super.update(elapsed);
-    }
-	
 }

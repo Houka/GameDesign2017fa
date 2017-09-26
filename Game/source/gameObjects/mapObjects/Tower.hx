@@ -1,9 +1,9 @@
 package gameObjects.mapObjects;
 
 import flixel.system.FlxAssets;
-import gameObjects.materials.TowerLayer;
 import gameObjects.materials.Material;
 import gameObjects.materials.Ammunition;
+import gameObjects.materials.TowerBlock;
 import interfaces.Attackable;
 import interfaces.Attacker;
 
@@ -17,88 +17,84 @@ import interfaces.Attacker;
 
 class Tower extends GameObject implements Attackable
 {
-    public var layers:List<TowerLayer>;
-    public var ammoType:Ammunition;
+    public var children:List<TowerBlock>; //materials to give back when dismantled
+    public var ammo:Ammunition;
     public var numWorkers:Int;
-    public var rawMaterials:List<Material>; //materials to give back when dismantled
     public var healthPoints:Int;
 
     private var baseHealth:Int;
 
     /** Initialize each component of the tower based on materialsList
      */
-    public function new(materialsList:List<Material>, ammoType:Ammunition, X:Float, Y:Float)
+    public function new(X:Float, Y:Float,materials:List<TowerBlock>, ammo:Ammunition, ?workers:Int=0,
+        ?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
     {
-        super(X,Y);
-        layers = new List<TowerLayer>(); //populate layers in TowerController
-        this.ammoType = ammoType;
-        this.numWorkers = 0;
-        this.rawMaterials = materialsList;
+        super(X,Y,graphicAsset,graphicsWidth,graphicsHeight);
+        this.ammo = ammo;
+        this.numWorkers = workers;
+        this.children = materials;
         this.healthPoints = getHealth();
         this.baseHealth = this.healthPoints;
         enableInteractable();
     }
 
     override public function update(elapsed:Float):Void{
+        super.update(elapsed);
         var level:Int = 0;
-        for (m in layers){
-            var xpos = this.x+this.origin.x;
-            var ypos = this.y+this.origin.y-level*Constants.HEIGHT_OFFSET;
+        for (m in children){
+            var xpos = this.x+origin.x-m.origin.y;
+            var ypos = this.y+origin.y-m.origin.y-level*Constants.HEIGHT_OFFSET;
             level++;
-            m.x = xpos;
-            m.y = ypos;
+            m.setPosition(xpos,ypos);
         }
+    }
+
+    override public function stopDrag():Void {
+        super.stopDrag();
+        x+=Constants.TILE_WIDTH/2-origin.x;
+        y+=Constants.TILE_HEIGHT/2-origin.y;
+    }
+
+    public function getFireRateMultiplier():Float{
+        return Math.min(numWorkers, Constants.MAX_FIRE_RATE_MULTIPLIER);
     }
 
     public function takeDamage(obj:Attacker):Void
     {
         if(obj.attackType==AttackType.Ground)
         {
-            this.layers.first().takeDamage(obj);
-            if(this.layers.first().isDead){
+            children.first().takeDamage(obj);
+            if(!children.first().alive){
                 destroyBottom();
             }
         }
         else if(obj.attackType==AttackType.Air)
         {
-            this.layers.last().takeDamage(obj);
-            if(this.layers.last().isDead){
+            children.last().takeDamage(obj);
+            if(!children.last().alive){
                 destroyTop();
             }
         }
 
-        if(this.layers.first() == null)
+        if(children.first() == null)
         {
             kill();
         }
     }
 
-    private function destroyBottom():TowerLayer
+    private function destroyBottom():Void
     {
-        var dequeued:TowerLayer = this.layers.pop();
-        this.rawMaterials.pop();
-
-        var level:Int = 0;
-        for(l in this.layers)
-        {
-            level++;
-            l.changeLayerHeight(level);
-        }
-        return dequeued;
+        children.pop();
     }
 
-    private function destroyTop():TowerLayer
+    private function destroyTop():Void
     {
-        var popped:TowerLayer = this.layers.last();
-        this.rawMaterials.remove(this.rawMaterials.last());
-
-        this.layers.remove(this.layers.last());
-        return popped;
+        children.last();
     }
 
     private function getHealth():Int{
         var total = 0;
-        for (i in this.rawMaterials){
+        for (i in this.children){
             total += cast(i,Attackable).healthPoints;
         }
 

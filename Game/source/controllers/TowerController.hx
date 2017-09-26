@@ -7,7 +7,7 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.math.FlxVector;
 import gameObjects.mapObjects.Tower;
 import gameObjects.mapObjects.Tile;
-import gameObjects.materials.GunLayer;
+import gameObjects.materials.GunBase;
 import gameObjects.npcs.Enemy;
 import gameObjects.GameObjectFactory;
 import interfaces.Attacker;
@@ -32,7 +32,7 @@ class TowerController extends GameObjectController<Tower>
     public function canTargetEnemy(tower:Tower, enemy:Enemy):Bool{
         _sight.set(enemy.x - tower.x - tower.origin.x, enemy.y - tower.y - tower.origin.y);
 
-        if(_sight.length <= tower.layers.length*Constants.RANGE_MULTIPLIER) {
+        if(_sight.length <= tower.children.length*Constants.RANGE_MULTIPLIER) {
             shoot(tower, _sight.length, enemy.x, enemy.y);
             return true;
         }
@@ -42,13 +42,15 @@ class TowerController extends GameObjectController<Tower>
 
     private function shoot(tower:Tower, dist:Float, xTarget:Float, yTarget:Float):Void
     {
-        for(gun in tower.layers)
+        var level = 0;
+        for(gun in tower.children)
         {
-            if(Type.getClass(gun)==GunLayer)
+            level ++;
+            if(Type.getClass(gun)==GunBase)
             {
-                if(cast(gun, GunLayer).shoot() && dist<=cast(gun, GunLayer).attackRange){
-                    //create bullet type specified by gun.ammoType
-                    RenderBuffer.add(GameObjectFactory.createProjectile(tower,xTarget,yTarget));
+                if(cast(gun, GunBase).canShoot(tower.getFireRateMultiplier()) && 
+                    dist <= cast(gun, GunBase).baseAttackRange*level){
+                    RenderBuffer.add(GameObjectFactory.createProjectile(gun,xTarget,yTarget));
                 }
             }
         }

@@ -3,41 +3,56 @@ package gameObjects.materials;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
+import interfaces.Attacker;
 
-/**
- * ...
- * 
- */
-class GunBase extends TowerBlock 
+/***
+* @author: Kat
+*/
+@:enum
+abstract GunType(Int) {
+  var Normal = 0;
+  var Spray = 1;
+  var Heavy = 2;  
+}
+
+class GunBase extends TowerBlock
 {
 
-	static public var gunbaseTypes: Array<String> = ["normal", "spray", "heavy"];
-	public var gunbase:String;
+	public var type: GunType;    
+    public var attackType:AttackType;
+	public var baseAttackPoints:Int;
+    public var baseAttackRange:Int;
+    public var baseAttackRate:Int;
+
+    private var _shootCooldown:Int;
 	
-	public function new(?X:Float = 0, ?Y:Float = 0, gunbase:String, healthPoints:Int, attackPoints:Int)
+	public function new(X:Float, Y:Float, healthPoints:Int, gunType:GunType,
+		attackPoints:Int, attackType:AttackType, attackRate:Int, attackRange:Int, 
+		?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
 	{
-		super(X, Y, healthPoints, attackPoints);
-		gunbaseTypes = ["normal", "spray", "heavy"];
-		this.gunbase = gunbase;
-		
-		loadGraphic(AssetPaths.gunbase__png, true, 40, 40);
-        centerOffsets(true);
-        centerOrigin();
+		super(X, Y, healthPoints, graphicAsset, graphicsWidth, graphicsHeight);
+
+        this.type = gunType;
+        this.attackType = attackType;
+        this.baseAttackPoints = attackPoints;
+        this.baseAttackRate = attackRate;
+        this.baseAttackRange = attackRange;
+        this._shootCooldown = 0;
 	}
-	
-	public function setGunbase(chosenGunbase:Int): Void { 
-		if (chosenGunbase < gunbaseTypes.length) {
-			gunbase = gunbaseTypes[chosenGunbase];
-		} 
-	}
-	
-	public function getGunbase(): String { 
-		return gunbase;
-	}
-	
-	override public function update(elapsed:Float)
+
+    override public function update(elapsed:Float)
     {
-        super.update(elapsed);
+        _shootCooldown++;
+    }
+
+    public function canShoot(rateMultiplier:Float):Bool
+    {
+        if(_shootCooldown >= baseAttackRate*rateMultiplier){
+            _shootCooldown = 0;
+            return true;
+        }
+
+        return false;
     }
 	
 }

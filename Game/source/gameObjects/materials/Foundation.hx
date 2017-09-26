@@ -8,30 +8,22 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
  * ...
  * 
  */
+@:enum
+abstract FoundationType(Int) {
+  var Wood = 0;
+  var Metal = 1;
+}
+
 class Foundation extends TowerBlock 
 {
-	static public var foundationTypes: Array<String> = ["wood", "metal"];
-	public var foundation:String;
+	public var type:FoundationType;
 	
-	public function new(?X:Float = 0, ?Y:Float = 0, foundation:String, healthPoints:Int, attackPoints:Int)
+	public function new(?X:Float = 0, ?Y:Float = 0, healthPoints:Int, type:FoundationType, 
+		?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
 	{
-		super(X, Y, healthPoints, attackPoints);
-		foundationTypes = ["wood", "metal"];
-		this.foundation = foundation;
+		super(X, Y, healthPoints, graphicAsset, graphicsWidth, graphicsHeight);
 		
-		loadGraphic(AssetPaths.wood__png, true, 40, 40);
-        centerOffsets(true);
-        centerOrigin();
-	}
-	
-	public function setFoundation(chosenFoundation:Int): Void { 
-		if (chosenFoundation < foundationTypes.length) {
-			foundation = foundationTypes[chosenFoundation];
-		} 
-	}
-	
-	public function getFoundation(): String { 
-		return foundation;
+		this.type = type;
 	}
 	
 	override public function update(elapsed:Float)
