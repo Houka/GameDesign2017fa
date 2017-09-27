@@ -9,6 +9,7 @@ import flixel.math.FlxPoint;
 import flixel.input.mouse.FlxMouseEventManager; 
 import controllers.*; 
 import gameObjects.GameObjectFactory;
+import gameObjects.materials.Material;
 import gameObjects.materials.GunBase;
 import gameObjects.materials.Foundation;
 import gameObjects.materials.TowerBlock;
@@ -54,6 +55,9 @@ class GameState extends FlxState
         keyboard.addKeyAndCallback([T], addTowerBlockAtMouse);
         levelBuilder.generateLevel(this.level);
         createStartingMaterials();
+
+        //create HUD
+        makeBuildArea();
 	}
 
 	override public function update(elapsed:Float):Void
@@ -79,9 +83,23 @@ class GameState extends FlxState
 
     // TODO: Remove test function
     private function createStartingMaterials():Void{
-        controller.add(GameObjectFactory.createGunBase(FlxG.width*3/4,100));
-        controller.add(GameObjectFactory.createGunBase(FlxG.width*3/4,150));
-        controller.add(GameObjectFactory.createFoundation(FlxG.width*3/4,200));
-        controller.add(GameObjectFactory.createFoundation(FlxG.width*3/4,250));
+        var mat:Material;
+        mat = GameObjectFactory.createGunBase(FlxG.width*3/4,100);
+        controller.add(mat);
+        Controller.addToCollection(mat);
+        mat = GameObjectFactory.createGunBase(FlxG.width*3/4,150);
+        controller.add(mat);
+        Controller.addToCollection(mat);
+        mat = GameObjectFactory.createFoundation(FlxG.width*3/4,200);
+        controller.add(mat);
+        Controller.addToCollection(mat);
+        mat = GameObjectFactory.createFoundation(FlxG.width*3/4,250);
+        controller.add(mat);
+        Controller.addToCollection(mat);
     }
+
+    //TODO: make HUD here
+    private function makeBuildArea():Void{
+        controller.add(GameObjectFactory.createBuildArea(FlxG.width*3.1/4, FlxG.height*3.1/4));
+    } 
 }

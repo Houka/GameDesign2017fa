@@ -6,6 +6,7 @@ import gameObjects.mapObjects.Tower;
 import gameObjects.mapObjects.Tile;
 import gameObjects.mapObjects.HomeBase;
 import gameObjects.mapObjects.SpawnPoint;
+import gameObjects.mapObjects.BuildArea;
 import gameObjects.materials.TowerBlock;
 import gameObjects.materials.Foundation;
 import gameObjects.materials.GunBase;
@@ -83,5 +84,9 @@ class GameObjectFactory
  
     public static function createHomeBase(x:Float,y:Float):HomeBase{
         return new HomeBase(x,y, Constants.PLAYER_TEST_HEALTH, AssetPaths.homebase__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+    }
+
+    public static function createBuildArea(x:Float, y:Float):BuildArea{
+        return new BuildArea(x, y, AssetPaths.build_area__png, 100, 100);
     }
 }
