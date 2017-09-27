@@ -1,5 +1,6 @@
 package;
 
+import flixel.math.FlxPoint;
 /**
  * Organize all magic numbers.
  *
@@ -37,4 +38,25 @@ class Constants
 												1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
 												1, 1, 0, 0, 0, 3, 0, 0, 0, 0
 											];
+	public static var HARD_MAP:Array<FlxPoint> =[new FlxPoint(200, 150),
+                new FlxPoint(300, 170),
+                new FlxPoint(410, 170),
+                new FlxPoint(520, 250),
+                new FlxPoint(430, 370),
+                new FlxPoint(430, 620),
+                new FlxPoint(390, 650)];
+	public static var MED_MAP:Array<flixel.math.FlxPoint> =[new FlxPoint(200, 70),
+															new FlxPoint(350, 70),
+															new FlxPoint(430, 300),
+															new FlxPoint(430, 500),
+															new FlxPoint(400, 700)];
+	public static var EASY_MAP:Array<flixel.math.FlxPoint> =[new FlxPoint(200, 150),
+                            new FlxPoint(250, 180),
+                            new FlxPoint(280, 280),
+                            new FlxPoint(580, 280),
+                            new FlxPoint(580, 370),
+                            new FlxPoint(470, 370),
+                            new FlxPoint(470, 480),
+                            new FlxPoint(260, 480),
+                            new FlxPoint(240, 550)];
 }

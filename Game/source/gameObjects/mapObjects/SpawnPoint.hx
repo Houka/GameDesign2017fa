@@ -37,7 +37,6 @@ class SpawnPoint extends GameObject
 
             // TODO: remove test code
             var npc = GameObjectFactory.createEnemy(this.x+this.origin.x,this.y+this.origin.y);
-            npc.walkPath = [new FlxPoint(4*Constants.TILE_WIDTH, 4*Constants.TILE_HEIGHT), new FlxPoint(8*Constants.TILE_WIDTH, 5.5*Constants.TILE_HEIGHT)]; 
             RenderBuffer.add(npc);
         }
     }

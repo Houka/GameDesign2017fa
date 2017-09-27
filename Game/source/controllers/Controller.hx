@@ -7,6 +7,7 @@ import flixel.FlxState;
 import flixel.FlxObject;
 import flixel.group.FlxGroup;
 import flixel.util.FlxSort;
+import flixel.math.FlxPoint;
 import gameObjects.GameObject;
 import gameObjects.GameObjectFactory;
 import gameObjects.npcs.Worker;
@@ -45,7 +46,10 @@ class Controller
 	private var workerController:WorkerController;
 	private var towerController:TowerController;
 
-	public function new(state:FlxState,frameRate:Int=60): Void{
+	private var path:Array<FlxPoint>;
+
+	public function new(state:FlxState,path:Array<FlxPoint>,frameRate:Int=60): Void{
+		this.path = path;
 		this.frameRate = frameRate;
 		this.state = state;
 		this.gameObjects = new FlxTypedGroup<FlxObject>(Constants.MAX_GAME_OBJECTS);
@@ -84,6 +88,7 @@ class Controller
 				workerController.add(cast(obj, Worker));
 			case Enemy:
 				enemyController.add(cast(obj, Enemy));
+				cast(obj,Enemy).walkPath = path.copy();
 			case Projectile:
 				projectileController.add(cast(obj, Projectile));
 			case Tower:
@@ -116,7 +121,7 @@ class Controller
 		FlxG.overlap(enemyController,homeBases,enemyController.collideHomebase);
 		FlxG.overlap(projectileController,enemyController,projectileController.collideNPC);
 		FlxG.overlap(projectileController,workerController,projectileController.collideNPC);
-		FlxG.overlap(projectileController,terrains,projectileController.collideTerrain);
+		//FlxG.overlap(projectileController,terrains,projectileController.collideTerrain);
 		FlxG.overlap(towerController,collectedMat,function(t,o) {
 			if(FlxG.overlap(towerController, buildAreas) && FlxG.overlap(collectedMat, buildAreas)){
 				if (Std.is(o,TowerBlock))
