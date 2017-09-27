@@ -58,11 +58,11 @@ class GameObjectFactory
     }
 
     public static function createGunBase(x:Float,y:Float):GunBase{
-        return new GunBase(x,y,10, GunType.Normal,1, AttackType.Ground, 40, 100, AssetPaths.tower_layer__png);
+        return new GunBase(x,y,10, GunType.Normal,1, AttackType.Ground, 40, 100, AssetPaths.gun__png);
     }
 
     public static function createFoundation(x:Float,y:Float):Foundation{
-        return new Foundation(x,y,10, FoundationType.Wood, AssetPaths.gun_layer__png);
+        return new Foundation(x,y,10, FoundationType.Wood, AssetPaths.tower_base__png);
     }
 
     public static function createAmmunition(x:Float,y:Float):Ammunition{

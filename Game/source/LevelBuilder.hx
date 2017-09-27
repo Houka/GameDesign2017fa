@@ -16,16 +16,16 @@ class LevelBuilder {
 	}
 
 
-	public function parseJson() {
-		var value = File.getContent(AssetPaths.medMap__json);
+	public function parseJson(path: String) {
+		var value = File.getContent(path);
 		var json:JsonData = haxe.Json.parse(value); 
 
 		createTilemap(json.terrain_map);
 	}
 
 
-	public function generateLevel(): Void { 
-		parseJson(); 
+	public function generateLevel(path: String): Void { 
+		parseJson(path); 
 
 	}
 

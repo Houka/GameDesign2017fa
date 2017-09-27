@@ -31,7 +31,13 @@ class GameState extends FlxState
 	private var mouse:MouseController; 
 	private var keyboard:KeyboardController;
     private var levelBuilder:LevelBuilder; 
-  
+    private var level: String; 
+    
+    public function new(level: String):Void {
+        super();
+        this.level=level; 
+    }
+
 	override public function create():Void
 	{
 		super.create();
@@ -40,13 +46,13 @@ class GameState extends FlxState
         mouse = new MouseController(Constants.TEST_MAP);
         keyboard = new KeyboardController();
         keyboard.addKeyAndCallback([P,SPACE],function() openSubState(new PauseState()));
-        keyboard.addKeyAndCallback([R],function() FlxG.switchState(new GameState()));
+        keyboard.addKeyAndCallback([R],function() FlxG.switchState(new GameState(this.level)));
         keyboard.addKeyAndCallback([ESCAPE],function() FlxG.switchState(new MenuState()));
         levelBuilder = new LevelBuilder();
 
 		// TODO Remove tests 
         keyboard.addKeyAndCallback([T], addTowerBlockAtMouse);
-        levelBuilder.generateLevel();
+        levelBuilder.generateLevel(this.level);
         createStartingMaterials();
 	}
 

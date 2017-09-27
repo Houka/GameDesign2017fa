@@ -3,7 +3,7 @@
  import flixel.FlxG;
  import flixel.system.FlxAssets;
  import gameObjects.GameObject;
- import gameStates.GameState;
+ import gameStates.MenuState;
  import interfaces.Attackable;
  import interfaces.Attacker;
 
@@ -29,7 +29,7 @@ class HomeBase extends GameObject implements Attackable
         }
         
         if (this.healthPoints <= 0){
-            FlxG.switchState(new GameState());
+            FlxG.switchState(new MenuState());
         }
     }
 
