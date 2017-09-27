@@ -73,9 +73,9 @@ class GameState extends FlxState
 
     // TODO: Remove test function
     private function createStartingMaterials():Void{
-        controller.add(GameObjectFactory.createGunBase(100,FlxG.height*3/4));
-        controller.add(GameObjectFactory.createGunBase(150,FlxG.height*3/4));
-        controller.add(GameObjectFactory.createFoundation(200,FlxG.height*3/4));
-        controller.add(GameObjectFactory.createFoundation(250,FlxG.height*3/4));
+        controller.add(GameObjectFactory.createGunBase(FlxG.width*3/4,100));
+        controller.add(GameObjectFactory.createGunBase(FlxG.width*3/4,150));
+        controller.add(GameObjectFactory.createFoundation(FlxG.width*3/4,200));
+        controller.add(GameObjectFactory.createFoundation(FlxG.width*3/4,250));
     }
 }

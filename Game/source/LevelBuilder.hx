@@ -17,12 +17,10 @@ class LevelBuilder {
 
 
 	public function parseJson() {
-		var value = File.getContent(AssetPaths.sampleLevel2__json);
+		var value = File.getContent(AssetPaths.medMap__json);
 		var json:JsonData = haxe.Json.parse(value); 
 
 		createTilemap(json.terrain_map);
-
-
 	}
 
 
@@ -57,6 +55,5 @@ class LevelBuilder {
         }
     }
 
-	//call levelbuilder from game state and have it attempt to parse your sampleLevel json 
 
 }
