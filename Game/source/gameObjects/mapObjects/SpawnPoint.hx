@@ -4,6 +4,7 @@ import flixel.system.FlxAssets;
 import gameObjects.GameObject;
 import gameObjects.npcs.Enemy;
 import interfaces.Attacker;
+import flixel.math.FlxPoint;
 
 /**
  * SpawnPoints read the Level Data Json to create enemies as needed.
@@ -35,7 +36,8 @@ class SpawnPoint extends GameObject
 
             // TODO: remove test code
             var npc = GameObjectFactory.createEnemy(this.x+this.origin.x,this.y+this.origin.y);
-            npc.setGoal(400, 400);
+            npc.walkPath = [new FlxPoint(200, 70), new FlxPoint(350, 70), new FlxPoint(430, 300), 
+    new FlxPoint(430, 500), new FlxPoint(400, 700)]; 
             RenderBuffer.add(npc);
         }
     }
