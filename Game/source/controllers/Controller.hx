@@ -14,6 +14,7 @@ import gameObjects.mapObjects.Projectile;
 import gameObjects.mapObjects.Tile;
 import gameObjects.mapObjects.Tower;
 import gameObjects.mapObjects.HomeBase;
+import gameObjects.mapObjects.BuildArea;
 import gameObjects.materials.TowerBlock;
 import gameObjects.materials.Ammunition;
 using Lambda;
@@ -22,6 +23,7 @@ using Lambda;
 * @author: Chang Lu
 *
 * Controls all the array keeping for GameObjects and manages how each GameObjectController updates
+* TODO: refactor such that collisions happen between material and buildArea.
 */
 class Controller
 {
@@ -30,6 +32,7 @@ class Controller
 	private var gameObjects:FlxTypedGroup<FlxObject>;
 
 	private var homeBases:FlxTypedGroup<HomeBase>;
+	private var buildAreas:FlxTypedGroup<BuildArea>;
 	private var terrains:FlxTypedGroup<Tile>;
 	private var other:FlxTypedGroup<GameObject>;
 
@@ -45,6 +48,7 @@ class Controller
 
 		this.terrains = new FlxTypedGroup<Tile>(Constants.MAX_GAME_OBJECTS);
 		this.homeBases = new FlxTypedGroup<HomeBase>(Constants.MAX_GAME_OBJECTS);
+		this.buildAreas = new FlxTypedGroup<BuildArea>(Constants.MAX_GAME_OBJECTS);
 		this.other = new FlxTypedGroup<GameObject>(Constants.MAX_GAME_OBJECTS);
 
 		projectileController = new ProjectileController(Constants.MAX_GAME_OBJECTS,frameRate);
@@ -84,6 +88,9 @@ class Controller
 			case HomeBase:
 				homeBases.add(cast(obj, HomeBase));
 				canAdd = true;
+			case BuildArea:
+				buildAreas.add(cast(obj, BuildArea));
+				canAdd = true;
 			default:
 				other.add(obj); 
 				canAdd = true;
@@ -113,13 +120,25 @@ class Controller
 	}
 
 	private function collideMaterials(obj1:GameObject, obj2:GameObject){
+		//trace("here");
 		if(Std.is(obj1, TowerBlock) && Std.is(obj2, TowerBlock) && 
-			!cast(obj1,TowerBlock).inTower && !cast(obj2,TowerBlock).inTower){
+			!cast(obj1,TowerBlock).inTower && !cast(obj2,TowerBlock).inTower &&
+			FlxG.overlap(obj1, buildAreas) && FlxG.overlap(obj2, buildAreas)){
 			var matList = new List<TowerBlock>();
 			matList.add(cast(obj1));
 			matList.add(cast(obj2));
 			add(GameObjectFactory.createTower(obj2.x, obj2.y, matList, 
 				GameObjectFactory.createAmmunition(obj2.x, obj2.y)));
+		}
+	}
+
+	private function collideBuildArea(obj1:GameObject, obj2:GameObject):Bool
+	{
+		if(FlxG.overlap(obj1, buildAreas) && FlxG.overlap(obj2, buildAreas)){
+			return true;
+		}
+		else{
+			return false;
 		}
 	}
 }

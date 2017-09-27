@@ -48,6 +48,9 @@ class GameState extends FlxState
         keyboard.addKeyAndCallback([T], addTowerBlockAtMouse);
         levelBuilder.generateLevel();
         createStartingMaterials();
+
+        //create HUD
+        makeBuildArea();
 	}
 
 	override public function update(elapsed:Float):Void
@@ -78,4 +81,9 @@ class GameState extends FlxState
         controller.add(GameObjectFactory.createFoundation(200,FlxG.height*3/4));
         controller.add(GameObjectFactory.createFoundation(250,FlxG.height*3/4));
     }
+
+    //TODO: make HUD here
+    private function makeBuildArea():Void{
+        controller.add(GameObjectFactory.createBuildArea(FlxG.width*3/4, FlxG.height*3/4));
+    } 
 }

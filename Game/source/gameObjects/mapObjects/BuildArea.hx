@@ -16,14 +16,15 @@ class BuildArea extends GameObject
     public function new(X:Float, Y:Float, ?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
     {
         super(X,Y,graphicAsset,graphicsWidth,graphicsHeight);
-        createTestBuildArea();
+        updateHitbox();
+        //createTestBuildArea();
     }
 
     // TODO: remove test function
     private function createTestBuildArea():Void
     {
         makeGraphic(cast((FlxG.width)/4),cast(FlxG.height/4), FlxColor.BLUE, true);
-        FlxSpriteUtil.drawRect(this,FlxG.width*3/4,FlxG.height*3./4.,FlxG.width/4.,FlxG.height/4);
+        FlxSpriteUtil.drawRect(this,FlxG.width*3/4,FlxG.height*3/4,FlxG.width/4,FlxG.height/4);
         updateHitbox();
     }
 }
