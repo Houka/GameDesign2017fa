@@ -35,20 +35,19 @@ class LevelBuilder {
             for (j in 0...map[i].length) { 
                 if (map[i][j] == 1) {
                 	var tile = new Tile(j, i, TileType.Indestructible, 
-                		AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+                		AssetPaths.path__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
                     tile.setLocation(j, i); 
                     RenderBuffer.add(tile);
                 }
                 else if (map[i][j] == 2){
                 	var spawnPoint = new SpawnPoint(j*Constants.TILE_WIDTH, i*Constants.TILE_WIDTH, 100, 
-                		AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
-                	spawnPoint.color = 0xff0000;
+                		AssetPaths.homebase__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+                	spawnPoint.color = 0xffaaaa;
                     RenderBuffer.add(spawnPoint);
                 }
                 else if (map[i][j] == 3){
                 	var homeBase = new HomeBase(j*Constants.TILE_WIDTH, i*Constants.TILE_WIDTH, Constants.PLAYER_TEST_HEALTH, 
-                		AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
-                	homeBase.color = 0x0000ff;
+                		AssetPaths.homebase__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
                     RenderBuffer.add(homeBase);
                 }
             }
