@@ -4,6 +4,8 @@ import flixel.system.FlxAssets;
 import gameObjects.GameObject;
 import gameObjects.npcs.Enemy;
 import interfaces.Attacker;
+import flixel.math.FlxPoint;
+import Constants;
 
 /**
  * SpawnPoints read the Level Data Json to create enemies as needed.
@@ -35,7 +37,6 @@ class SpawnPoint extends GameObject
 
             // TODO: remove test code
             var npc = GameObjectFactory.createEnemy(this.x+this.origin.x,this.y+this.origin.y);
-            npc.setGoal(400, 400);
             RenderBuffer.add(npc);
         }
     }

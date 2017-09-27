@@ -20,7 +20,7 @@ class Tile extends GameObject{
 		super(x, y, graphicAsset, graphicsWidth, graphicsHeight); 
 		this.type = type;
 		this.immovable=true;
-		enableInteractable();
+		//enableInteractable();
 	}
 
 	public function setLocation(x:Int, y:Int) {

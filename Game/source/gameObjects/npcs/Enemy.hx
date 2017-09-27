@@ -2,6 +2,7 @@ package gameObjects.npcs;
 
 import flixel.system.FlxAssets;
 import interfaces.*;
+import flixel.math.FlxPoint;
 
 /***
 * @author: Chang Lu
@@ -21,6 +22,9 @@ class Enemy extends NPC implements Attacker
 	public var attackRange:Int;
 	public var attackType:Attacker.AttackType; 
 	public var isAttacking:Bool;
+
+	// TODO: revisit
+	public var walkPath:Array<FlxPoint>=[];
 
 	public function new(x:Float, y:Float, speed:Int, health:Int,attackPoints:Int,attackRange:Int,attackType:Attacker.AttackType, 
 							graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 

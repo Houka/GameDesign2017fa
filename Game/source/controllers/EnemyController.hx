@@ -19,6 +19,10 @@ class EnemyController extends GameObjectController<Enemy>
 		super.updateState(obj);
 		switch (obj.state){
 			case Idle: 
+				if(obj.canMove && obj.isAtGoal() && obj.walkPath.length > 0){
+					var goal = obj.walkPath.shift();
+					obj.setGoal(cast(goal.x),cast(goal.y));
+				}
 				if(obj.canMove && !obj.isAtGoal())
 					obj.state = EnemyState.Moving;
 			case Moving: 

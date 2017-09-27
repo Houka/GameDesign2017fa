@@ -33,21 +33,23 @@ class GameState extends FlxState
 	private var keyboard:KeyboardController;
     private var levelBuilder:LevelBuilder; 
     private var level: String; 
+    private var path:Array<FlxPoint>; 
     
-    public function new(level: String):Void {
+    public function new(level: String, path:Array<FlxPoint>):Void {
         super();
         this.level=level; 
+        this.path = path;
     }
 
 	override public function create():Void
 	{
 		super.create();
 
-        controller = new Controller(this);
+        controller = new Controller(this,this.path);
         mouse = new MouseController(Constants.TEST_MAP);
         keyboard = new KeyboardController();
         keyboard.addKeyAndCallback([P,SPACE],function() openSubState(new PauseState()));
-        keyboard.addKeyAndCallback([R],function() FlxG.switchState(new GameState(this.level)));
+        keyboard.addKeyAndCallback([R],function() FlxG.switchState(new GameState(this.level,this.path)));
         keyboard.addKeyAndCallback([ESCAPE],function() FlxG.switchState(new MenuState()));
         levelBuilder = new LevelBuilder();
 
