@@ -74,14 +74,14 @@ class GameObjectFactory
     }
 
     public static function createTile(x:Float,y:Float):Tile{
-        return new Tile(x, y, TileType.Indestructible, AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+        return new Tile(x, y, TileType.Indestructible, AssetPaths.path__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
 
     public static function createSpawnPoint(x:Float,y:Float):SpawnPoint{
-        return new SpawnPoint(x,y, 100, AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+        return new SpawnPoint(x,y, 100, AssetPaths.homebase__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
  
     public static function createHomeBase(x:Float,y:Float):HomeBase{
-        return new HomeBase(x,y, Constants.PLAYER_TEST_HEALTH, AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+        return new HomeBase(x,y, Constants.PLAYER_TEST_HEALTH, AssetPaths.homebase__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
 }
