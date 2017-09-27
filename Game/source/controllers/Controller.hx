@@ -111,16 +111,16 @@ class Controller
 		FlxG.overlap(projectileController,workerController,projectileController.collideNPC);
 		FlxG.overlap(projectileController,terrains,projectileController.collideTerrain);
 		FlxG.overlap(towerController,other,function(t,o) {
-			if (Std.is(o,TowerBlock))
+			var inZone = FlxG.overlap(towerController, buildAreas) && FlxG.overlap(other, buildAreas);
+			if (Std.is(o,TowerBlock) && inZone)
 			 	towerController.collideTowerBlock(t,cast(o,TowerBlock));
-			else if (Std.is(o,Ammunition))
+			else if (Std.is(o,Ammunition) && inZone)
 			 	towerController.collideAmmo(t,cast(o,Ammunition));
 		});
 		FlxG.overlap(other,other,collideMaterials);
 	}
 
 	private function collideMaterials(obj1:GameObject, obj2:GameObject){
-		//trace("here");
 		if(Std.is(obj1, TowerBlock) && Std.is(obj2, TowerBlock) && 
 			!cast(obj1,TowerBlock).inTower && !cast(obj2,TowerBlock).inTower &&
 			FlxG.overlap(obj1, buildAreas) && FlxG.overlap(obj2, buildAreas)){

@@ -84,6 +84,6 @@ class GameState extends FlxState
 
     //TODO: make HUD here
     private function makeBuildArea():Void{
-        controller.add(GameObjectFactory.createBuildArea(FlxG.width*3/4, FlxG.height*3/4));
+        controller.add(GameObjectFactory.createBuildArea(FlxG.width*3.1/4, FlxG.height*3.1/4));
     } 
 }
