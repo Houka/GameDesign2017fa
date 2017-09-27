@@ -20,8 +20,8 @@ class Constants
     static public inline var MAX_FIRE_RATE_MULTIPLIER:Int = 3;
 
     //MouseController 
-    static public inline var TILE_WIDTH = 60; 
-	static public inline var TILE_HEIGHT = 60; 
+    static public inline var TILE_WIDTH = 50; 
+	static public inline var TILE_HEIGHT = 50; 
 
 	//Projectile 
 	static public inline var PROJECTILE_SPEED = 100;

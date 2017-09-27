@@ -5,6 +5,7 @@ import flixel.ui.FlxButton;
 import flixel.text.FlxText;
 import flixel.FlxG; 
 import openfl.Lib;
+using Lambda; 
 
 class MenuState extends FlxState
 {
@@ -19,13 +20,26 @@ class MenuState extends FlxState
 		text.y -=100;
 		add(text);
 		
-		var playButton: FlxButton = new FlxButton(0, 0, "Play", nextState);
+		var playButton: FlxButton = new FlxButton(0, 0, "Easy", 
+			function() {FlxG.switchState(new GameState(AssetPaths.easyMap__json));});
 		playButton.screenCenter();
 		add(playButton);
 
+		var medLevelButton: FlxButton = new FlxButton(0, 0, "Medium", 
+			function() {FlxG.switchState(new GameState(AssetPaths.medMap__json));});
+		medLevelButton.screenCenter();
+		medLevelButton.y += 50; 
+		add(medLevelButton);
+
+		var hardLevelButton: FlxButton = new FlxButton(0, 0, "Hard", 
+			function() {FlxG.switchState(new GameState(AssetPaths.hardMap__json));});
+		hardLevelButton.screenCenter();
+		hardLevelButton.y += 100; 
+		add(hardLevelButton);
+
 		var quitButton: FlxButton = new FlxButton(0, 0, "Quit", quitGame);
 		quitButton.screenCenter();
-		quitButton.y += 50;
+		quitButton.y += 150;
 		add(quitButton);
 	}
 
@@ -34,8 +48,4 @@ class MenuState extends FlxState
         Lib.close();
 	}
 
-	private function nextState():Void 
-	{
-		FlxG.switchState(new GameState());
-	}
 }

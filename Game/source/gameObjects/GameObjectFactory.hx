@@ -59,11 +59,11 @@ class GameObjectFactory
     }
 
     public static function createGunBase(x:Float,y:Float):GunBase{
-        return new GunBase(x,y,10, GunType.Normal,1, AttackType.Ground, 40, 100, AssetPaths.tower_layer__png);
+        return new GunBase(x,y,10, GunType.Normal,1, AttackType.Ground, 40, 100, AssetPaths.gun__png);
     }
 
     public static function createFoundation(x:Float,y:Float):Foundation{
-        return new Foundation(x,y,10, FoundationType.Wood, AssetPaths.gun_layer__png);
+        return new Foundation(x,y,10, FoundationType.Wood, AssetPaths.tower_base__png);
     }
 
     public static function createAmmunition(x:Float,y:Float):Ammunition{
@@ -75,15 +75,15 @@ class GameObjectFactory
     }
 
     public static function createTile(x:Float,y:Float):Tile{
-        return new Tile(x, y, TileType.Indestructible, AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+        return new Tile(x, y, TileType.Indestructible, AssetPaths.path__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
 
     public static function createSpawnPoint(x:Float,y:Float):SpawnPoint{
-        return new SpawnPoint(x,y, 100, AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+        return new SpawnPoint(x,y, 100, AssetPaths.homebase__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
  
     public static function createHomeBase(x:Float,y:Float):HomeBase{
-        return new HomeBase(x,y, Constants.PLAYER_TEST_HEALTH, AssetPaths.grass__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+        return new HomeBase(x,y, Constants.PLAYER_TEST_HEALTH, AssetPaths.homebase__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
 
     public static function createBuildArea(x:Float, y:Float):BuildArea{

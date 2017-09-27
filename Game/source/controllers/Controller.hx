@@ -2,6 +2,7 @@ package controllers;
 
 import haxe.macro.Expr;
 import flixel.FlxG;
+import flixel.FlxBasic; 
 import flixel.FlxState;
 import flixel.FlxObject;
 import flixel.group.FlxGroup;
@@ -13,6 +14,7 @@ import gameObjects.npcs.Enemy;
 import gameObjects.mapObjects.Projectile;
 import gameObjects.mapObjects.Tile;
 import gameObjects.mapObjects.Tower;
+import gameObjects.mapObjects.SpawnPoint; 
 import gameObjects.mapObjects.HomeBase;
 import gameObjects.mapObjects.BuildArea;
 import gameObjects.materials.TowerBlock;
@@ -57,22 +59,23 @@ class Controller
 		towerController = new TowerController(Constants.MAX_GAME_OBJECTS,frameRate);
 
 		state.add(gameObjects);
-		state.add(projectileController);
-		state.add(enemyController);
-		state.add(workerController);
-		state.add(towerController);
 	}
 
-	public function update(): Void{
+	public function update(elapsed: Float): Void{
+		projectileController.update(elapsed);
+		enemyController.update(elapsed);
+		workerController.update(elapsed);
+		towerController.update(elapsed);
 		towerController.forEachAlive( function(t) {
 			enemyController.forEachAlive( function(e) towerController.canTargetEnemy(t,e) );
 		});
 
 		collide();
+
+		gameObjects.sort(byY, FlxSort.ASCENDING); 
 	}
 
 	public function add(obj:GameObject):Void{
-		var canAdd = false;
 		switch (Type.getClass(obj)){
 			case Worker:
 				workerController.add(cast(obj, Worker));
@@ -84,7 +87,6 @@ class Controller
 				towerController.add(cast(obj, Tower));
 			case Tile:
 				terrains.add(cast(obj, Tile));
-				canAdd = true;
 			case HomeBase:
 				homeBases.add(cast(obj, HomeBase));
 				canAdd = true;
@@ -93,13 +95,10 @@ class Controller
 				canAdd = true;
 			default:
 				other.add(obj); 
-				canAdd = true;
 		}
 
-		if (canAdd){
-			gameObjects.add(obj);
-			gameObjects.sort(FlxSort.byY, FlxSort.ASCENDING);
-		}
+		gameObjects.add(obj);
+
 	}
 
 	/**
@@ -139,6 +138,41 @@ class Controller
 		}
 		else{
 			return false;
+		}
+	}
+
+	private function byY(Order:Int, Obj1:FlxObject, Obj2:FlxObject):Int
+	{
+		switch (Type.getClass(Obj1)){
+			case Tile: 
+				if (Type.getClass(Obj2) == Tile) {
+					return FlxSort.byValues(Order, cast(Obj1, FlxObject).y, cast(Obj2, FlxObject).y);
+				}
+				return Order; 
+			case Enemy: 
+				if (Std.is(Obj2, Tile)) { 
+					return -Order; 
+				}
+				if (Std.is(Obj2, Enemy)) {
+					return FlxSort.byValues(Order, cast(Obj1, FlxObject).y, cast(Obj2, FlxObject).y);
+				}
+				return Order; 
+			case Worker: 
+				if (Std.is(Obj2, Tile)) { 
+					return -Order; 
+				}
+				if (Std.is(Obj2, Enemy)) {
+					return FlxSort.byValues(Order, cast(Obj1, FlxObject).y, cast(Obj2, FlxObject).y);
+				}
+				return Order; 
+			case Tower: 
+				return -Order; 
+			case SpawnPoint:
+				return Order; 
+			case HomeBase: 
+				return -Order;
+			default: 
+				return -Order; 
 		}
 	}
 }
