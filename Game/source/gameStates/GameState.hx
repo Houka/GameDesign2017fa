@@ -22,6 +22,7 @@ import gameObjects.mapObjects.BuildArea;
 import gameObjects.npcs.Enemy;
 import interfaces.Attacker; 
 using flixel.util.FlxSpriteUtil; 
+import LevelBuilder;
 
 
 class GameState extends FlxState
@@ -29,6 +30,7 @@ class GameState extends FlxState
 	private var controller:Controller;
 	private var mouse:MouseController; 
 	private var keyboard:KeyboardController;
+    private var levelBuilder:LevelBuilder; 
   
 	override public function create():Void
 	{
@@ -40,10 +42,11 @@ class GameState extends FlxState
         keyboard.addKeyAndCallback([P,SPACE],function() openSubState(new PauseState()));
         keyboard.addKeyAndCallback([R],function() FlxG.switchState(new GameState()));
         keyboard.addKeyAndCallback([ESCAPE],function() FlxG.switchState(new MenuState()));
+        levelBuilder = new LevelBuilder();
 
 		// TODO Remove tests 
         keyboard.addKeyAndCallback([T], addTowerBlockAtMouse);
-		createTilemap(Constants.TEST_MAP);	
+        levelBuilder.generateLevel();
         createStartingMaterials();
 	}
 
@@ -67,32 +70,6 @@ class GameState extends FlxState
         controller.add(GameObjectFactory.createRandomTowerBlock(FlxG.mouse.x, FlxG.mouse.y));
     }
 
-    // TODO: remove test function
-    private function createTilemap(map: Array<Int>){
-        var w = Std.int(FlxG.width/Constants.TILE_WIDTH);
-        var h = Std.int(FlxG.height/Constants.TILE_HEIGHT); 
-
-        for (i in 0...w*h) {
-        	var x = i % w; 
-            var y = Math.floor(i/w); 
-                
-            if (map[i] == 1) {
-            	var tile = GameObjectFactory.createTile(x,y);
-                tile.setLocation(x, y); 
-                controller.add(tile);
-            }
-            else if (map[i] == 2){
-            	var spawnPoint = GameObjectFactory.createSpawnPoint(x*Constants.TILE_WIDTH, y*Constants.TILE_WIDTH);
-            	spawnPoint.color = 0xff0000;
-                controller.add(spawnPoint);
-            }
-            else if (map[i] == 3){
-            	var homeBase = GameObjectFactory.createHomeBase(x*Constants.TILE_WIDTH, y*Constants.TILE_WIDTH);
-            	homeBase.color = 0x0000ff;
-                controller.add(homeBase);
-            }
-        }
-    }
 
     // TODO: Remove test function
     private function createStartingMaterials():Void{
