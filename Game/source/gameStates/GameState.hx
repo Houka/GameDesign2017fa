@@ -64,7 +64,7 @@ class GameState extends FlxState
 		keyboard.update(elapsed);
 
 		// Main Controller updates
-		controller.update();
+		controller.update(elapsed);
 
 		// post update: empty out buffer queue and add it to state
 		while(!RenderBuffer.isEmpty())
