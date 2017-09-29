@@ -71,7 +71,7 @@ class GameObjectFactory
     }
 
     public static function createEnemy(x:Float,y:Float):Enemy{
-        return new Enemy(x,y,1,10,1,2,AttackType.Ground,AssetPaths.player__png,16,16);
+        return new Enemy(x,y,1,15,1,2,AttackType.Ground,AssetPaths.player__png,16,16);
     }
 
     public static function createTile(x:Float,y:Float):Tile{

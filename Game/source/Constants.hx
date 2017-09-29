@@ -38,13 +38,28 @@ class Constants
 												1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
 												1, 1, 0, 0, 0, 3, 0, 0, 0, 0
 											];
-	public static var HARD_MAP:Array<FlxPoint> =[new FlxPoint(200, 150),
+	
+	public static var HARD_MAP_2:Array<flixel.math.FlxPoint> = [new FlxPoint(200, 300), 
+																new FlxPoint(300, 380)];
+
+	public static var HARD_MAP:Array<flixel.math.FlxPoint> =[new FlxPoint(200, 150),
                 new FlxPoint(300, 170),
                 new FlxPoint(410, 170),
                 new FlxPoint(520, 250),
                 new FlxPoint(430, 370),
                 new FlxPoint(430, 620),
                 new FlxPoint(390, 650)];
+	
+	public static var MED_MAP_2:Array<flixel.math.FlxPoint> = [new FlxPoint(200, 70), 
+															new FlxPoint(350, 70), 
+															new FlxPoint(280, 120), 
+															new FlxPoint(270, 210), 
+															new FlxPoint(200, 350), 
+															new FlxPoint(260, 450), 
+															new FlxPoint(320, 520), 
+															new FlxPoint(400, 600), 
+															new FlxPoint(400, 700)]; 
+
 	public static var MED_MAP:Array<flixel.math.FlxPoint> =[new FlxPoint(200, 70),
 															new FlxPoint(350, 70),
 															new FlxPoint(430, 300),

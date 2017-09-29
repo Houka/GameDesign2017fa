@@ -33,7 +33,7 @@ class EnemyController extends GameObjectController<Enemy>
 				// TODO: make attacking collision
 			case Dying:
 				obj.canMove = false;
-				if (Std.random(2) == 1) 
+				if (Std.random(20) == 1) 
 					RenderBuffer.add(GameObjectFactory.createRandomTowerBlock(obj.x, obj.y));
 				obj.kill();
 		}
