@@ -15,6 +15,8 @@ class SpawnPoint extends GameObject
 {
     public var spawnRate:Int;
     private var _spawnCountup:Int;
+    private var _enemyCountup: Int = 0; 
+    private var MAX_ENEMIES: Int = 10; 
 
     public function new(X:Float, Y:Float, ?rate:Int=20,?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
     {
@@ -34,10 +36,13 @@ class SpawnPoint extends GameObject
         else
         {
             _spawnCountup = 0;
+            _enemyCountup += 1; 
 
             // TODO: remove test code
-            var npc = GameObjectFactory.createEnemy(this.x+this.origin.x,this.y+this.origin.y);
-            RenderBuffer.add(npc);
+            if (_enemyCountup < MAX_ENEMIES) {
+                var npc = GameObjectFactory.createEnemy(this.x+this.origin.x,this.y+this.origin.y);
+                RenderBuffer.add(npc);
+            }
         }
     }
 }
