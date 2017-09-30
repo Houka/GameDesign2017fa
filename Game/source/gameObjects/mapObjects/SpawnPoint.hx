@@ -26,7 +26,6 @@ class SpawnPoint extends GameObject
         this._spawnCountup = 0;
     }
 
-    /*For throwaway demo, just spawn a stream of basic enemies*/
     override public function update(elapsed:Float)
     {
         super.update(elapsed);
@@ -38,12 +37,28 @@ class SpawnPoint extends GameObject
         {
             _spawnCountup = 0;
             _enemyCountup += 1; 
+            // trace(numEnemiesForWave(0)); 
 
-            // TODO: remove test code
+            // // TODO: remove test code
             if (_enemyCountup < waves[0][0]) {
+                var npc = GameObjectFactory.createEnemy(this.x+this.origin.x,this.y+this.origin.y);
+                RenderBuffer.add(npc);
+            }
+
+            else if (_enemyCountup < waves[0][0] + waves[0][1]) {
                 var npc = GameObjectFactory.createTank(this.x+this.origin.x,this.y+this.origin.y);
                 RenderBuffer.add(npc);
             }
         }
     }
+
+    private function numEnemiesForWave(waveNum:Int) {
+        var totalEnemies: Int = 0; 
+        for (i in 0...waves[waveNum].length) {
+            totalEnemies += waves[waveNum][i];
+        }
+        return totalEnemies; 
+    }
+
+
 }
