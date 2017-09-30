@@ -78,8 +78,8 @@ class GameObjectFactory
         return new Tile(x, y, TileType.Indestructible, AssetPaths.path__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
 
-    public static function createSpawnPoint(x:Float,y:Float):SpawnPoint{
-        return new SpawnPoint(x,y, 100, AssetPaths.homebase__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+    public static function createSpawnPoint(x:Float,y:Float, waveData: Array<Array<Int>>):SpawnPoint{
+        return new SpawnPoint(x,y, waveData, 100, AssetPaths.homebase__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
  
     public static function createHomeBase(x:Float,y:Float):HomeBase{
