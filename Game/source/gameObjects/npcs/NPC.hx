@@ -10,14 +10,14 @@ import flixel.math.*;
 */
 class NPC extends GameObject implements Attackable implements Movable implements Healable
 {
-	public var speed:Int;
+	public var speed:Float;
 	public var healthPoints:Int;
 	public var canMove:Bool;
 
 	private var baseHealth:Int;
 	private var goal:FlxPoint;
 
-	public function new(x:Float, y:Float, speed:Int, health:Int, graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
+	public function new(x:Float, y:Float, speed:Float, health:Int, graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
 		super(x,y,graphicAsset,graphicsWidth,graphicsHeight);
 		this.x = x; 
 		this.y = y; 

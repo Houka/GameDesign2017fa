@@ -41,7 +41,7 @@ class SpawnPoint extends GameObject
 
             // TODO: remove test code
             if (_enemyCountup < waves[0][0]) {
-                var npc = GameObjectFactory.createEnemy(this.x+this.origin.x,this.y+this.origin.y);
+                var npc = GameObjectFactory.createTank(this.x+this.origin.x,this.y+this.origin.y);
                 RenderBuffer.add(npc);
             }
         }

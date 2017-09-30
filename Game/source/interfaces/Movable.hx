@@ -4,7 +4,7 @@ import flixel.math.FlxPoint;
 
 interface Movable
 {
-	public var speed:Int;
+	public var speed:Float;
 	private var goal:FlxPoint;
 	public var canMove:Bool;
 	public function isAtGoal():Bool;
