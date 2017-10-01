@@ -4,6 +4,7 @@ import flixel.system.FlxAssets;
 import gameObjects.materials.Material;
 import gameObjects.materials.Ammunition;
 import gameObjects.materials.TowerBlock;
+import gameObjects.GameObjectFactory;
 import interfaces.Attackable;
 import interfaces.Attacker;
 
@@ -11,7 +12,6 @@ import interfaces.Attacker;
  * Tower contains a collection of TowerLayers; it also holds the position and
  * hitbox of the overall tower.
  *
- * TODO: set hitboxes with Chang
  * @author Yiming Li
  */
 
@@ -26,11 +26,11 @@ class Tower extends GameObject implements Attackable
 
     /** Initialize each component of the tower based on materialsList
      */
-    public function new(X:Float, Y:Float,materials:List<TowerBlock>, ammo:Ammunition, ?workers:Int=0,
+    public function new(X:Float, Y:Float,materials:List<TowerBlock>, ?workers:Int=0,
         ?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
     {
         super(X,Y,graphicAsset,graphicsWidth,graphicsHeight);
-        this.ammo = ammo;
+        this.ammo = GameObjectFactory.createAmmunition(x,y);
         this.numWorkers = workers;
         this.children = new List<TowerBlock>();
         for (m in materials)
@@ -41,7 +41,7 @@ class Tower extends GameObject implements Attackable
     }
 
     public function addTowerBlock(obj:TowerBlock):Bool{
-        if (!obj.inTower){
+        if (!obj.inTower && children.length < Constants.MAX_HEIGHT){
             obj.inTower = true;
             children.add(obj);
             return true;

@@ -85,19 +85,10 @@ class GameState extends FlxState
 
     // TODO: Remove test function
     private function createStartingMaterials():Void{
-        var mat:Material;
-        mat = GameObjectFactory.createGunBase(FlxG.width*3/4,100);
-        controller.add(mat);
-        Controller.addToCollection(mat);
-        mat = GameObjectFactory.createGunBase(FlxG.width*3/4,150);
-        controller.add(mat);
-        Controller.addToCollection(mat);
-        mat = GameObjectFactory.createFoundation(FlxG.width*3/4,200);
-        controller.add(mat);
-        Controller.addToCollection(mat);
-        mat = GameObjectFactory.createFoundation(FlxG.width*3/4,250);
-        controller.add(mat);
-        Controller.addToCollection(mat);
+        controller.add(GameObjectFactory.createGunBase(FlxG.width*3/4,100));
+        controller.add(GameObjectFactory.createGunBase(FlxG.width*3/4,150));
+        controller.add(GameObjectFactory.createFoundation(FlxG.width*3/4,200));
+        controller.add(GameObjectFactory.createFoundation(FlxG.width*3/4,250));
     }
 
     //TODO: make HUD here

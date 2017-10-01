@@ -5,6 +5,8 @@ import flixel.system.FlxAssets;
 import interfaces.Attackable;
 import interfaces.Attacker;
 
+import controllers.TowerController; //remove me
+
 /**
  * ...
  * @author ...
@@ -32,6 +34,13 @@ class TowerBlock extends Material implements Attackable
 
 		if (this.healthPoints <= 0){
 			kill();
+		}
+	}
+
+	override public function mouseReleasedHandler():Void{
+		super.mouseReleasedHandler();
+		if(!inTower){
+			TowerController.installTowerBlock(this);
 		}
 	}
 }

@@ -4,6 +4,7 @@ import flixel.system.FlxAssets;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxColor;
 import flixel.FlxG;
+import gameObjects.mapObjects.Tower;
 
 /**
  * @author Chang Lu
