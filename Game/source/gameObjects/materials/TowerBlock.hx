@@ -8,8 +8,10 @@ import interfaces.Attacker;
 import controllers.TowerController; //remove me
 
 /**
- * ...
- * @author ...
+ * TowerBlock is the parent class for GunBase and Foundation.
+ *
+ * TODO: make mouse controls not dependent on towerController
+ * @author Katherine, Chang, Yiming
  */
 class TowerBlock extends Material implements Attackable
 {
