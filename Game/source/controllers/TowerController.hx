@@ -3,10 +3,13 @@ package controllers;
 import haxe.macro.Expr;
 import haxe.ds.GenericStack;
 import flixel.FlxSprite;
+import flixel.addons.display.FlxExtendedSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.math.FlxVector;
+import controllers.Controller;
 import gameObjects.mapObjects.Tower;
 import gameObjects.mapObjects.Tile;
+import gameObjects.mapObjects.BuildArea;
 import gameObjects.materials.GunBase;
 import gameObjects.materials.TowerBlock;
 import gameObjects.materials.Ammunition;
@@ -24,6 +27,7 @@ import interfaces.Attacker;
 class TowerController extends GameObjectController<Tower>
 {
     private var _sight:FlxVector;
+    public static var underConstruction:Null<Tower>;
 
     public function new(maxSize:Int=0, frameRate:Int=60):Void
     {
@@ -31,13 +35,29 @@ class TowerController extends GameObjectController<Tower>
         _sight = new FlxVector();
     }
 
-    public function collideTowerBlock(tower:Tower, m:TowerBlock):Void{
-        if (tower.children.length < Constants.MAX_HEIGHT)
-            tower.addTowerBlock(m);
+    public static function installTowerBlock(m:TowerBlock):Bool{
+        if(underConstruction == null){ //create tower
+            var matList = new List<TowerBlock>();
+            matList.add(m);
+            underConstruction = GameObjectFactory.createTower(matList);
+            if(underConstruction == null){ //tower creation failed
+                return false;
+            }
+            underConstruction.mousePressedCallback = towerPressedCallback;
+            RenderBuffer.add(underConstruction);
+            return true;
+        }
+        else { //append to already existing tower
+            return underConstruction.addTowerBlock(m);
+        }
     }
 
-    public function collideAmmo(tower:Tower, ammo:Ammunition):Void{
-        tower.ammo = ammo;
+    public static function installAmmo(ammo:Ammunition):Bool{
+        if(underConstruction == null){
+            return false;
+        }
+        underConstruction.ammo = ammo;
+        return true;
     }
 
     public function canTargetEnemy(tower:Tower, enemy:Enemy):Bool{
@@ -64,6 +84,12 @@ class TowerController extends GameObjectController<Tower>
                     RenderBuffer.add(GameObjectFactory.createProjectile(gun,xTarget,yTarget));
                 }
             }
+        }
+    }
+
+    public static function towerPressedCallback(tower:FlxExtendedSprite, x:Int, y:Int):Void{
+        if(tower == underConstruction){
+            underConstruction = null;
         }
     }
 }

@@ -27,7 +27,6 @@ using Lambda;
 * @author: Chang Lu
 *
 * Controls all the array keeping for GameObjects and manages how each GameObjectController updates
-* TODO: refactor such that collisions happen between material and buildArea.
 */
 class Controller
 {
@@ -39,7 +38,6 @@ class Controller
 	private var buildAreas:FlxTypedGroup<BuildArea>;
 	private var terrains:FlxTypedGroup<Tile>;
 	private var other:FlxTypedGroup<GameObject>;
-	static private var collectedMat:FlxTypedGroup<Material>;
 
 	private var projectileController:ProjectileController;
 	private var enemyController:EnemyController;
@@ -58,7 +56,6 @@ class Controller
 		this.homeBases = new FlxTypedGroup<HomeBase>(Constants.MAX_GAME_OBJECTS);
 		this.buildAreas = new FlxTypedGroup<BuildArea>(Constants.MAX_GAME_OBJECTS);
 		this.other = new FlxTypedGroup<GameObject>(Constants.MAX_GAME_OBJECTS);
-		collectedMat = new FlxTypedGroup<Material>(Constants.MAX_GAME_OBJECTS);
 
 		projectileController = new ProjectileController(Constants.MAX_GAME_OBJECTS,frameRate);
 		enemyController = new EnemyController(Constants.MAX_GAME_OBJECTS,frameRate);
@@ -107,13 +104,6 @@ class Controller
 
 	}
 
-	static public function addToCollection(mat:Material):Void{
-		if(mat.collected == false){
-			collectedMat.add(mat);
-			mat.collected = true;
-		}
-	}
-
 	/**
 	* Main collision function
 	*/
@@ -121,38 +111,6 @@ class Controller
 		FlxG.overlap(enemyController,homeBases,enemyController.collideHomebase);
 		FlxG.overlap(projectileController,enemyController,projectileController.collideNPC);
 		FlxG.overlap(projectileController,workerController,projectileController.collideNPC);
-		//FlxG.overlap(projectileController,terrains,projectileController.collideTerrain);
-		FlxG.overlap(towerController,collectedMat,function(t,o) {
-			if(FlxG.overlap(towerController, buildAreas) && FlxG.overlap(collectedMat, buildAreas)){
-				if (Std.is(o,TowerBlock))
-				 	towerController.collideTowerBlock(t,cast(o,TowerBlock));
-				else if (Std.is(o,Ammunition))
-				 	towerController.collideAmmo(t,cast(o,Ammunition));
-			}
-		});
-		FlxG.overlap(collectedMat,collectedMat,collideMaterials);
-	}
-
-	private function collideMaterials(obj1:GameObject, obj2:GameObject){
-		if(Std.is(obj1, TowerBlock) && Std.is(obj2, TowerBlock) && 
-			!cast(obj1,TowerBlock).inTower && !cast(obj2,TowerBlock).inTower &&
-			FlxG.overlap(obj1, buildAreas) && FlxG.overlap(obj2, buildAreas)){
-			var matList = new List<TowerBlock>();
-			matList.add(cast(obj1));
-			matList.add(cast(obj2));
-			add(GameObjectFactory.createTower(obj2.x, obj2.y, matList, 
-				GameObjectFactory.createAmmunition(obj2.x, obj2.y)));
-		}
-	}
-
-	private function collideBuildArea(obj1:GameObject, obj2:GameObject):Bool
-	{
-		if(FlxG.overlap(obj1, buildAreas) && FlxG.overlap(obj2, buildAreas)){
-			return true;
-		}
-		else{
-			return false;
-		}
 	}
 
 	private function byY(Order:Int, Obj1:FlxObject, Obj2:FlxObject):Int
