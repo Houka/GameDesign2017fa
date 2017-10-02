@@ -77,12 +77,16 @@ class GameObjectFactory
         return new Enemy(x,y,1,15,1,2,AttackType.Ground,AssetPaths.player__png,16,16);
     }
 
+    public static function createTank(x:Float,y:Float):Enemy{
+        return new Enemy(x,y,0.5,25,1,2,AttackType.Ground,AssetPaths.player__png,16,16);
+    }
+
     public static function createTile(x:Float,y:Float):Tile{
         return new Tile(x, y, TileType.Indestructible, AssetPaths.path__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
 
-    public static function createSpawnPoint(x:Float,y:Float):SpawnPoint{
-        return new SpawnPoint(x,y, 100, AssetPaths.homebase__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+    public static function createSpawnPoint(x:Float,y:Float, waveData: Array<Array<Int>>):SpawnPoint{
+        return new SpawnPoint(x,y, waveData, 100, AssetPaths.homebase__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
  
     public static function createHomeBase(x:Float,y:Float):HomeBase{

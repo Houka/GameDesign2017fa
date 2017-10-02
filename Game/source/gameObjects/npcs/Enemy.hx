@@ -26,7 +26,7 @@ class Enemy extends NPC implements Attacker
 	// TODO: revisit
 	public var walkPath:Array<FlxPoint>=[];
 
-	public function new(x:Float, y:Float, speed:Int, health:Int,attackPoints:Int,attackRange:Int,attackType:Attacker.AttackType, 
+	public function new(x:Float, y:Float, speed:Float, health:Int,attackPoints:Int,attackRange:Int,attackType:Attacker.AttackType, 
 							graphicAsset:FlxGraphicAsset,?graphicsWidth:Int, ?graphicsHeight:Int): Void { 
 		super(x,y,speed,health,graphicAsset,graphicsWidth,graphicsHeight);
 		this.attackPoints = attackPoints;
