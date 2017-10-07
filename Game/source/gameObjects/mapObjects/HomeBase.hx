@@ -29,7 +29,7 @@ class HomeBase extends GameObject implements Attackable
         }
         
         if (this.healthPoints <= 0){
-            FlxG.switchState(new MenuState());
+			kill();
         }
     }
 
