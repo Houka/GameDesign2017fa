@@ -20,6 +20,7 @@ class SpawnPoint extends GameObject
 	public var wavesInterval: Int = 10;
 	public var _waveCountup:Int = 0;
 	private var currentWave: Int = 0;
+	public var finished: Bool = false;
 
     public function new(X:Float, Y:Float, waveData: Array<Array<Int>>, ?rate:Int=20,?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
     {
@@ -71,6 +72,10 @@ class SpawnPoint extends GameObject
 					_enemyCountup = 0;
 					currentWave += 1;
 					_waveCountup = 0;
+					trace(currentWave);
+				}
+				else if (currentWave == waves[0].length-1) {
+					finished = true;
 				}
 				else {
 					_waveCountup += 1;
