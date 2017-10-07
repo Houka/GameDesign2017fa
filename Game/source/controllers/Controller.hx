@@ -103,6 +103,14 @@ class Controller
 		gameObjects.add(obj);
 
 	}
+	
+	public function allEnemiesDead():Bool {
+		var dead: Bool = false;
+		if (enemyController.countLiving() == 0) {
+			dead = true;
+		}
+		return dead;
+	}
 
 	/**
 	* Main collision function
