@@ -77,7 +77,7 @@ class GameState extends FlxState
 			controller.add(RenderBuffer.pop());
 			
 		if (!controller.isHomeBaseAlive()) {
-			openSubState(new LoseState());
+			openSubState(new LoseState(this.level,this.path));
 		}
 	}
 

@@ -2,6 +2,7 @@ package gameStates;
 
 import flixel.FlxSubState;
 import flixel.FlxG;
+import flixel.math.FlxPoint;
 import flixel.ui.FlxButton;
 import flixel.text.FlxText;
 import openfl.Lib;
@@ -9,6 +10,15 @@ using Lambda;
 
 class LoseState extends FlxSubState
 {	
+	private var level: String; 
+    private var path:Array<FlxPoint>; 
+	
+	public function new(level: String, path:Array<FlxPoint>):Void {
+        super();
+        this.level=level; 
+        this.path = path;
+    }
+	
 	override public function create():Void
 	{
 		super.create();
@@ -19,16 +29,16 @@ class LoseState extends FlxSubState
 		text.y -=100;
 		add(text);
 		
-		/*var restartButton: FlxButton = new FlxButton(0, 0, "Restart", 
+		var restartButton: FlxButton = new FlxButton(0, 0, "Restart", 
 			function() {FlxG.switchState(new GameState(this.level,this.path));});
 		restartButton.screenCenter();
-		add(startButton);
+		add(restartButton);
 		
 		var menuButton: FlxButton = new FlxButton(0, 0, "Menu", 
-			function() {FlxG.switchState(new GameState(this.level,this.path));});
-		medLevelButton.screenCenter();
-		medLevelButton.y += 50; 
-		add(medLevelButton);*/
+			function() {FlxG.switchState(new MenuState());});
+		menuButton.screenCenter();
+		menuButton.y += 50; 
+		add(menuButton);
 		
 		var quitButton: FlxButton = new FlxButton(0, 0, "Quit", quitGame);
 		quitButton.screenCenter();
