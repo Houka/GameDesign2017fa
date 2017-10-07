@@ -1,3 +1,5 @@
+package;
+
 extern class Logging {
     function new() : Void;
     function initialize(gameId : UInt, versionId : UInt, debugMode : Bool) : Void;

@@ -80,7 +80,7 @@
 
 	<!--Enable logging for analytics-->
 	<haxedef name="network-sandbox" />
-	<haxeflag name="-swf-lib" value="source/Logging.swc" />
+	<haxeflag name="-swf-lib" value="Logging.swc" />
 
 	<!-- _________________________________ Custom _______________________________ -->
 

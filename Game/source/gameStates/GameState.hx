@@ -29,7 +29,7 @@ import LevelBuilder;
 
 class GameState extends FlxState
 {
-    private var log:Logging;
+    public var logger:Logging;
     private var eventNum:Int;
 
 	private var controller:Controller;
@@ -50,8 +50,10 @@ class GameState extends FlxState
 		super.create();
 
         eventNum = 0;
-        log = new Logging();
-        log.initialize(771, 0, false);
+        logger = new Logging();
+        logger.initialize(771, 0, false);
+        logger.recordPageLoad();
+        logger.recordLevelStart(1.0);
 
         controller = new Controller(this,this.path);
         mouse = new MouseController(Constants.TEST_MAP);
@@ -115,7 +117,7 @@ class GameState extends FlxState
         eventDetail = "["+Date.now().toString()+"] ";
         eventDetail += "x: " + FlxG.mouse.x + " ";
         eventDetail += "y: " + FlxG.mouse.y;
-        log.recordEvent(eventNum, eventDetail);
+        logger.recordEvent(eventNum, eventDetail);
 
         eventNum += 1;
         trace(eventDetail);
