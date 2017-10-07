@@ -1,11 +1,12 @@
- package gameObjects.mapObjects;
+package gameObjects.mapObjects;
 
- import flixel.FlxG;
- import flixel.system.FlxAssets;
- import gameObjects.GameObject;
- import gameStates.MenuState;
- import interfaces.Attackable;
- import interfaces.Attacker;
+import Logging;
+import flixel.FlxG;
+import flixel.system.FlxAssets;
+import gameObjects.GameObject;
+import gameStates.MenuState;
+import interfaces.Attackable;
+import interfaces.Attacker;
 
 /**
  * HomeBase stores the player's health, and calls game over when it reaches 0.
@@ -29,6 +30,7 @@ class HomeBase extends GameObject implements Attackable
         }
         
         if (this.healthPoints <= 0){
+            Logging.getSingleton().recordLevelEnd();
             FlxG.switchState(new MenuState());
         }
     }

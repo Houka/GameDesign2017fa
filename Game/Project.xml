@@ -78,6 +78,10 @@
 
 	-lib random
 
+	<!--Enable logging for analytics-->
+	<haxedef name="network-sandbox" />
+	<haxeflag name="-swf-lib" value="source/Logging.swc" />
+
 	<!-- _________________________________ Custom _______________________________ -->
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
