@@ -1,6 +1,7 @@
 package gameObjects;
 
 import flixel.math.FlxPoint;
+import flixel.FlxG;
 import gameObjects.npcs.Enemy;
 import gameObjects.mapObjects.Projectile;
 import gameObjects.mapObjects.Tower;
@@ -94,8 +95,6 @@ class GameObjectFactory
     }
 
     public static function createBuildArea(x:Float, y:Float):BuildArea{
-        var buildArea:BuildArea = new BuildArea(x, y, AssetPaths.build_area__png, 100, 100);
-        towerSpawnPoint.set(buildArea.x+buildArea.origin.x, buildArea.y+buildArea.origin.y);
-        return buildArea;
+        return new BuildArea(x, y,FlxG.width/4 - 10, FlxG.height - 20);
     }
 }

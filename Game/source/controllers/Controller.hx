@@ -34,8 +34,8 @@ class Controller
 	private var state:FlxState;
 	private var gameObjects:FlxTypedGroup<FlxObject>;
 
-	private var homeBases:FlxTypedGroup<HomeBase>;
-	private var buildAreas:FlxTypedGroup<BuildArea>;
+	private var homeBase:HomeBase;
+	private var buildArea:BuildArea;
 	private var terrains:FlxTypedGroup<Tile>;
 	private var other:FlxTypedGroup<GameObject>;
 
@@ -53,9 +53,9 @@ class Controller
 		this.gameObjects = new FlxTypedGroup<FlxObject>(Constants.MAX_GAME_OBJECTS);
 
 		this.terrains = new FlxTypedGroup<Tile>(Constants.MAX_GAME_OBJECTS);
-		this.homeBases = new FlxTypedGroup<HomeBase>(Constants.MAX_GAME_OBJECTS);
-		this.buildAreas = new FlxTypedGroup<BuildArea>(Constants.MAX_GAME_OBJECTS);
 		this.other = new FlxTypedGroup<GameObject>(Constants.MAX_GAME_OBJECTS);
+		this.homeBase = null;
+		this.buildArea = null;
 
 		projectileController = new ProjectileController(Constants.MAX_GAME_OBJECTS,frameRate);
 		enemyController = new EnemyController(Constants.MAX_GAME_OBJECTS,frameRate);
@@ -93,58 +93,38 @@ class Controller
 			case Tile:
 				terrains.add(cast(obj, Tile));
 			case HomeBase:
-				homeBases.add(cast(obj, HomeBase));
-			case BuildArea:
-				buildAreas.add(cast(obj, BuildArea));
+				homeBase = cast(obj, HomeBase);
 			default:
 				other.add(obj); //TODO: exclude Materials
 		}
 
 		gameObjects.add(obj);
+	}
 
+	public function addBuildArea(obj:BuildArea):Void{
+		buildArea = obj;	
 	}
 
 	/**
 	* Main collision function
 	*/
 	private function collide():Void{
-		FlxG.overlap(enemyController,homeBases,enemyController.collideHomebase);
+		FlxG.overlap(enemyController,homeBase,enemyController.collideHomebase);
 		FlxG.overlap(projectileController,enemyController,projectileController.collideNPC);
 		FlxG.overlap(projectileController,workerController,projectileController.collideNPC);
 	}
 
 	private function byY(Order:Int, Obj1:FlxObject, Obj2:FlxObject):Int
 	{
-		switch (Type.getClass(Obj1)){
-			case Tile: 
-				if (Type.getClass(Obj2) == Tile) {
-					return FlxSort.byValues(Order, cast(Obj1, FlxObject).y, cast(Obj2, FlxObject).y);
-				}
-				return Order; 
-			case Enemy: 
-				if (Std.is(Obj2, Tile)) { 
-					return -Order; 
-				}
-				if (Std.is(Obj2, Enemy)) {
-					return FlxSort.byValues(Order, cast(Obj1, FlxObject).y, cast(Obj2, FlxObject).y);
-				}
-				return Order; 
-			case Worker: 
-				if (Std.is(Obj2, Tile)) { 
-					return -Order; 
-				}
-				if (Std.is(Obj2, Enemy)) {
-					return FlxSort.byValues(Order, cast(Obj1, FlxObject).y, cast(Obj2, FlxObject).y);
-				}
-				return Order; 
-			case Tower: 
-				return -Order; 
-			case SpawnPoint:
-				return Order; 
-			case HomeBase: 
-				return -Order;
-			default: 
-				return -Order; 
+		return FlxSort.byValues(Order,Obj1.y*getLayerByObject(Obj1),Obj2.y*getLayerByObject(Obj2));
+	}
+
+	private function getLayerByObject(obj:FlxObject):Int{
+		switch(Type.getClass(obj)){
+			case Tile:
+				return 1;
+			default:
+				return 2;
 		}
 	}
 }
