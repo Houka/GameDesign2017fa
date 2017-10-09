@@ -1,6 +1,8 @@
 package gameStates;
 
+#if flash
 import Logging;
+#end
 import flixel.FlxState;
 import flixel.FlxSubState;
 import flixel.FlxSprite; 
@@ -29,9 +31,9 @@ import LevelBuilder;
 
 class GameState extends FlxState
 {
-    public var logger:Logging;
+    #if flash
     private var eventNum:Int;
-
+    #end
 	private var controller:Controller;
 	private var mouse:MouseController; 
 	private var keyboard:KeyboardController;
@@ -49,11 +51,9 @@ class GameState extends FlxState
 	{
 		super.create();
 
+        #if flash
         eventNum = 0;
-        logger = new Logging();
-        logger.initialize(771, 0, false);
-        logger.recordPageLoad();
-        logger.recordLevelStart(1.0);
+        #end
 
         controller = new Controller(this,this.path);
         mouse = new MouseController(Constants.TEST_MAP);
@@ -83,9 +83,11 @@ class GameState extends FlxState
 		controller.update(elapsed);
 
         //log whenever the LMB is released
+        #if flash
         if(FlxG.mouse.justReleased){
             recordMouseRelease();
         }
+        #end
 
 		// post update: empty out buffer queue and add it to state
 		while(!RenderBuffer.isEmpty())
@@ -112,14 +114,16 @@ class GameState extends FlxState
     } 
 
     private function recordMouseRelease():Void{
+        #if flash
         var eventDetail:String;
 
         eventDetail = "["+Date.now().toString()+"] ";
         eventDetail += "x: " + FlxG.mouse.x + " ";
         eventDetail += "y: " + FlxG.mouse.y;
-        logger.recordEvent(eventNum, eventDetail);
+        Logging.getSingleton().recordEvent(eventNum, eventDetail);
 
         eventNum += 1;
         trace(eventDetail);
+        #end
     }
 }

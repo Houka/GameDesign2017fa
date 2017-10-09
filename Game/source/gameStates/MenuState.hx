@@ -45,7 +45,9 @@ class MenuState extends FlxState
 
 	private function quitGame():Void 
 	{
-        Lib.close();
+		#if !flash 
+        	Lib.close();
+        #end
 	}
 
 }

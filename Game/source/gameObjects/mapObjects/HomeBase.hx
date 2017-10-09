@@ -30,7 +30,9 @@ class HomeBase extends GameObject implements Attackable
         }
         
         if (this.healthPoints <= 0){
+            #if flash
             Logging.getSingleton().recordLevelEnd();
+            #end
             FlxG.switchState(new MenuState());
         }
     }

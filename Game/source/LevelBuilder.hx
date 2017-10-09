@@ -1,6 +1,12 @@
 package; 
 
+#if flash
+import flash.net.URLLoader;
+import flash.net.URLRequest;
+import flash.events.Event;
+#else
 import sys.io.File; 
+#end
 import gameObjects.mapObjects.Tile; 
 import gameObjects.mapObjects.SpawnPoint; 
 import gameObjects.mapObjects.HomeBase; 
@@ -17,18 +23,31 @@ class LevelBuilder {
 	public function new() { 
 	}
 
+    public function parseJsonFlash(e){
+        var value = e.target.data();
+        var json:JsonData = haxe.Json.parse(value);  
+
+        createTilemap(json.terrain_map, json.waves);
+    }
 
 	public function parseJson(path: String) {
+        #if !flash
 		var value = File.getContent(path);
-		var json:JsonData = haxe.Json.parse(value); 
+		var json:JsonData = haxe.Json.parse(value);  
 
 		createTilemap(json.terrain_map, json.waves);
+        #end
 	}
 
 
 	public function generateLevel(path: String): Void { 
+        #if flash
+        // var loader = new URLLoader();
+        // loader.addEventListener(Event.COMPLETE, parseJsonFlash);
+        // loader.load(new URLRequest(path));
+        #else
 		parseJson(path); 
-
+        #end
 	}
 
 

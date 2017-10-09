@@ -15,6 +15,12 @@ class Main extends Sprite
 	{
 		super();
 		removeHTML5ContextMenu();
+        #if flash
+        Logging.getSingleton().initialize(771, 0, false);
+        Logging.getSingleton().recordPageLoad();
+        Logging.getSingleton().recordLevelStart(1.0);
+        #end
+
 		addChild(new FlxGame(0, 0, LoadingState, 1,60,60,true,false));
 	}
 
