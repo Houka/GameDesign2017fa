@@ -22,8 +22,9 @@ import gameObjects.mapObjects.BuildArea;
 import gameObjects.mapObjects.HUD;
 import gameObjects.npcs.Enemy;
 import interfaces.Attacker; 
-using flixel.util.FlxSpriteUtil; 
 import LevelBuilder;
+import AssetPaths;
+using flixel.util.FlxSpriteUtil; 
 
 
 class GameState extends FlxState
@@ -61,6 +62,8 @@ class GameState extends FlxState
         //create HUD
         makeBuildArea();
         HUD.reset(Constants.PLAYER_TEST_HEALTH, 0);
+        HUD.loadHealthGraphic(AssetPaths.heart__png,16,16);
+        HUD.loadCurrencyGraphic(AssetPaths.coin__png,16,16);
         HUD.addHUD(this);
 
 	}
