@@ -21,7 +21,9 @@ class EnemyController extends GameObjectController<Enemy>
 			case Idle: 
 				if(obj.canMove && obj.isAtGoal() && obj.walkPath.length > 0){
 					var goal = obj.walkPath.shift();
-					obj.setGoal(cast(goal.x),cast(goal.y));
+					var randX= Std.random(Constants.TILE_WIDTH)-Constants.TILE_WIDTH*2;
+					var randY= Std.random(Constants.TILE_HEIGHT)-Constants.TILE_HEIGHT*2;
+					obj.setGoal(cast(goal.x+randX/4),cast(goal.y+randY/4));
 				}
 				if(obj.canMove && !obj.isAtGoal())
 					obj.state = EnemyState.Moving;
