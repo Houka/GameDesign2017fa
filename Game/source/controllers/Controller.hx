@@ -54,8 +54,8 @@ class Controller
 
 		this.terrains = new FlxTypedGroup<Tile>(Constants.MAX_GAME_OBJECTS);
 		this.other = new FlxTypedGroup<GameObject>(Constants.MAX_GAME_OBJECTS);
+		this.buildArea = GameObjectFactory.createBuildArea(FlxG.width*3/4, 0);
 		this.homeBase = null;
-		this.buildArea = null;
 
 		projectileController = new ProjectileController(Constants.MAX_GAME_OBJECTS,frameRate);
 		enemyController = new EnemyController(Constants.MAX_GAME_OBJECTS,frameRate);
@@ -63,6 +63,7 @@ class Controller
 		towerController = new TowerController(Constants.MAX_GAME_OBJECTS,frameRate);
 
 		state.add(gameObjects);
+		state.add(buildArea);
 	}
 
 	public function update(elapsed: Float): Void{
@@ -99,10 +100,6 @@ class Controller
 		}
 
 		gameObjects.add(obj);
-	}
-
-	public function addBuildArea(obj:BuildArea):Void{
-		buildArea = obj;	
 	}
 
 	/**

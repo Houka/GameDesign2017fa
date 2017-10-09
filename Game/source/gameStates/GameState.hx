@@ -57,10 +57,8 @@ class GameState extends FlxState
 		// TODO Remove tests 
         keyboard.addKeyAndCallback([T], addTowerBlockAtMouse);
         levelBuilder.generateLevel(this.level);
-        createStartingMaterials();
 
-        //create HUD
-        makeBuildArea();
+        // create HUD
         HUD.reset(Constants.PLAYER_TEST_HEALTH, 0);
         HUD.loadHealthGraphic(AssetPaths.heart__png,16,16);
         HUD.loadCurrencyGraphic(AssetPaths.coin__png,16,16);
@@ -83,22 +81,8 @@ class GameState extends FlxState
 			controller.add(RenderBuffer.pop());
 	}
 
-    // Builds the shop and tower build area
-    private function makeBuildArea():Void{
-        controller.addBuildArea(GameObjectFactory.createBuildArea(FlxG.width*3.1/4, FlxG.height*3.1/4));
-    } 
-
     // TODO: Remove test function
     private function addTowerBlockAtMouse():Void{
         controller.add(GameObjectFactory.createRandomTowerBlock(FlxG.mouse.x, FlxG.mouse.y));
-    }
-
-
-    // TODO: Remove test function
-    private function createStartingMaterials():Void{
-        controller.add(GameObjectFactory.createGunBase(FlxG.width*3/4,100));
-        controller.add(GameObjectFactory.createGunBase(FlxG.width*3/4,150));
-        controller.add(GameObjectFactory.createFoundation(FlxG.width*3/4,200));
-        controller.add(GameObjectFactory.createFoundation(FlxG.width*3/4,250));
     }
 }
