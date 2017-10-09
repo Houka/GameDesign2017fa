@@ -38,11 +38,6 @@ class HUD extends FlxTypedGroup<FlxObject>
         super.update(e);
         healthText.text = "x" + HUD.HEALTH;
         currencyText.text = "x" + HUD.CURRENCY_AMOUNT;
-
-        // game over things go here
-        if (HUD.HEALTH <= 0){
-            FlxG.switchState(new MenuState());
-        }
     }
 
     public static function reset(health:Int, currencyAmount:Int)

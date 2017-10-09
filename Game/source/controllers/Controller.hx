@@ -74,9 +74,6 @@ class Controller
 		enemyController.update(elapsed);
 		workerController.update(elapsed);
 		towerController.update(elapsed);
-		towerController.forEachAlive( function(t) {
-			enemyController.forEachAlive( function(e) towerController.canTargetEnemy(t,e) );
-		});
 
 		collide();
 
@@ -121,14 +118,6 @@ class Controller
 		}
 		return (allDead && !moreWaves);
 	}
-	
-	public function isHomeBaseAlive():Bool {
-		var alive:Bool = true;
-		if (homeBase.baseHealth == 0 ) {
-			alive = false;
-		}
-		return alive;
-	}
 
 	/**
 	* Main collision function
@@ -146,6 +135,8 @@ class Controller
 
 	private function getLayerByObject(obj:FlxObject):Int{
 		if (Std.is(obj,Coin))
+			return 0;
+		if (Std.is(obj,Projectile))
 			return 0;
 		if (Std.is(obj,Enemy))
 			return 2;

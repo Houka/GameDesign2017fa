@@ -34,28 +34,36 @@ class TowerController extends GameObjectController<Tower>
         _sight = new FlxVector();
     }
 
-    public function canTargetEnemy(tower:Tower, enemy:Enemy):Bool{
-        _sight.set(enemy.x - tower.x - tower.origin.x, enemy.y - tower.y - tower.origin.y);
-
-        if(_sight.length <= tower.children.length*Constants.RANGE_MULTIPLIER) {
-            shoot(tower, _sight.length, enemy.x, enemy.y);
-            return true;
-        }
-
-        return false;
+    override public function updateState(obj:Tower){
+        super.updateState(obj);
+        shoot(obj);
     }
 
-    private function shoot(tower:Tower, dist:Float, xTarget:Float, yTarget:Float):Void
+    private function shoot(tower:Tower):Void
     {
         var level = 0;
         for(gun in tower.children)
         {
             level ++;
-            if(Type.getClass(gun)==GunBase && 
-                    cast(gun, GunBase).canShoot(tower.getFireRateMultiplier()) && 
-                    dist <= cast(gun, GunBase).baseAttackRange*level)
-                RenderBuffer.add(GameObjectFactory.createProjectile(gun,xTarget,yTarget));
-             
+            if(Type.getClass(gun)==GunBase && cast(gun, GunBase).canShoot(tower.getFireRateMultiplier()))
+                gunBaseShoot(cast(gun,GunBase));
+        }
+    }
+
+    private function gunBaseShoot(gun:GunBase){
+        var x = gun.x + gun.origin.x;
+        var y = gun.y + gun.origin.y;
+        switch(gun.type){
+            case Normal:
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x+100, y, gun.baseAttackRange));              
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x-100, y, gun.baseAttackRange));              
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x, y+100, gun.baseAttackRange));              
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x, y-100, gun.baseAttackRange));              
+            case Diagonal:
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x+100, y+100, gun.baseAttackRange));              
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x-100, y-100, gun.baseAttackRange));              
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x-100, y+100, gun.baseAttackRange));              
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x+100, y-100, gun.baseAttackRange));
         }
     }
 }

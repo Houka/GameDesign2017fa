@@ -1,6 +1,7 @@
 package gameObjects;
 
 import flixel.math.FlxPoint;
+import flixel.util.FlxColor;
 import flixel.FlxG;
 import gameObjects.npcs.Enemy;
 import gameObjects.mapObjects.Projectile;
@@ -45,24 +46,21 @@ class GameObjectFactory
         return tower;
     }
 
-    public static function createProjectile(obj:GameObject, xTarget:Float, yTarget:Float):Projectile{
+    public static function createProjectile(obj:GameObject, xTarget:Float, yTarget:Float, ?timeout:Int=-1):Projectile{
     	return new Projectile(obj.x+obj.origin.x, obj.y+obj.origin.y, xTarget, yTarget, 
-    		Constants.PROJECTILE_ATTACK, Constants.PROJECTILE_SPEED, false, AssetPaths.fireball__png);
+    		Constants.PROJECTILE_ATTACK, Constants.PROJECTILE_SPEED, false, timeout, AssetPaths.fireball__png);
     }
 
-    public static function createRandomTowerBlock(x:Float,y:Float):TowerBlock{
-        switch (Std.random(2)) {
-            case 0:
-                return createGunBase(x,y);
-            case 1:
-                return createFoundation(x,y);
-            default:
-                return createFoundation(x,y);
+    public static function createGunBase(x:Float,y:Float,type:GunType):GunBase{
+        var gun = new GunBase(x,y,10, type,1, AttackType.Ground, 40, 50, AssetPaths.gun__png);
+
+        switch(type){
+            case Normal:
+            case Diagonal:
+                gun.color = FlxColor.RED;
         }
-    }
 
-    public static function createGunBase(x:Float,y:Float):GunBase{
-        return new GunBase(x,y,10, GunType.Normal,1, AttackType.Ground, 40, 100, AssetPaths.gun__png);
+        return gun;
     }
 
     public static function createFoundation(x:Float,y:Float):Foundation{

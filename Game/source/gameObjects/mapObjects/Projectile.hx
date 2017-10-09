@@ -24,8 +24,11 @@ class Projectile extends GameObject implements Attacker
     public var isAttacking:Bool=true;
     public var state:ProjectileState;
     public var isEnemyProjectile:Bool;
+    public var timeout:Int;                 // negative timeout means no timeout
 
-    public function new(X:Float, Y:Float, xTarget:Float, yTarget:Float, attack:Int, speed:Float, isEnemyProjectile:Bool,
+    private var count:Int=0;
+
+    public function new(X:Float, Y:Float, xTarget:Float, yTarget:Float, attack:Int, speed:Float, isEnemyProjectile:Bool, timeout:Int=-1,
         graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
     {
         super(X, Y, graphicAsset,graphicsWidth,graphicsHeight);
@@ -33,6 +36,7 @@ class Projectile extends GameObject implements Attacker
         this.isEnemyProjectile = isEnemyProjectile;
         centerToOrigin();
 
+        this.timeout = timeout;
         this.angle = FlxAngle.asDegrees(FlxAngle.angleBetweenPoint(this, new FlxPoint(xTarget, yTarget)));
         velocity.set(speed, 0);
         velocity.rotate(FlxPoint.weak(0,0), this.angle);
@@ -43,9 +47,11 @@ class Projectile extends GameObject implements Attacker
     override public function update(elapsed:Float)
     {
         super.update(elapsed);
-        if(!isOnScreen())
-        {
-            kill();
-        }
+
+        if (timeout >= 0)
+            count++;
+        
+        if(!isOnScreen() || timeout <= count)
+            state=Dying;
     }
 }

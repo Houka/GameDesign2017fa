@@ -23,7 +23,7 @@ class ProjectileController extends GameObjectController<Projectile>
         		if(!obj.isOnScreen())
 					obj.state = ProjectileState.Dying;
 			case Dying:
-				obj.kill();
+				obj.destroy();
 		}
 	}
 

@@ -10,9 +10,8 @@ import interfaces.Attacker;
 */
 @:enum
 abstract GunType(Int) {
-  var Normal = 0;
-  var Spray = 1;
-  var Heavy = 2;  
+  var Normal = 0;  // + shape
+  var Diagonal = 1;   // x shape
 }
 
 class GunBase extends TowerBlock
