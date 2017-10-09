@@ -4,6 +4,7 @@
  import flixel.system.FlxAssets;
  import gameObjects.GameObject;
  import gameStates.MenuState;
+ import gameObjects.mapObjects.HUD;
  import interfaces.Attackable;
  import interfaces.Attacker;
 
@@ -30,6 +31,7 @@ class HomeBase extends GameObject implements Attackable
         
         if (this.healthPoints <= 0){
 			kill();
+            HUD.HEALTH -= obj.attackPoints;
         }
     }
 

@@ -15,6 +15,7 @@ import gameObjects.npcs.Enemy;
 import gameObjects.mapObjects.Projectile;
 import gameObjects.mapObjects.Tile;
 import gameObjects.mapObjects.Tower;
+import gameObjects.mapObjects.Coin;
 import gameObjects.mapObjects.SpawnPoint; 
 import gameObjects.mapObjects.HomeBase;
 import gameObjects.mapObjects.BuildArea;
@@ -34,10 +35,11 @@ class Controller
 	private var state:FlxState;
 	private var gameObjects:FlxTypedGroup<FlxObject>;
 
-	private var homeBases:FlxTypedGroup<HomeBase>;
-	private var buildAreas:FlxTypedGroup<BuildArea>;
+	private var homeBase:HomeBase;
+	private var buildArea:BuildArea;
 	private var terrains:FlxTypedGroup<Tile>;
 	private var other:FlxTypedGroup<GameObject>;
+	private var spawnPoints:FlxTypedGroup<SpawnPoint>;
 
 	private var projectileController:ProjectileController;
 	private var enemyController:EnemyController;
@@ -53,9 +55,10 @@ class Controller
 		this.gameObjects = new FlxTypedGroup<FlxObject>(Constants.MAX_GAME_OBJECTS);
 
 		this.terrains = new FlxTypedGroup<Tile>(Constants.MAX_GAME_OBJECTS);
-		this.homeBases = new FlxTypedGroup<HomeBase>(Constants.MAX_GAME_OBJECTS);
-		this.buildAreas = new FlxTypedGroup<BuildArea>(Constants.MAX_GAME_OBJECTS);
 		this.other = new FlxTypedGroup<GameObject>(Constants.MAX_GAME_OBJECTS);
+		this.spawnPoints = new FlxTypedGroup<SpawnPoint>(Constants.MAX_GAME_OBJECTS);
+		this.buildArea = GameObjectFactory.createBuildArea(FlxG.width*3/4, 0);
+		this.homeBase = null;
 
 		projectileController = new ProjectileController(Constants.MAX_GAME_OBJECTS,frameRate);
 		enemyController = new EnemyController(Constants.MAX_GAME_OBJECTS,frameRate);
@@ -63,6 +66,7 @@ class Controller
 		towerController = new TowerController(Constants.MAX_GAME_OBJECTS,frameRate);
 
 		state.add(gameObjects);
+		state.add(buildArea);
 	}
 
 	public function update(elapsed: Float): Void{
@@ -96,12 +100,25 @@ class Controller
 				homeBases.add(cast(obj, HomeBase));
 			case BuildArea:
 				buildAreas.add(cast(obj, BuildArea));
+			case SpawnPoint:
+				spawnPoints.add(cast(obj, SpawnPoint));
+				homeBase = cast(obj, HomeBase);
 			default:
 				other.add(obj); //TODO: exclude Materials
 		}
 
 		gameObjects.add(obj);
-
+	}
+	
+	// TODO: Return true after all waves are finished
+	public function allEnemiesDead():Bool {
+		var allDead: Bool = false;
+		var moreWaves: Bool = true;
+		spawnPoints.forEachExists( function(s) if (s.finished) { moreWaves = false; } else { moreWaves = true; } );
+		if (enemyController.countLiving() == 0) {
+			allDead = true;
+		}
+		return (allDead && !moreWaves);
 	}
 	
 	public function isHomeBaseAlive():Bool {
@@ -116,43 +133,26 @@ class Controller
 	* Main collision function
 	*/
 	private function collide():Void{
-		FlxG.overlap(enemyController,homeBases,enemyController.collideHomebase);
+		FlxG.overlap(enemyController,homeBase,enemyController.collideHomebase);
 		FlxG.overlap(projectileController,enemyController,projectileController.collideNPC);
 		FlxG.overlap(projectileController,workerController,projectileController.collideNPC);
 	}
 
 	private function byY(Order:Int, Obj1:FlxObject, Obj2:FlxObject):Int
 	{
-		switch (Type.getClass(Obj1)){
-			case Tile: 
-				if (Type.getClass(Obj2) == Tile) {
-					return FlxSort.byValues(Order, cast(Obj1, FlxObject).y, cast(Obj2, FlxObject).y);
-				}
-				return Order; 
-			case Enemy: 
-				if (Std.is(Obj2, Tile)) { 
-					return -Order; 
-				}
-				if (Std.is(Obj2, Enemy)) {
-					return FlxSort.byValues(Order, cast(Obj1, FlxObject).y, cast(Obj2, FlxObject).y);
-				}
-				return Order; 
-			case Worker: 
-				if (Std.is(Obj2, Tile)) { 
-					return -Order; 
-				}
-				if (Std.is(Obj2, Enemy)) {
-					return FlxSort.byValues(Order, cast(Obj1, FlxObject).y, cast(Obj2, FlxObject).y);
-				}
-				return Order; 
-			case Tower: 
-				return -Order; 
-			case SpawnPoint:
-				return Order; 
-			case HomeBase: 
-				return -Order;
-			default: 
-				return -Order; 
-		}
+		return FlxSort.byValues(Order,Obj2.y*getLayerByObject(Obj2),Obj1.y*getLayerByObject(Obj1));
+	}
+
+	private function getLayerByObject(obj:FlxObject):Int{
+		if (Std.is(obj,Coin))
+			return 0;
+		if (Std.is(obj,Enemy))
+			return 2;
+		if (Std.is(obj,TowerBlock))
+			return 2;
+		if (Std.is(obj,Tile))
+			return 4;
+		
+		return 3;
 	}
 }
