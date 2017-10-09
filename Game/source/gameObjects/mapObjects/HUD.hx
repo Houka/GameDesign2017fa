@@ -50,7 +50,6 @@ class HUD extends FlxTypedGroup<FlxObject>
         HUD.HEALTH = health;
         HUD.CURRENCY_AMOUNT = currencyAmount;
         if (HUD.hud != null){
-            HUD.hud.forEach(function (t) t.destroy());
             HUD.hud.clear();
             HUD.hud.destroy();
         }
