@@ -8,9 +8,10 @@ import flixel.ui.FlxButton;
 import flixel.math.FlxPoint;
 import flixel.FlxG;
 import flixel.group.FlxGroup;
-import gameObjects.materials.Material;
+import gameObjects.materials.TowerBlock;
 import gameObjects.materials.Ammunition;
 import AssetPaths;
+import RenderBuffer;
 
 /**
  * @author Chang Lu
@@ -26,7 +27,8 @@ class BuildArea extends FlxGroup
     private var y:Float;
     private var width:Float;
     private var height:Float;
-    private var materialsList:Array<Material>;
+    private var isBuilding:Bool;
+    private var materialsList:List<TowerBlock>;
     private var ammo:Ammunition = null;
     private var lastTowerPoint:FlxPoint;
 
@@ -38,8 +40,9 @@ class BuildArea extends FlxGroup
         setPosition(X,Y);
         this.width = width;
         this.height = height;
-        materialsList = new Array<Material>();
+        materialsList = new List<TowerBlock>();
         lastTowerPoint = new FlxPoint(x+width/2,y+height-100);
+        isBuilding = false;
 
         // background of shop
         var bg = new GameObject(X,Y,graphicAsset,graphicsWidth,graphicsHeight);
@@ -53,6 +56,19 @@ class BuildArea extends FlxGroup
     public function setPosition(x:Float,y:Float){
         this.x = x;
         this.y = y;
+    }
+
+    override public function update(e:Float){
+        super.update(e);
+        if (isBuilding && FlxG.mouse.justPressed){
+            isBuilding = false;
+            // copy the holding list
+            var copy = new List<TowerBlock>();
+            while(materialsList.length>0)
+                copy.push(popMaterial());
+
+            RenderBuffer.add(GameObjectFactory.createTower(FlxG.mouse.x,FlxG.mouse.y,copy,ammo));
+        }
     }
 
     // TODO: remove test function
@@ -104,6 +120,8 @@ class BuildArea extends FlxGroup
         add(btn3);
         var btn4: FlxButton = new FlxButton(x+this.width/2-40, y+this.height/2, "Remove Ammo", function() remove(ammo));
         add(btn4);
+        var btn5: FlxButton = new FlxButton(x+this.width/2-40, y+this.height/2+50, "Build", function() isBuilding=true);
+        add(btn5);
 
     }
 
@@ -124,18 +142,19 @@ class BuildArea extends FlxGroup
         ammo = null;
     }
 
-    private function addMaterial(obj:Material):Void{
+    private function addMaterial(obj:TowerBlock):Void{
         materialsList.push(obj);
         obj.x -= obj.origin.x;
         lastTowerPoint.y -= obj.height-5;
         add(obj);
     }
 
-    private function popMaterial():Void{
+    private function popMaterial():TowerBlock{
         var obj = materialsList.pop();
         if (obj != null){
             lastTowerPoint.y += obj.height-5;
             remove(obj);
         }
+        return obj;
     }
 }

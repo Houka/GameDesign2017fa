@@ -15,6 +15,7 @@ import gameObjects.npcs.Enemy;
 import gameObjects.mapObjects.Projectile;
 import gameObjects.mapObjects.Tile;
 import gameObjects.mapObjects.Tower;
+import gameObjects.mapObjects.Coin;
 import gameObjects.mapObjects.SpawnPoint; 
 import gameObjects.mapObjects.HomeBase;
 import gameObjects.mapObjects.BuildArea;
@@ -113,15 +114,19 @@ class Controller
 
 	private function byY(Order:Int, Obj1:FlxObject, Obj2:FlxObject):Int
 	{
-		return FlxSort.byValues(Order,Obj1.y*getLayerByObject(Obj1),Obj2.y*getLayerByObject(Obj2));
+		return FlxSort.byValues(Order,Obj2.y*getLayerByObject(Obj2),Obj1.y*getLayerByObject(Obj1));
 	}
 
 	private function getLayerByObject(obj:FlxObject):Int{
-		switch(Type.getClass(obj)){
-			case Tile:
-				return 1;
-			default:
-				return 2;
-		}
+		if (Std.is(obj,Coin))
+			return 0;
+		if (Std.is(obj,Enemy))
+			return 2;
+		if (Std.is(obj,TowerBlock))
+			return 2;
+		if (Std.is(obj,Tile))
+			return 4;
+		
+		return 3;
 	}
 }

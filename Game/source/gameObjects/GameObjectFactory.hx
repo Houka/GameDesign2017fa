@@ -21,9 +21,7 @@ import interfaces.Attacker;
 */
 class GameObjectFactory 
 {
-    public static var towerSpawnPoint:FlxPoint = new FlxPoint();
-
-    public static function createTower(materials:List<TowerBlock>):Null<Tower>
+    public static function createTower(x:Float, y:Float, materials:List<TowerBlock>, ammo:Ammunition):Null<Tower>
     {
         if(materials.length <= 0 || materials.length > Constants.MAX_HEIGHT){
         	trace("Error: Cannot build tower without any materials");
@@ -31,7 +29,7 @@ class GameObjectFactory
             return null;
         }
 
-        var tower:Tower = new Tower(towerSpawnPoint.x, towerSpawnPoint.y, materials, 1); // TODO: Remove 1 because im testing with 1 default worker in tower
+        var tower:Tower = new Tower(x, y, materials, ammo, 1); // TODO: Remove 1 because im testing with 1 default worker in tower
         
         var level = 0;
         for (m in materials){

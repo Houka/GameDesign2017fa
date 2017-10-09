@@ -14,7 +14,7 @@ class Constants
 
     //TowerController
     static public inline var MAX_HEIGHT:Int = 5;
-    static public inline var HEIGHT_OFFSET:Float = 16; //the y-distance between layers
+    static public inline var HEIGHT_OFFSET:Float = 15; //the y-distance between layers
 
     //GunLayer
     static public inline var RANGE_MULTIPLIER:Int = 50;
