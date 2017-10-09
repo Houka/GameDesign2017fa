@@ -39,6 +39,7 @@ class Controller
 	private var buildArea:BuildArea;
 	private var terrains:FlxTypedGroup<Tile>;
 	private var other:FlxTypedGroup<GameObject>;
+	private var spawnPoints:FlxTypedGroup<SpawnPoint>;
 
 	private var projectileController:ProjectileController;
 	private var enemyController:EnemyController;
@@ -55,6 +56,7 @@ class Controller
 
 		this.terrains = new FlxTypedGroup<Tile>(Constants.MAX_GAME_OBJECTS);
 		this.other = new FlxTypedGroup<GameObject>(Constants.MAX_GAME_OBJECTS);
+		this.spawnPoints = new FlxTypedGroup<SpawnPoint>(Constants.MAX_GAME_OBJECTS);
 		this.buildArea = GameObjectFactory.createBuildArea(FlxG.width*3/4, 0);
 		this.homeBase = null;
 
@@ -95,12 +97,28 @@ class Controller
 			case Tile:
 				terrains.add(cast(obj, Tile));
 			case HomeBase:
+				homeBases.add(cast(obj, HomeBase));
+			case BuildArea:
+				buildAreas.add(cast(obj, BuildArea));
+			case SpawnPoint:
+				spawnPoints.add(cast(obj, SpawnPoint));
 				homeBase = cast(obj, HomeBase);
 			default:
 				other.add(obj); //TODO: exclude Materials
 		}
 
 		gameObjects.add(obj);
+	}
+	
+	// TODO: Return true after all waves are finished
+	public function allEnemiesDead():Bool {
+		var allDead: Bool = false;
+		var moreWaves: Bool = true;
+		spawnPoints.forEachExists( function(s) if (s.finished) { moreWaves = false; } else { moreWaves = true; } );
+		if (enemyController.countLiving() == 0) {
+			allDead = true;
+		}
+		return (allDead && !moreWaves);
 	}
 
 	/**

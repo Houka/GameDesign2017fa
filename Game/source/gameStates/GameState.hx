@@ -49,7 +49,8 @@ class GameState extends FlxState
         controller = new Controller(this,this.path);
         mouse = new MouseController(Constants.TEST_MAP);
         keyboard = new KeyboardController();
-        keyboard.addKeyAndCallback([P,SPACE],function() openSubState(new PauseState()));
+        keyboard.addKeyAndCallback([P, SPACE], function() openSubState(new PauseState()));
+		keyboard.addKeyAndCallback([T],function() openSubState(new WinState(this.level, this.path)));
         keyboard.addKeyAndCallback([R],function() FlxG.switchState(new GameState(this.level,this.path)));
         keyboard.addKeyAndCallback([ESCAPE],function() FlxG.switchState(new MenuState()));
         levelBuilder = new LevelBuilder();
@@ -80,6 +81,10 @@ class GameState extends FlxState
 		// post update: empty out buffer queue and add it to state
 		while(!RenderBuffer.isEmpty())
 			controller.add(RenderBuffer.pop());
+			
+		if (controller.allEnemiesDead()) {
+			openSubState(new WinState(this.level, this.path));
+		}
 	}
 
     // TODO: Remove test function
