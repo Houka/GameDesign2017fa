@@ -9,6 +9,7 @@ import gameObjects.mapObjects.Tile;
 import gameObjects.mapObjects.HomeBase;
 import gameObjects.mapObjects.SpawnPoint;
 import gameObjects.mapObjects.BuildArea;
+import gameObjects.mapObjects.Coin;
 import gameObjects.materials.TowerBlock;
 import gameObjects.materials.Foundation;
 import gameObjects.materials.GunBase;
@@ -96,5 +97,9 @@ class GameObjectFactory
 
     public static function createBuildArea(x:Float, y:Float):BuildArea{
         return new BuildArea(x, y,FlxG.width/4 - 10, FlxG.height - 20);
+    }
+
+    public static function createCoin(x:Float, y:Float, value:Int):Coin{
+        return new Coin(x,y,value,AssetPaths.coin__png,16,16);
     }
 }

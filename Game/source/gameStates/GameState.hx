@@ -56,6 +56,8 @@ class GameState extends FlxState
 
 		// TODO Remove tests 
         keyboard.addKeyAndCallback([T], addTowerBlockAtMouse);
+
+        // build level
         levelBuilder.generateLevel(this.level);
 
         // create HUD
@@ -63,7 +65,6 @@ class GameState extends FlxState
         HUD.loadHealthGraphic(AssetPaths.heart__png,16,16);
         HUD.loadCurrencyGraphic(AssetPaths.coin__png,16,16);
         HUD.addHUD(this);
-
 	}
 
 	override public function update(elapsed:Float):Void
@@ -83,6 +84,6 @@ class GameState extends FlxState
 
     // TODO: Remove test function
     private function addTowerBlockAtMouse():Void{
-        controller.add(GameObjectFactory.createRandomTowerBlock(FlxG.mouse.x, FlxG.mouse.y));
+        controller.add(GameObjectFactory.createCoin(FlxG.mouse.x, FlxG.mouse.y,10));
     }
 }
