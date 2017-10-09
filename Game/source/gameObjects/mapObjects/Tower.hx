@@ -26,11 +26,11 @@ class Tower extends GameObject implements Attackable
 
     /** Initialize each component of the tower based on materialsList
      */
-    public function new(X:Float, Y:Float,materials:List<TowerBlock>, ?workers:Int=0,
+    public function new(X:Float, Y:Float,materials:List<TowerBlock>, ammo:Ammunition, ?workers:Int=0,
         ?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
     {
         super(X,Y,graphicAsset,graphicsWidth,graphicsHeight);
-        this.ammo = GameObjectFactory.createAmmunition(x,y);
+        this.ammo = ammo;
         this.numWorkers = workers;
         this.children = new List<TowerBlock>();
         for (m in materials)
@@ -48,17 +48,6 @@ class Tower extends GameObject implements Attackable
         }
 
         return false;
-    }
-
-    override public function update(elapsed:Float):Void{
-        super.update(elapsed);
-        var level:Int = 0;
-        for (m in children){
-            var xpos = this.x+origin.x-m.origin.y;
-            var ypos = this.y+origin.y-m.origin.y-level*Constants.HEIGHT_OFFSET;
-            level++;
-            m.setPosition(xpos,ypos);
-        }
     }
 
     override public function stopDrag():Void {

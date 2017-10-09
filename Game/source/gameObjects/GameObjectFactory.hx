@@ -1,6 +1,7 @@
 package gameObjects;
 
 import flixel.math.FlxPoint;
+import flixel.FlxG;
 import gameObjects.npcs.Enemy;
 import gameObjects.mapObjects.Projectile;
 import gameObjects.mapObjects.Tower;
@@ -8,6 +9,7 @@ import gameObjects.mapObjects.Tile;
 import gameObjects.mapObjects.HomeBase;
 import gameObjects.mapObjects.SpawnPoint;
 import gameObjects.mapObjects.BuildArea;
+import gameObjects.mapObjects.Coin;
 import gameObjects.materials.TowerBlock;
 import gameObjects.materials.Foundation;
 import gameObjects.materials.GunBase;
@@ -19,9 +21,7 @@ import interfaces.Attacker;
 */
 class GameObjectFactory 
 {
-    public static var towerSpawnPoint:FlxPoint = new FlxPoint();
-
-    public static function createTower(materials:List<TowerBlock>):Null<Tower>
+    public static function createTower(x:Float, y:Float, materials:List<TowerBlock>, ammo:Ammunition):Null<Tower>
     {
         if(materials.length <= 0 || materials.length > Constants.MAX_HEIGHT){
         	trace("Error: Cannot build tower without any materials");
@@ -29,7 +29,7 @@ class GameObjectFactory
             return null;
         }
 
-        var tower:Tower = new Tower(towerSpawnPoint.x, towerSpawnPoint.y, materials, 1); // TODO: Remove 1 because im testing with 1 default worker in tower
+        var tower:Tower = new Tower(x, y, materials, ammo, 1); // TODO: Remove 1 because im testing with 1 default worker in tower
         
         var level = 0;
         for (m in materials){
@@ -94,8 +94,10 @@ class GameObjectFactory
     }
 
     public static function createBuildArea(x:Float, y:Float):BuildArea{
-        var buildArea:BuildArea = new BuildArea(x, y, AssetPaths.build_area__png, 100, 100);
-        towerSpawnPoint.set(buildArea.x+buildArea.origin.x, buildArea.y+buildArea.origin.y);
-        return buildArea;
+        return new BuildArea(x, y,FlxG.width/4 - 10, FlxG.height - 20);
+    }
+
+    public static function createCoin(x:Float, y:Float, value:Int):Coin{
+        return new Coin(x,y,value,AssetPaths.coin__png,16,16);
     }
 }

@@ -5,8 +5,6 @@ import flixel.system.FlxAssets;
 import interfaces.Attackable;
 import interfaces.Attacker;
 
-import controllers.TowerController; //remove me
-
 /**
  * TowerBlock is the parent class for GunBase and Foundation.
  *
@@ -36,13 +34,6 @@ class TowerBlock extends Material implements Attackable
 
 		if (this.healthPoints <= 0){
 			kill();
-		}
-	}
-
-	override public function mouseReleasedHandler():Void{
-		super.mouseReleasedHandler();
-		if(!inTower){
-			TowerController.installTowerBlock(this);
 		}
 	}
 }
