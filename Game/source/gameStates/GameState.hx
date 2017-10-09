@@ -18,12 +18,13 @@ import gameObjects.mapObjects.Tile;
 import gameObjects.mapObjects.SpawnPoint;
 import gameObjects.mapObjects.Tower;
 import gameObjects.mapObjects.HomeBase;
-import gameObjects.mapObjects.Inventory;
 import gameObjects.mapObjects.BuildArea;
+import gameObjects.mapObjects.HUD;
 import gameObjects.npcs.Enemy;
 import interfaces.Attacker; 
-using flixel.util.FlxSpriteUtil; 
 import LevelBuilder;
+import AssetPaths;
+using flixel.util.FlxSpriteUtil; 
 
 
 class GameState extends FlxState
@@ -55,11 +56,15 @@ class GameState extends FlxState
 
 		// TODO Remove tests 
         keyboard.addKeyAndCallback([T], addTowerBlockAtMouse);
-        levelBuilder.generateLevel(this.level);
-        createStartingMaterials();
 
-        //create HUD
-        makeBuildArea();
+        // build level
+        levelBuilder.generateLevel(this.level);
+
+        // create HUD
+        HUD.reset(Constants.PLAYER_TEST_HEALTH, 0);
+        HUD.loadHealthGraphic(AssetPaths.heart__png,16,16);
+        HUD.loadCurrencyGraphic(AssetPaths.coin__png,16,16);
+        HUD.addHUD(this);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -79,20 +84,6 @@ class GameState extends FlxState
 
     // TODO: Remove test function
     private function addTowerBlockAtMouse():Void{
-        controller.add(GameObjectFactory.createRandomTowerBlock(FlxG.mouse.x, FlxG.mouse.y));
+        controller.add(GameObjectFactory.createCoin(FlxG.mouse.x, FlxG.mouse.y,10));
     }
-
-
-    // TODO: Remove test function
-    private function createStartingMaterials():Void{
-        controller.add(GameObjectFactory.createGunBase(FlxG.width*3/4,100));
-        controller.add(GameObjectFactory.createGunBase(FlxG.width*3/4,150));
-        controller.add(GameObjectFactory.createFoundation(FlxG.width*3/4,200));
-        controller.add(GameObjectFactory.createFoundation(FlxG.width*3/4,250));
-    }
-
-    //TODO: make HUD here
-    private function makeBuildArea():Void{
-        controller.add(GameObjectFactory.createBuildArea(FlxG.width*3.1/4, FlxG.height*3.1/4));
-    } 
 }

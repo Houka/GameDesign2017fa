@@ -4,6 +4,7 @@
  import flixel.system.FlxAssets;
  import gameObjects.GameObject;
  import gameStates.MenuState;
+ import gameObjects.mapObjects.HUD;
  import interfaces.Attackable;
  import interfaces.Attacker;
 
@@ -26,10 +27,7 @@ class HomeBase extends GameObject implements Attackable
     public function takeDamage(obj:Attacker):Void{
         if (this.alive){
             this.healthPoints -= obj.attackPoints;
-        }
-        
-        if (this.healthPoints <= 0){
-            FlxG.switchState(new MenuState());
+            HUD.HEALTH -= obj.attackPoints;
         }
     }
 

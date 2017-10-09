@@ -21,7 +21,9 @@ class EnemyController extends GameObjectController<Enemy>
 			case Idle: 
 				if(obj.canMove && obj.isAtGoal() && obj.walkPath.length > 0){
 					var goal = obj.walkPath.shift();
-					obj.setGoal(cast(goal.x),cast(goal.y));
+					var randX= Std.random(Constants.TILE_WIDTH)-Constants.TILE_WIDTH*2;
+					var randY= Std.random(Constants.TILE_HEIGHT)-Constants.TILE_HEIGHT*2;
+					obj.setGoal(cast(goal.x+randX/4),cast(goal.y+randY/4));
 				}
 				if(obj.canMove && !obj.isAtGoal())
 					obj.state = EnemyState.Moving;
@@ -33,8 +35,8 @@ class EnemyController extends GameObjectController<Enemy>
 				// TODO: make attacking collision
 			case Dying:
 				obj.canMove = false;
-				if (Std.random(20) == 1) 
-					RenderBuffer.add(GameObjectFactory.createRandomTowerBlock(obj.x, obj.y));
+				if (Std.random(5) == 1) 
+					RenderBuffer.add(GameObjectFactory.createCoin(obj.x-obj.origin.x, obj.y-obj.origin.y, Std.random(2)+1));
 				obj.kill();
 		}
 	}
