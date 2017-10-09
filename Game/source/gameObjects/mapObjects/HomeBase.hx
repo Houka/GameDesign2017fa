@@ -27,6 +27,10 @@ class HomeBase extends GameObject implements Attackable
     public function takeDamage(obj:Attacker):Void{
         if (this.alive){
             this.healthPoints -= obj.attackPoints;
+        }
+        
+        if (this.healthPoints <= 0){
+			kill();
             HUD.HEALTH -= obj.attackPoints;
         }
     }

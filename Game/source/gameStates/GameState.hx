@@ -52,7 +52,7 @@ class GameState extends FlxState
         keyboard.addKeyAndCallback([P, SPACE], function() openSubState(new PauseState()));
 		keyboard.addKeyAndCallback([T],function() openSubState(new WinState(this.level, this.path)));
         keyboard.addKeyAndCallback([R],function() FlxG.switchState(new GameState(this.level,this.path)));
-        keyboard.addKeyAndCallback([ESCAPE],function() FlxG.switchState(new MenuState()));
+        keyboard.addKeyAndCallback([ESCAPE], function() FlxG.switchState(new MenuState()));
         levelBuilder = new LevelBuilder();
 
 		// TODO Remove tests 
@@ -82,6 +82,8 @@ class GameState extends FlxState
 		while(!RenderBuffer.isEmpty())
 			controller.add(RenderBuffer.pop());
 			
+		if (!controller.isHomeBaseAlive()) {
+			openSubState(new LoseState(this.level,this.path));
 		if (controller.allEnemiesDead()) {
 			openSubState(new WinState(this.level, this.path));
 		}

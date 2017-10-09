@@ -120,6 +120,14 @@ class Controller
 		}
 		return (allDead && !moreWaves);
 	}
+	
+	public function isHomeBaseAlive():Bool {
+		var alive:Bool = true;
+		if (homeBases.countDead() != 0 ) {
+			alive = false;
+		}
+		return alive;
+	}
 
 	/**
 	* Main collision function
