@@ -34,6 +34,7 @@ class EnemyController extends GameObjectController<Enemy>
 			case Attacking:
 				// TODO: make attacking collision
 			case Dying:
+				trace("bleh");
 				obj.canMove = false;
 				if (Std.random(5) == 1) 
 					RenderBuffer.add(GameObjectFactory.createCoin(obj.x-obj.origin.x, obj.y-obj.origin.y, Std.random(2)+1));

@@ -84,10 +84,12 @@ class GameState extends FlxState
 			
 		if (!controller.isHomeBaseAlive()) {
 			openSubState(new LoseState(this.level,this.path));
+		}
 		if (controller.allEnemiesDead()) {
 			openSubState(new WinState(this.level, this.path));
 		}
 	}
+
 
     // TODO: Remove test function
     private function addTowerBlockAtMouse():Void{

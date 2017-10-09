@@ -15,7 +15,7 @@ class HomeBase extends GameObject implements Attackable
 {
     public var healthPoints:Int;
 
-    private var baseHealth:Int;
+    public var baseHealth:Int;
 
     public function new(X:Float, Y:Float, healthPoints:Int,?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
     {

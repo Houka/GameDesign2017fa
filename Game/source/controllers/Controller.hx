@@ -97,12 +97,13 @@ class Controller
 			case Tile:
 				terrains.add(cast(obj, Tile));
 			case HomeBase:
-				homeBases.add(cast(obj, HomeBase));
+				homeBase = cast(obj, HomeBase);
+				// homeBase.add(cast(obj, HomeBase));
 			case BuildArea:
-				buildAreas.add(cast(obj, BuildArea));
+				buildArea.add(cast(obj, BuildArea));
 			case SpawnPoint:
 				spawnPoints.add(cast(obj, SpawnPoint));
-				homeBase = cast(obj, HomeBase);
+				// homeBase = cast(obj, HomeBase);
 			default:
 				other.add(obj); //TODO: exclude Materials
 		}
@@ -123,7 +124,7 @@ class Controller
 	
 	public function isHomeBaseAlive():Bool {
 		var alive:Bool = true;
-		if (homeBases.countDead() != 0 ) {
+		if (homeBase.baseHealth == 0 ) {
 			alive = false;
 		}
 		return alive;
