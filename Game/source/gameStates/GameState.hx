@@ -82,7 +82,7 @@ class GameState extends FlxState
 		while(!RenderBuffer.isEmpty())
 			controller.add(RenderBuffer.pop());
 			
-		if (!controller.isHomeBaseAlive()) {
+		if (HUD.HEALTH <= 0) {
 			openSubState(new LoseState(this.level,this.path));
 		}
 		if (controller.allEnemiesDead()) {

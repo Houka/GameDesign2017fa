@@ -10,6 +10,7 @@ import flixel.FlxG;
 import flixel.group.FlxGroup;
 import gameObjects.materials.TowerBlock;
 import gameObjects.materials.Ammunition;
+import gameObjects.materials.GunBase;
 import AssetPaths;
 import RenderBuffer;
 
@@ -84,9 +85,9 @@ class BuildArea extends FlxGroup
         var ammoX = x+10;
         var ammoY = y+this.height-100;
         var buttons = [
-            {name:"Gun 1", callback:function() addMaterial(GameObjectFactory.createGunBase(lastTowerPoint.x,lastTowerPoint.y))},
-            {name:"Gun 2", callback:function() addMaterial(GameObjectFactory.createGunBase(lastTowerPoint.x,lastTowerPoint.y))},
-            {name:"Gun 3", callback:function() addMaterial(GameObjectFactory.createGunBase(lastTowerPoint.x,lastTowerPoint.y))},
+            {name:"Gun 1", callback:function() addMaterial(GameObjectFactory.createGunBase(lastTowerPoint.x,lastTowerPoint.y,GunType.Horizontal))},
+            {name:"Gun 2", callback:function() addMaterial(GameObjectFactory.createGunBase(lastTowerPoint.x,lastTowerPoint.y,GunType.Vertical))},
+            {name:"Gun 3", callback:function() addMaterial(GameObjectFactory.createGunBase(lastTowerPoint.x,lastTowerPoint.y,GunType.Diagonal))},
 
             {name:"Snow", callback:function() addMaterial(GameObjectFactory.createFoundation(lastTowerPoint.x,lastTowerPoint.y))},
             {name:"Ice", callback:function() addMaterial(GameObjectFactory.createFoundation(lastTowerPoint.x,lastTowerPoint.y))},
