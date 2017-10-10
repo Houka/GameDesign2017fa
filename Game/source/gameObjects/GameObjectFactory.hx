@@ -55,7 +55,9 @@ class GameObjectFactory
         var gun = new GunBase(x,y,10, type,1, AttackType.Ground, 40, 50, AssetPaths.gun__png);
 
         switch(type){
-            case Normal:
+            case Horizontal:
+            case Vertical:
+                gun.color = FlxColor.BLUE;
             case Diagonal:
                 gun.color = FlxColor.RED;
         }

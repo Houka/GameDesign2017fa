@@ -54,9 +54,10 @@ class TowerController extends GameObjectController<Tower>
         var x = gun.x + gun.origin.x;
         var y = gun.y + gun.origin.y;
         switch(gun.type){
-            case Normal:
+            case Vertical:
                 RenderBuffer.add(GameObjectFactory.createProjectile(gun, x+100, y, gun.baseAttackRange));              
                 RenderBuffer.add(GameObjectFactory.createProjectile(gun, x-100, y, gun.baseAttackRange));              
+            case Horizontal:
                 RenderBuffer.add(GameObjectFactory.createProjectile(gun, x, y+100, gun.baseAttackRange));              
                 RenderBuffer.add(GameObjectFactory.createProjectile(gun, x, y-100, gun.baseAttackRange));              
             case Diagonal:
