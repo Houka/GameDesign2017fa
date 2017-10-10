@@ -78,6 +78,8 @@ class Controller
 		collide();
 
 		gameObjects.sort(byY, FlxSort.ASCENDING); 
+
+		gameObjects.forEach(function (t) {if (!t.exists) { gameObjects.remove(t, true); }}); 
 	}
 
 	public function add(obj:GameObject):Void{

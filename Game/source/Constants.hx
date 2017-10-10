@@ -10,7 +10,7 @@ import flixel.math.FlxPoint;
 class Constants
 {
 	//Controller
-	static public inline var MAX_GAME_OBJECTS:Int = 500;
+	static public inline var MAX_GAME_OBJECTS:Int = 1000;
 
     //TowerController
     static public inline var MAX_HEIGHT:Int = 5;
