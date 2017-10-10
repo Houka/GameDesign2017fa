@@ -1,6 +1,5 @@
 package gameObjects.mapObjects;
 
-import Logging;
 import flixel.FlxG;
 import flixel.system.FlxAssets;
 import gameObjects.GameObject;
@@ -30,9 +29,6 @@ class HomeBase extends GameObject implements Attackable
         }
         
         if (this.healthPoints <= 0){
-            #if flash
-            Logging.getSingleton().recordLevelEnd();
-            #end
             FlxG.switchState(new MenuState());
         }
     }

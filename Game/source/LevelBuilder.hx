@@ -20,6 +20,25 @@ typedef JsonData = {
 }
 
 class LevelBuilder { 
+    var easyLevel:JsonData = { 
+    terrain_map : 
+         [[0,0,0,2,2,0,0,0,0,0,0,0,0],
+        [0,0,0,1,1,0,0,0,0,0,0,0,0],
+        [0,0,0,1,1,0,0,0,0,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0,0,0,0],
+        [0,0,0,0,1,1,1,1,0,0,0,0,0],
+        [0,0,0,0,0,1,1,1,1,1,1,1,0],
+        [0,0,0,0,0,0,0,0,0,0,1,1,0],
+        [0,0,0,0,0,0,0,0,0,1,1,1,0],
+        [0,0,0,0,0,1,1,1,1,1,1,0,0],
+        [0,0,0,0,1,1,1,1,1,1,0,0,0],
+        [0,0,0,1,1,1,1,0,0,0,0,0,0],
+        [0,0,0,0,3,1,0,0,0,0,0,0,0]], 
+    waves: 
+        [[10, 20, 0]]
+
+    }
+
 	public function new() { 
 	}
 
@@ -45,6 +64,7 @@ class LevelBuilder {
         var loader = new URLLoader();
         loader.addEventListener(Event.COMPLETE, parseJsonFlash);
         //loader.load(new URLRequest("../assets/data/easyMap.json"));
+        createTilemap(easyLevel.terrain_map, easyLevel.waves);
         #else
 		parseJson(path); 
         #end

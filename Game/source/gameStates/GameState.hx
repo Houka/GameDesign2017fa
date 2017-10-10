@@ -126,4 +126,12 @@ class GameState extends FlxState
         trace(eventDetail);
         #end
     }
+
+    //Stop recording once this level ends
+    override public function switchTo(nextState:FlxState):Bool{
+        #if flash
+        Logging.getSingleton().recordLevelEnd();
+        #end
+        return super.switchTo(nextState);
+    }
 }
