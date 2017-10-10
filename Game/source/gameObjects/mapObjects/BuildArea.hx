@@ -13,6 +13,7 @@ import gameObjects.materials.Ammunition;
 import gameObjects.materials.GunBase;
 import AssetPaths;
 import RenderBuffer;
+import gameObjects.mapObjects.HUD; 
 
 /**
  * @author Chang Lu
@@ -85,17 +86,17 @@ class BuildArea extends FlxGroup
         var ammoX = x+10;
         var ammoY = y+this.height-100;
         var buttons = [
-            {name:"Gun 1", callback:function() addMaterial(GameObjectFactory.createGunBase(lastTowerPoint.x,lastTowerPoint.y,GunType.Horizontal))},
-            {name:"Gun 2", callback:function() addMaterial(GameObjectFactory.createGunBase(lastTowerPoint.x,lastTowerPoint.y,GunType.Vertical))},
-            {name:"Gun 3", callback:function() addMaterial(GameObjectFactory.createGunBase(lastTowerPoint.x,lastTowerPoint.y,GunType.Diagonal))},
+            {name:"Gun 1 \n\n 1", callback:function() addMaterial(GameObjectFactory.createGunBase(lastTowerPoint.x,lastTowerPoint.y,GunType.Horizontal))},
+            {name:"Gun 2 \n\n 1", callback:function() addMaterial(GameObjectFactory.createGunBase(lastTowerPoint.x,lastTowerPoint.y,GunType.Vertical))},
+            {name:"Gun 3 \n\n 2", callback:function() addMaterial(GameObjectFactory.createGunBase(lastTowerPoint.x,lastTowerPoint.y,GunType.Diagonal))},
 
-            {name:"Snow", callback:function() addMaterial(GameObjectFactory.createFoundation(lastTowerPoint.x,lastTowerPoint.y))},
-            {name:"Ice", callback:function() addMaterial(GameObjectFactory.createFoundation(lastTowerPoint.x,lastTowerPoint.y))},
-            {name:"Metal", callback:function() addMaterial(GameObjectFactory.createFoundation(lastTowerPoint.x,lastTowerPoint.y))},
+            {name:"Snow \n\n 1", callback:function() addMaterial(GameObjectFactory.createFoundation(lastTowerPoint.x,lastTowerPoint.y))},
+            {name:"Ice \n\n 2", callback:function() addMaterial(GameObjectFactory.createFoundation(lastTowerPoint.x,lastTowerPoint.y))},
+            {name:"Metal \n\n 3", callback:function() addMaterial(GameObjectFactory.createFoundation(lastTowerPoint.x,lastTowerPoint.y))},
 
-            {name:"Ammo 1", callback:function() addAmmo(GameObjectFactory.createAmmunition(ammoX,ammoY))},
-            {name:"Ammo 2", callback:function() addAmmo(GameObjectFactory.createAmmunition(ammoX,ammoY))},
-            {name:"Ammo 3", callback:function() addAmmo(GameObjectFactory.createAmmunition(ammoX,ammoY))}
+            {name:"Ammo 1 \n\n 1", callback:function() addAmmo(GameObjectFactory.createAmmunition(ammoX,ammoY))},
+            {name:"Ammo 2 \n\n 2", callback:function() addAmmo(GameObjectFactory.createAmmunition(ammoX,ammoY))},
+            {name:"Ammo 3 \n\n 3", callback:function() addAmmo(GameObjectFactory.createAmmunition(ammoX,ammoY))}
         ];
         var gap = 10;
         var paddingX = 30;
@@ -144,17 +145,22 @@ class BuildArea extends FlxGroup
     }
 
     private function addMaterial(obj:TowerBlock):Void{
-        materialsList.push(obj);
-        obj.x -= obj.origin.x;
-        lastTowerPoint.y -= obj.height-5;
-        add(obj);
+        if (HUD.CURRENCY_AMOUNT > 0) {
+            materialsList.push(obj);
+            obj.x -= obj.origin.x;
+            lastTowerPoint.y -= obj.height-5;
+            add(obj);
+            HUD.CURRENCY_AMOUNT -= 1;
+        }
     }
+
 
     private function popMaterial():TowerBlock{
         var obj = materialsList.pop();
         if (obj != null){
             lastTowerPoint.y += obj.height-5;
             remove(obj);
+            HUD.CURRENCY_AMOUNT += 1; 
         }
         return obj;
     }

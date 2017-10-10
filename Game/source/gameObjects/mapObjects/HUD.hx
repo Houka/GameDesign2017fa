@@ -18,7 +18,7 @@ import gameStates.*;
  */
 class HUD extends FlxTypedGroup<FlxObject>
 {
-    public static var CURRENCY_AMOUNT:Int=0;
+    public static var CURRENCY_AMOUNT:Int=1;
     public static var HEALTH:Int=0;
     public static var hud:HUD = null;
 
