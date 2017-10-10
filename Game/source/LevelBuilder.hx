@@ -23,8 +23,8 @@ class LevelBuilder {
 	public function new() { 
 	}
 
-    public function parseJsonFlash(e){
-        var value = e.target.data();
+    public function parseJsonFlash(event){
+        var value = event.target.data();
         var json:JsonData = haxe.Json.parse(value);  
 
         createTilemap(json.terrain_map, json.waves);
@@ -42,9 +42,9 @@ class LevelBuilder {
 
 	public function generateLevel(path: String): Void { 
         #if flash
-        // var loader = new URLLoader();
-        // loader.addEventListener(Event.COMPLETE, parseJsonFlash);
-        // loader.load(new URLRequest(path));
+        var loader = new URLLoader();
+        loader.addEventListener(Event.COMPLETE, parseJsonFlash);
+        //loader.load(new URLRequest("../assets/data/easyMap.json"));
         #else
 		parseJson(path); 
         #end
@@ -71,6 +71,4 @@ class LevelBuilder {
             }
         }
     }
-
-
 }
