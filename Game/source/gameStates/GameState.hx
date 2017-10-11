@@ -115,9 +115,9 @@ class GameState extends FlxState
 
 
     //TODO: make HUD here
-    private function makeBuildArea():Void{
-        controller.add(GameObjectFactory.createBuildArea(FlxG.width*3.1/4, FlxG.height*3.1/4));
-    } 
+    // private function makeBuildArea():Void{
+    //     controller.add(GameObjectFactory.createBuildArea(FlxG.width*3.1/4, FlxG.height*3.1/4));
+    // } 
 
     private function recordMouseRelease():Void{
         #if flash
