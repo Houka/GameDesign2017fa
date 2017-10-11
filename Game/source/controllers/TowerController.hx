@@ -27,7 +27,6 @@ import interfaces.Attacker;
 class TowerController extends GameObjectController<Tower>
 {
     private var _sight:FlxVector;
-    public static var underConstruction:Null<Tower>;
 
     public function new(maxSize:Int=0, frameRate:Int=60):Void
     {
@@ -35,61 +34,37 @@ class TowerController extends GameObjectController<Tower>
         _sight = new FlxVector();
     }
 
-    public static function installTowerBlock(m:TowerBlock):Bool{
-        if(underConstruction == null){ //create tower
-            var matList = new List<TowerBlock>();
-            matList.add(m);
-            underConstruction = GameObjectFactory.createTower(matList);
-            if(underConstruction == null){ //tower creation failed
-                return false;
-            }
-            underConstruction.mousePressedCallback = towerPressedCallback;
-            RenderBuffer.add(underConstruction);
-            return true;
-        }
-        else { //append to already existing tower
-            return underConstruction.addTowerBlock(m);
-        }
+    override public function updateState(obj:Tower){
+        super.updateState(obj);
+        shoot(obj);
     }
 
-    public static function installAmmo(ammo:Ammunition):Bool{
-        if(underConstruction == null){
-            return false;
-        }
-        underConstruction.ammo = ammo;
-        return true;
-    }
-
-    public function canTargetEnemy(tower:Tower, enemy:Enemy):Bool{
-        _sight.set(enemy.x - tower.x - tower.origin.x, enemy.y - tower.y - tower.origin.y);
-
-        if(_sight.length <= tower.children.length*Constants.RANGE_MULTIPLIER) {
-            shoot(tower, _sight.length, enemy.x, enemy.y);
-            return true;
-        }
-
-        return false;
-    }
-
-    private function shoot(tower:Tower, dist:Float, xTarget:Float, yTarget:Float):Void
+    private function shoot(tower:Tower):Void
     {
         var level = 0;
         for(gun in tower.children)
         {
             level ++;
-            if(Type.getClass(gun)==GunBase)
-            {
-                if(cast(gun, GunBase).canShoot(tower.getFireRateMultiplier()) && 
-                    dist <= cast(gun, GunBase).baseAttackRange*level){
-                    RenderBuffer.add(GameObjectFactory.createProjectile(gun,xTarget,yTarget));
-                }
-            }
+            if(Type.getClass(gun)==GunBase && cast(gun, GunBase).canShoot(tower.getFireRateMultiplier()))
+                gunBaseShoot(cast(gun,GunBase));
         }
     }
 
-    public static function towerPressedCallback(tower:FlxExtendedSprite, x:Int, y:Int):Void{
-        if(tower == underConstruction){
-            underConstruction = null;
+    private function gunBaseShoot(gun:GunBase){
+        var x = gun.x + gun.origin.x;
+        var y = gun.y + gun.origin.y;
+        switch(gun.type){
+            case Vertical:
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x+100, y, gun.baseAttackRange));              
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x-100, y, gun.baseAttackRange));              
+            case Horizontal:
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x, y+100, gun.baseAttackRange));              
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x, y-100, gun.baseAttackRange));              
+            case Diagonal:
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x+100, y+100, gun.baseAttackRange));              
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x-100, y-100, gun.baseAttackRange));              
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x-100, y+100, gun.baseAttackRange));              
+                RenderBuffer.add(GameObjectFactory.createProjectile(gun, x+100, y-100, gun.baseAttackRange));
         }
     }
 }

@@ -16,7 +16,11 @@ class SpawnPoint extends GameObject
     public var spawnRate:Int;
     private var _spawnCountup:Int;
     private var _enemyCountup: Int = 0; 
-    public var waves:Array<Array<Int>>; 
+    public var waves:Array<Array<Int>>;
+	public var wavesInterval: Int = 10;
+	public var _waveCountup:Int = 0;
+	private var currentWave: Int = 0;
+	public var finished: Bool = false;
 
     public function new(X:Float, Y:Float, waveData: Array<Array<Int>>, ?rate:Int=20,?graphicAsset:FlxGraphicAsset, ?graphicsWidth:Int, ?graphicsHeight:Int)
     {
@@ -35,20 +39,37 @@ class SpawnPoint extends GameObject
         }
         else
         {
-            _spawnCountup = 0;
-            _enemyCountup += 1; 
-            // trace(numEnemiesForWave(0)); 
-
-            // // TODO: remove test code
-            if (_enemyCountup < waves[0][0]) {
-                var npc = GameObjectFactory.createEnemy(this.x+this.origin.x,this.y+this.origin.y);
+            _spawnCountup = 0; 
+			
+			if (currentWave == 0 && _enemyCountup < waves[0][currentWave]) {
+				var npc = GameObjectFactory.createEnemy(this.x+this.origin.x,this.y+this.origin.y);
                 RenderBuffer.add(npc);
-            }
-
-            else if (_enemyCountup < waves[0][0] + waves[0][1]) {
-                var npc = GameObjectFactory.createTank(this.x+this.origin.x,this.y+this.origin.y);
+				_enemyCountup += 1;
+			}
+			
+			else if (currentWave == 1 && _enemyCountup < waves[0][currentWave]) {
+				var npc = GameObjectFactory.createTank(this.x+this.origin.x,this.y+this.origin.y);
                 RenderBuffer.add(npc);
-            }
+				_enemyCountup += 1;
+			}
+			
+			else if (_enemyCountup == waves[0][currentWave]) {
+				
+				if (_waveCountup == wavesInterval) {
+					_enemyCountup = 0;
+					currentWave += 1;
+					_waveCountup = 0;
+				}
+				else if (currentWave == waves[0].length-1) {
+					finished = true;
+				}
+				else {
+					_waveCountup += 1;
+				}
+				
+			}
+			
+			
         }
     }
 
