@@ -1,4 +1,4 @@
- package gameObjects.mapObjects;
+package gameObjects.mapObjects;
 
  import flixel.FlxG;
  import flixel.system.FlxAssets;
@@ -7,6 +7,7 @@
  import gameObjects.mapObjects.HUD;
  import interfaces.Attackable;
  import interfaces.Attacker;
+
 
 /**
  * HomeBase stores the player's health, and calls game over when it reaches 0.

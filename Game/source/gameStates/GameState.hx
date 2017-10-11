@@ -1,5 +1,8 @@
 package gameStates;
 
+#if flash
+import Logging;
+#end
 import flixel.FlxState;
 import flixel.FlxSubState;
 import flixel.FlxSprite; 
@@ -29,6 +32,9 @@ using flixel.util.FlxSpriteUtil;
 
 class GameState extends FlxState
 {
+    #if flash
+    private var eventNum:Int;
+    #end
 	private var controller:Controller;
 	private var mouse:MouseController; 
 	private var keyboard:KeyboardController;
@@ -45,6 +51,10 @@ class GameState extends FlxState
 	override public function create():Void
 	{
 		super.create();
+
+        #if flash
+        eventNum = 0;
+        #end
 
         controller = new Controller(this,this.path);
         mouse = new MouseController(Constants.TEST_MAP);
@@ -78,6 +88,13 @@ class GameState extends FlxState
 		// Main Controller updates
 		controller.update(elapsed);
 
+        //log whenever the LMB is released
+        #if flash
+        if(FlxG.mouse.justReleased){
+            recordMouseRelease();
+        }
+        #end
+
 		// post update: empty out buffer queue and add it to state
 		while(!RenderBuffer.isEmpty())
 			controller.add(RenderBuffer.pop());
@@ -95,4 +112,33 @@ class GameState extends FlxState
     private function addTowerBlockAtMouse():Void{
         controller.add(GameObjectFactory.createCoin(FlxG.mouse.x, FlxG.mouse.y,10));
     }
+
+
+    //TODO: make HUD here
+    private function makeBuildArea():Void{
+        controller.add(GameObjectFactory.createBuildArea(FlxG.width*3.1/4, FlxG.height*3.1/4));
+    } 
+
+    private function recordMouseRelease():Void{
+        #if flash
+        var eventDetail:String;
+
+        eventDetail = "["+Date.now().toString()+"] ";
+        eventDetail += "x: " + FlxG.mouse.x + " ";
+        eventDetail += "y: " + FlxG.mouse.y;
+        Logging.getSingleton().recordEvent(eventNum, eventDetail);
+
+        eventNum += 1;
+        trace(eventDetail);
+        #end
+    }
+
+    //Stop recording once this level ends
+    override public function switchTo(nextState:FlxState):Bool{
+        #if flash
+        Logging.getSingleton().recordLevelEnd();
+        #end
+        return super.switchTo(nextState);
+    }
+
 }
