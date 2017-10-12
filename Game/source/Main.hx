@@ -5,7 +5,7 @@ import openfl.display.Sprite;
 import gameStates.*;  
 import controllers.*;
 import gameObjects.*;
-import Logging;
+import analytics.Logging;
 import haxe.Timer; 
 import flixel.FlxG; 
 
