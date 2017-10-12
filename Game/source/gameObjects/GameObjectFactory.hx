@@ -74,15 +74,19 @@ class GameObjectFactory
     }
 
     public static function createEnemy(x:Float,y:Float):Enemy{
-        return new Enemy(x,y,1,15,1,2,AttackType.Ground,AssetPaths.player__png,16,16);
+        return new Enemy(x,y,1,15,1,2,AttackType.Ground,AssetPaths.player__png, 16, 38);
     }
 
     public static function createTank(x:Float,y:Float):Enemy{
-        return new Enemy(x,y,0.5,25,1,2,AttackType.Ground,AssetPaths.player__png,16,16);
+        return new Enemy(x,y,0.5,25,1,2,AttackType.Ground,AssetPaths.player__png,30,30);
     }
 
     public static function createTile(x:Float,y:Float):Tile{
         return new Tile(x, y, TileType.Indestructible, AssetPaths.path__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+    }
+
+    public static function createSnowTile(x:Float,y:Float):Tile{
+        return new Tile(x, y, TileType.Indestructible, AssetPaths.snow__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
 
     public static function createSpawnPoint(x:Float,y:Float, waveData: Array<Array<Int>>):SpawnPoint{
@@ -100,4 +104,8 @@ class GameObjectFactory
     public static function createCoin(x:Float, y:Float, value:Int):Coin{
         return new Coin(x,y,value,AssetPaths.coin__png,16,16);
     }
+
+    // public static function createTutorial(x:Float, y:Float):Tutorial { 
+    //     return new Tutorial(x, y, ,)
+    // }
 }
