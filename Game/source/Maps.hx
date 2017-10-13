@@ -1,6 +1,9 @@
 package; 
+import flixel.math.FlxPoint;
 
 typedef JsonData = {
+	var nextLevelPath: JsonData; 
+	var nextConstantsPath: Array<FlxPoint>; 
 	var terrain_map: Array<Array<Int>>; 
     var waves: Array<Array<Int>>;
     var waves_interval: Int; 
@@ -9,7 +12,9 @@ typedef JsonData = {
 
 class Maps { 
 	public static var _1:JsonData = { 
-	    terrain_map : 
+		nextLevelPath: Maps._2,
+	    nextConstantsPath : Constants.EASY_MAP,
+	    terrain_map:
 	        [[0,0,0,0,0,2,2,0,0,0,0,0,0],
 			[0,0,0,0,0,1,1,0,0,0,0,0,0],
 			[0,0,0,0,0,1,1,0,0,0,0,0,0],
@@ -26,10 +31,12 @@ class Maps {
 	        [[0, 1, 0]], 
 	    waves_interval: 4, 
 	    tutorial_text: 
-	        "To build a tower, click on items in the store and then press build. \n Add your tower to your path when you are ready!"
+	        "To build a tower, click on items in the store and then press build. Make sure you have enough money! \n Add your tower to the blue path when you are ready!"
 	    }
 
 	public static var _2:JsonData = { 
+		nextLevelPath: Maps._3,
+	    nextConstantsPath : Constants.THREE_MAP,
 		terrain_map : 
 		    [[0,0,0,2,2,0,0,0,0,0,0,0,0],
 			[0,0,0,1,1,0,0,0,0,0,0,0,0],
@@ -51,6 +58,8 @@ class Maps {
 	}
 
 	public static var _3:JsonData = { 
+		nextLevelPath: Maps._4,
+	    nextConstantsPath: Constants.EASY_MAP,
 		terrain_map : 
 			 [[0,0,0,0,0,0,0,0,2,2,0,0,0],
 			[0,0,0,0,0,0,0,0,1,1,0,0,0],
@@ -72,6 +81,8 @@ class Maps {
 	}
 
 	public static var _4:JsonData = { 
+		nextLevelPath: Maps._5,
+	    nextConstantsPath : Constants.MED_MAP,
 		terrain_map : 
 		    [[0,0,0,2,2,0,0,0,0,0,0,0,0],
 			[0,0,0,1,1,0,0,0,0,0,0,0,0],
@@ -93,6 +104,8 @@ class Maps {
 	}
 
 	public static var _5:JsonData = { 
+		nextLevelPath: Maps._6,
+	    nextConstantsPath : Constants.HARD_MAP,
 		terrain_map : 
 			[[0,0,0,2,2,0,0,0,0,0,0,0],
 			[0,0,0,1,1,1,1,1,1,0,0,0],
@@ -116,6 +129,8 @@ class Maps {
 	}
 
 	public static var _6:JsonData = { 
+		nextLevelPath: Maps._6,
+	    nextConstantsPath : Constants.HARD_MAP,
 		terrain_map : 
 			[[0,0,0,2,2,0,0,0,0,0,0,0,0,0],
 			[0,0,0,1,1,1,1,0,0,0,0,0,0,0],

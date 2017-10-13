@@ -115,10 +115,12 @@ class BuildArea extends FlxGroup
         }
 
         var btn3: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2-50, "Remove", removeMaterial);
+        btn3.loadGraphic(AssetPaths.store_trash__png, true, 65, 65);
         add(btn3);
-        var btn4: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2, "Remove Ammo", function() remove(ammo));
+        var btn4: FlxButton = new FlxButton(x+this.width/2-80, y+this.height/2 +20, "Remove Ammo", function() remove(ammo));
         add(btn4);
         var btn5: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2+50, "Build", function() isBuilding=true);
+        btn5.loadGraphic(AssetPaths.store_build__png, true, 65, 65);
         add(btn5);
 
     }
