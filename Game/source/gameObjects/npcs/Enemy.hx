@@ -20,7 +20,7 @@ class Enemy extends NPC implements Attacker
 	public var state:EnemyState;
 	public var attackPoints:Int;
 	public var attackRange:Int;
-	public var attackType:Attacker.AttackType; 
+	public var attackType:Attacker.AttackType;
 	public var isAttacking:Bool;
 
 	// TODO: revisit
@@ -45,4 +45,13 @@ class Enemy extends NPC implements Attacker
 			state = Dying;
 		}
 	}
+	
+	public function canAttack(dist:Float):Bool
+    {
+		if (attackRange*Constants.RANGE_MULTIPLIER >= dist){
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -1,8 +1,10 @@
 package controllers;
 
+import gameObjects.mapObjects.Tower;
 import haxe.macro.Expr;
 import haxe.ds.GenericStack;
 import flixel.FlxG;
+import flixel.math.FlxVector;
 import gameObjects.GameObject;
 import gameObjects.GameObjectFactory;
 import gameObjects.npcs.Enemy;
@@ -11,8 +13,11 @@ import gameObjects.mapObjects.HomeBase;
 
 class EnemyController extends GameObjectController<Enemy>
 {
+	private var _sight:FlxVector;
+	
 	public function new(maxSize:Int=0, frameRate:Int=60):Void{
 		super(maxSize, frameRate);
+		_sight = new FlxVector();
 	}
 
 	override private function updateState(obj:Enemy): Void{
@@ -30,10 +35,14 @@ class EnemyController extends GameObjectController<Enemy>
 					obj.state = EnemyState.Moving;
 			case Moving: 
 				obj.moveTowardGoal();
+				if (obj.isAttacking && obj.isAtGoal())
+					obj.state = EnemyState.Attacking;
 				if(!obj.canMove || obj.isAtGoal())
 					obj.state = EnemyState.Idle;
 			case Attacking:
-				// TODO: make attacking collision
+				if (!obj.isAttacking)
+					obj.state = EnemyState.Idle;
+					trace("YES");
 			case Dying:
 				obj.canMove = false;
 				if (Std.random(5) == 1) 
@@ -41,6 +50,20 @@ class EnemyController extends GameObjectController<Enemy>
 				obj.destroy();
 		}
 	}
+	
+	public function canAttackTower(enemy:Enemy, tower:Tower, homebase:HomeBase):Void
+    {
+        _sight.set(tower.x - enemy.x - enemy.origin.x, tower.y - enemy.y - enemy.origin.y);
+		if (enemy.canAttack(_sight.length)) {
+			enemy.setGoal(Std.int(tower.x), Std.int(tower.y));
+			enemy.isAttacking = true;
+		} else {
+			if (enemy.isAttacking) {
+				enemy.setGoal(Std.int(homebase.x), Std.int(homebase.y));
+				enemy.isAttacking = false;
+			}
+		}
+    }
 
 	override private function updateAnimation(obj:Enemy): Void{
 		super.updateAnimation(obj);
@@ -65,5 +88,9 @@ class EnemyController extends GameObjectController<Enemy>
 	public function collideHomebase(enemy:Enemy, homeBase:HomeBase):Void{
 		homeBase.takeDamage(enemy);
 		enemy.kill();
+	}
+	
+	public function collideTower(enemy:Enemy, tower:Tower):Void {
+		tower.takeDamage(enemy);
 	}
 }
