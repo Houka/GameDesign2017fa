@@ -80,6 +80,9 @@ class Controller
 		gameObjects.sort(byY, FlxSort.ASCENDING); 
 
 		gameObjects.forEach(function (t) {if (!t.exists) { gameObjects.remove(t, true); }}); 
+		enemyController.forEachAlive( function(e) {
+			towerController.forEachAlive( function(t) enemyController.canAttackTower(e, t, homeBase) );
+		});
 	}
 
 	public function add(obj:GameObject):Void{
@@ -128,6 +131,7 @@ class Controller
 		FlxG.overlap(enemyController,homeBase,enemyController.collideHomebase);
 		FlxG.overlap(projectileController,enemyController,projectileController.collideNPC);
 		FlxG.overlap(projectileController,workerController,projectileController.collideNPC);
+		FlxG.overlap(enemyController,towerController,enemyController.collideTower); 
 	}
 
 	private function byY(Order:Int, Obj1:FlxObject, Obj2:FlxObject):Int

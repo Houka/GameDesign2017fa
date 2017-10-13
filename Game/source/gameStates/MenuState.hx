@@ -56,17 +56,17 @@ class MenuState extends FlxState
 		sixButton.y += 125; 
 		add(sixButton);
 
-		var quitButton: FlxButton = new FlxButton(0, 0, "Quit", quitGame);
-		quitButton.screenCenter();
-		quitButton.y += 175;
-		add(quitButton);
+		// var quitButton: FlxButton = new FlxButton(0, 0, "Quit", quitGame);
+		// quitButton.screenCenter();
+		// quitButton.y += 175;
+		// add(quitButton);
 	}
 
-	private function quitGame():Void 
-	{
-		#if !flash 
-        	Lib.close();
-        #end
-	}
+	// private function quitGame():Void 
+	// {
+	// 	#if !flash 
+ //        	Lib.close();
+ //        #end
+	// }
 
 }
