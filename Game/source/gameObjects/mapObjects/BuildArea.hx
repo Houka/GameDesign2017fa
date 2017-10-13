@@ -49,9 +49,9 @@ class BuildArea extends FlxGroup
         isBuilding = false;
 
         // background of shop
-        var bg = new GameObject(X,Y,graphicAsset,graphicsWidth,graphicsHeight);
+        var bg = new GameObject(X,Y,AssetPaths.store__png,graphicsWidth,graphicsHeight);
         bg.y+=10;
-        bg.makeGraphic(cast(width),cast(height), FlxColor.GRAY, true);
+        // bg.makeGraphic(cast(width),cast(height), FlxColor.GRAY, true);
         add(bg);
 
         createTestBuidArea();

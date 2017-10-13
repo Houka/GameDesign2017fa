@@ -78,7 +78,7 @@ class GameObjectFactory
     }
 
     public static function createTank(x:Float,y:Float):Enemy{
-        return new Enemy(x,y,0.5,25,1,2,AttackType.Ground,AssetPaths.player__png,30,30);
+        return new Enemy(x,y,0.5,25,1,2,AttackType.Ground,AssetPaths.tank__png,16,38);
     }
 
     public static function createTile(x:Float,y:Float):Tile{
@@ -90,7 +90,7 @@ class GameObjectFactory
     }
 
     public static function createSnow1Tile(x:Float,y:Float):Tile{
-        return new Tile(x, y, TileType.Indestructible, AssetPaths.snow_1__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+        return new Tile(x, y, TileType.Indestructible, AssetPaths.snow__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
 
     public static function createSpawnPoint(x:Float,y:Float, waveData: Array<Array<Int>>):SpawnPoint{
