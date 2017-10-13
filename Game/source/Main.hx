@@ -16,7 +16,7 @@ class Main extends Sprite
 		super();
 		removeHTML5ContextMenu();
         #if flash
-        Logging.getSingleton().initialize(771, 0, false);
+        Logging.getSingleton().initialize(771, 1, false);
         Logging.getSingleton().recordPageLoad();
         Logging.getSingleton().recordLevelStart(1.0);
         #end
