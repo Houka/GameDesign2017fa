@@ -74,4 +74,7 @@ class Constants
                             new FlxPoint(470, 480),
                             new FlxPoint(260, 480),
                             new FlxPoint(240, 550)];
+
+    public static var ONE_MAP:Array<flixel.math.FlxPoint> =[
+                            new FlxPoint(240, 550)];
 }

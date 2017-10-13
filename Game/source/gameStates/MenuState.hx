@@ -21,7 +21,7 @@ class MenuState extends FlxState
 		add(text);
 
 		var oneButton: FlxButton = new FlxButton(0, 0, "One", 
-			function() {FlxG.switchState(new GameState(AssetPaths._1__json,Constants.EASY_MAP));});
+			function() {FlxG.switchState(new GameState(AssetPaths._1__json,Constants.ONE_MAP));});
 		oneButton.screenCenter();
 		add(oneButton);
 

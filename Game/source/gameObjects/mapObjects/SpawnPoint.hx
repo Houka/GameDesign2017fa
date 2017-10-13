@@ -17,7 +17,7 @@ class SpawnPoint extends GameObject
     private var _spawnCountup:Int;
     private var _enemyCountup: Int = 0; 
     public var waves:Array<Array<Int>>;
-	public var wavesInterval: Int = 10;
+	public var wavesInterval: Int = 5;
 	public var _waveCountup:Int = 0;
 	private var currentWave: Int = 0;
 	public var finished: Bool = false;

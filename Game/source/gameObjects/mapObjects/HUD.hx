@@ -30,7 +30,9 @@ class HUD extends FlxTypedGroup<FlxObject>
         super(MaxSize);
 
         healthText = new flixel.text.FlxText(30, 10, 0, "x" + HUD.HEALTH, 12);
+        healthText.setFormat(12, FlxColor.BLACK);
         currencyText = new flixel.text.FlxText(30, 30, 0, "x" + HUD.CURRENCY_AMOUNT, 12);
+        currencyText.setFormat(12, FlxColor.BLACK);
         add(healthText);
         add(currencyText);
     }
