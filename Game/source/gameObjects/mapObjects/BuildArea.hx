@@ -52,7 +52,6 @@ class BuildArea extends FlxGroup
         // background of shop
         var bg = new GameObject(X-70,Y,AssetPaths.store__png,298,600);
         bg.y+=10;
-        // bg.makeGraphic(cast(width),cast(height), FlxColor.GRAY, true);
         add(bg);
 
         createTestBuidArea();
@@ -115,16 +114,12 @@ class BuildArea extends FlxGroup
             }
         }
 
-        var btn3: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2-50, "Remove", popMaterial);
+        var btn3: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2-50, "Remove", removeMaterial);
         add(btn3);
         var btn4: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2, "Remove Ammo", function() remove(ammo));
         add(btn4);
         var btn5: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2+50, "Build", function() isBuilding=true);
         add(btn5);
-
-        // var text: FlxTypeText = new FlxTypeText(0, this.height-30, 300, "Tutorial text", 30);
-        // add(text);
-        // text.start();
 
     }
 
@@ -163,8 +158,25 @@ class BuildArea extends FlxGroup
         if (obj != null){
             lastTowerPoint.y += obj.height-5;
             remove(obj);
+            // HUD.CURRENCY_AMOUNT += matValuesList.pop(); 
+        }
+        return obj;
+    }
+
+    private function removeMaterial():TowerBlock { 
+        var obj = materialsList.pop();
+        if (obj != null){
+            lastTowerPoint.y += obj.height-5;
+            remove(obj);
             HUD.CURRENCY_AMOUNT += matValuesList.pop(); 
         }
         return obj;
+    }
+
+    private function removeCurrency() { 
+        for (i in matValuesList) {
+            HUD.CURRENCY_AMOUNT -= i; 
+        }
+        isBuilding = true; 
     }
 }

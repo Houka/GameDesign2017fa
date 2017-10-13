@@ -75,6 +75,7 @@ class GameState extends FlxState
 
         // create HUD
         HUD.reset(Constants.PLAYER_TEST_HEALTH, 3);
+        trace("here we are");
         HUD.loadHealthGraphic(AssetPaths.heart__png,16,16);
         HUD.loadCurrencyGraphic(AssetPaths.coin__png,16,16);
         HUD.addHUD(this);

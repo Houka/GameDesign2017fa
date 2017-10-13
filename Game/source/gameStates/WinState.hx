@@ -35,11 +35,14 @@ class WinState extends FlxSubState
 		// TODO: Set button to next level from current
 		var nextLevelButton: FlxButton = new FlxButton(0, 0, "Next Level", 
 			function() {
+				trace(this.level.charAt(13));
+				var currLevel: Int = cast(this.level.charAt(13), Int); 
+				trace(currLevel);
 				// var currLevel:Int = cast(this.level.charAt(13), Int); 
 				// var nextLevel = currLevel += 1; 
 				// var nextLevelString: String = cast(nextLevel, String);
 				// FlxG.switchState(new GameState("AssetPaths._" + nextLevelString + "__json",Constants.MED_MAP));});
-		FlxG.switchState(new GameState("AssetPaths._medMap__json",Constants.MED_MAP));});
+		FlxG.switchState(new GameState("AssetPaths.medMap__json",Constants.MED_MAP));});
 		nextLevelButton.screenCenter();
 		nextLevelButton.y += 50; 
 		add(nextLevelButton);
