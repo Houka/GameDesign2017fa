@@ -39,6 +39,8 @@ class TowerController extends GameObjectController<Tower>
         shoot(obj);
     }
 
+    
+
     private function shoot(tower:Tower):Void
     {
         var level = 0;

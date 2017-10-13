@@ -52,7 +52,7 @@ class GameObjectFactory
     }
 
     public static function createGunBase(x:Float,y:Float,type:GunType):GunBase{
-        var gun = new GunBase(x,y,60, GunType.Normal,1, AttackType.Ground, 40, 100, AssetPaths.gun__png);
+        var gun = new GunBase(x,y,10, type,1, AttackType.Ground, 40, 50, AssetPaths.gun__png);
 
         switch(type){
             case Horizontal:
@@ -61,6 +61,7 @@ class GameObjectFactory
             case Diagonal:
                 gun.color = FlxColor.RED;
         }
+
         return gun;
     }
 
@@ -107,8 +108,4 @@ class GameObjectFactory
     public static function createCoin(x:Float, y:Float, value:Int):Coin{
         return new Coin(x,y,value,AssetPaths.coin__png,16,16);
     }
-
-    // public static function createTutorial(x:Float, y:Float):Tutorial { 
-    //     return new Tutorial(x, y, ,)
-    // }
 }

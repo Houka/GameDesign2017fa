@@ -27,6 +27,7 @@ import gameObjects.npcs.Enemy;
 import interfaces.Attacker; 
 import LevelBuilder;
 import AssetPaths;
+import Maps; 
 using flixel.util.FlxSpriteUtil; 
 
 
@@ -39,10 +40,10 @@ class GameState extends FlxState
 	private var mouse:MouseController; 
 	private var keyboard:KeyboardController;
     private var levelBuilder:LevelBuilder; 
-    private var level: String; 
+    private var level: JsonData; 
     private var path:Array<FlxPoint>; 
     
-    public function new(level: String, path:Array<FlxPoint>):Void {
+    public function new(level: JsonData, path:Array<FlxPoint>):Void {
         super();
         this.level=level; 
         this.path = path;

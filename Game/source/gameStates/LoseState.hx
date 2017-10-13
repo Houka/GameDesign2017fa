@@ -6,14 +6,15 @@ import flixel.math.FlxPoint;
 import flixel.ui.FlxButton;
 import flixel.text.FlxText;
 import openfl.Lib;
+import Maps;
 using Lambda;
 
 class LoseState extends FlxSubState
 {	
-	private var level: String; 
+	private var level: JsonData; 
     private var path:Array<FlxPoint>; 
 	
-	public function new(level: String, path:Array<FlxPoint>):Void {
+	public function new(level: JsonData, path:Array<FlxPoint>):Void {
         super();
         this.level=level; 
         this.path = path;

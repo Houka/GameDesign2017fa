@@ -30,20 +30,21 @@ class LevelBuilder {
         var json:JsonData = haxe.Json.parse(value);  
 
         createTilemap(json.terrain_map, json.waves);
+        setTutorialText(json.tutorial_text);
     }
 
-	public function parseJson(path: String) {
-        #if !flash
-		var value = File.getContent(path);
-		var json:JsonData = haxe.Json.parse(value);  
+	public function parseJson(path: JsonData) {
+  //       #if !flash
+		// var value = File.getContent(path);
+		// var json:JsonData = haxe.Json.parse(value);  
         // createTilemap(Maps._1.terrain_map, Maps._1.waves); 
-		createTilemap(json.terrain_map, json.waves);
-        setTutorialText(json.tutorial_text); 
-        #end
+		createTilemap(path.terrain_map, path.waves);
+        setTutorialText(path.tutorial_text); 
+        // #end
 	}
 
 
-	public function generateLevel(path: String): Void { 
+	public function generateLevel(path: JsonData): Void { 
         #if flash
         var loader = new URLLoader();
         loader.addEventListener(Event.COMPLETE, parseJsonFlash);
@@ -51,7 +52,7 @@ class LevelBuilder {
         // createTilemap(easyLevel.terrain_map, easyLevel.waves);
         // createTilemap(Maps._1.terrain_map, Maps._1.waves); 
         SpawnPoint.wavesInterval = json.waves_interval; 
-        createTilemap(json.terrain_map, json.waves);
+        createTilemap(path.terrain_map, path.waves);
         #else
 		parseJson(path); 
         #end
