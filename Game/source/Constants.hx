@@ -75,6 +75,15 @@ class Constants
                             new FlxPoint(260, 480),
                             new FlxPoint(240, 550)];
 
+    public static var THREE_MAP: Array<flixel.math.FlxPoint> = 
+                            [new FlxPoint(400, 275),
+                            new FlxPoint(500, 270),
+                            new FlxPoint(580, 370),
+                            new FlxPoint(470, 370),
+                            new FlxPoint(470, 480),
+                            new FlxPoint(260, 480),
+                            new FlxPoint(240, 550)];
+
     public static var ONE_MAP:Array<flixel.math.FlxPoint> =[
                             new FlxPoint(240, 550)];
 }

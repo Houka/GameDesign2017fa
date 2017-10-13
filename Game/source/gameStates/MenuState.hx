@@ -32,7 +32,7 @@ class MenuState extends FlxState
 		add(twoButton);
 
 		var threeButton: FlxButton = new FlxButton(0, 0, "Three", 
-			function() {FlxG.switchState(new GameState(AssetPaths._3__json,Constants.EASY_MAP));});
+			function() {FlxG.switchState(new GameState(AssetPaths._3__json,Constants.THREE_MAP));});
 		threeButton.screenCenter();
 		threeButton.y += 50; 
 		add(threeButton);
