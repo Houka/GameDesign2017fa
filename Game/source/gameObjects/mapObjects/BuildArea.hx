@@ -49,7 +49,7 @@ class BuildArea extends FlxGroup
         isBuilding = false;
 
         // background of shop
-        var bg = new GameObject(X,Y,AssetPaths.store__png,graphicsWidth,graphicsHeight);
+        var bg = new GameObject(X-70,Y,AssetPaths.store__png,298,600);
         bg.y+=10;
         // bg.makeGraphic(cast(width),cast(height), FlxColor.GRAY, true);
         add(bg);
@@ -78,12 +78,6 @@ class BuildArea extends FlxGroup
     // TODO: remove test function
     private function createTestBuidArea():Void
     {
-        // title
-        var title = new FlxText(0, 0, 0, "STORE", 30);
-        title.setPosition(x+width/2-title.fieldWidth/2, y+20);
-        title.alignment = FlxTextAlign.CENTER;
-        add(title);
-
         // buttons
         var ammoX = x+10;
         var ammoY = y+this.height-100;
@@ -101,8 +95,8 @@ class BuildArea extends FlxGroup
             {name:"Ammo 3 \n\n 3", callback:function() addAmmo(GameObjectFactory.createAmmunition(ammoX,ammoY))}
         ];
         var gap = 10;
-        var paddingX = 30;
-        var paddingY = 100;
+        var paddingX = 0;
+        var paddingY = 120;
         var width = 50;
         var height = 50;
         var row = 0;
