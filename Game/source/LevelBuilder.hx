@@ -1,12 +1,5 @@
 package; 
 
-#if flash
-import flash.net.URLLoader;
-import flash.net.URLRequest;
-import flash.events.Event;
-#else
-import sys.io.File; 
-#end
 import gameObjects.mapObjects.Tile; 
 import gameObjects.mapObjects.SpawnPoint; 
 import gameObjects.mapObjects.HomeBase; 
@@ -25,37 +18,15 @@ class LevelBuilder {
 	public function new() { 
 	}
 
-    public function parseJsonFlash(event){
-        var value = event.target.data();
-        var json:JsonData = haxe.Json.parse(value);  
-
-        createTilemap(json.terrain_map, json.waves);
-        setTutorialText(json.tutorial_text);
-    }
-
 	public function parseJson(path: JsonData) {
-  //       #if !flash
-		// var value = File.getContent(path);
-		// var json:JsonData = haxe.Json.parse(value);  
-        // createTilemap(Maps._1.terrain_map, Maps._1.waves); 
+        SpawnPoint.wavesInterval = path.waves_interval; 
 		createTilemap(path.terrain_map, path.waves);
         setTutorialText(path.tutorial_text); 
-        // #end
 	}
 
 
 	public function generateLevel(path: JsonData): Void { 
-        #if flash
-        var loader = new URLLoader();
-        loader.addEventListener(Event.COMPLETE, parseJsonFlash);
-        //loader.load(new URLRequest("../assets/data/easyMap.json"));
-        // createTilemap(easyLevel.terrain_map, easyLevel.waves);
-        // createTilemap(Maps._1.terrain_map, Maps._1.waves); 
-        SpawnPoint.wavesInterval = path.waves_interval; 
-        createTilemap(path.terrain_map, path.waves);
-        #else
 		parseJson(path); 
-        #end
 	}
 
 

@@ -1,7 +1,7 @@
 package gameStates;
 
 #if flash
-import analytics.Logging;
+import Logging;
 #end
 import flixel.FlxState;
 import flixel.FlxSubState;
