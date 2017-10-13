@@ -48,7 +48,7 @@ class Enemy extends NPC implements Attacker
 	
 	public function canAttack(dist:Float):Bool
     {
-        if (attackRange >= dist){
+		if (attackRange*Constants.RANGE_MULTIPLIER >= dist){
             return true;
         }
 

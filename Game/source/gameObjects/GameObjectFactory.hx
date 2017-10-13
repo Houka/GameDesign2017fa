@@ -62,11 +62,11 @@ class GameObjectFactory
     }
 
     public static function createGunBase(x:Float,y:Float):GunBase{
-        return new GunBase(x,y,10, GunType.Normal,1, AttackType.Ground, 40, 100, AssetPaths.gun__png);
+        return new GunBase(x,y,60, GunType.Normal,1, AttackType.Ground, 40, 100, AssetPaths.gun__png);
     }
 
     public static function createFoundation(x:Float,y:Float):Foundation{
-        return new Foundation(x,y,10, FoundationType.Wood, AssetPaths.tower_base__png);
+        return new Foundation(x,y,100, FoundationType.Wood, AssetPaths.tower_base__png);
     }
 
     public static function createAmmunition(x:Float,y:Float):Ammunition{
@@ -74,11 +74,11 @@ class GameObjectFactory
     }
 
     public static function createEnemy(x:Float,y:Float):Enemy{
-        return new Enemy(x,y,1,15,1,2,AttackType.Ground,AssetPaths.player__png,16,16);
+        return new Enemy(x,y,1,15,1,1,AttackType.Ground,AssetPaths.player__png,16,16);
     }
 
     public static function createTank(x:Float,y:Float):Enemy{
-        return new Enemy(x,y,0.5,25,1,2,AttackType.Ground,AssetPaths.player__png,16,16);
+        return new Enemy(x,y,0.5,25,1,0,AttackType.Ground,AssetPaths.player__png,16,16);
     }
 
     public static function createTile(x:Float,y:Float):Tile{

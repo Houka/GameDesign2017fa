@@ -77,6 +77,9 @@ class Controller
 		towerController.forEachAlive( function(t) {
 			enemyController.forEachAlive( function(e) towerController.canTargetEnemy(t,e) );
 		});
+		enemyController.forEachAlive( function(e) {
+			towerController.forEachAlive( function(t) enemyController.canAttackTower(e, t) );
+		});
 
 		collide();
 
@@ -134,9 +137,11 @@ class Controller
 	* Main collision function
 	*/
 	private function collide():Void{
-		FlxG.overlap(enemyController,homeBase,enemyController.collideHomebase);
+		FlxG.overlap(enemyController, homeBase, enemyController.collideHomebase);
 		FlxG.overlap(projectileController,enemyController,projectileController.collideNPC);
-		FlxG.overlap(projectileController,workerController,projectileController.collideNPC);
+		FlxG.overlap(projectileController, workerController, projectileController.collideNPC);
+		
+		towerController.forEachAlive(function(t) FlxG.overlap(enemyController, t, enemyController.collideTower));
 	}
 
 	private function byY(Order:Int, Obj1:FlxObject, Obj2:FlxObject):Int

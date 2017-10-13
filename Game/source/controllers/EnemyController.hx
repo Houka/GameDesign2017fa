@@ -17,6 +17,7 @@ class EnemyController extends GameObjectController<Enemy>
 	
 	public function new(maxSize:Int=0, frameRate:Int=60):Void{
 		super(maxSize, frameRate);
+		_sight = new FlxVector();
 	}
 
 	override private function updateState(obj:Enemy): Void{
@@ -47,7 +48,7 @@ class EnemyController extends GameObjectController<Enemy>
 		}
 	}
 	
-	private function canAttackTower(enemy:Enemy, tower:Tower):Void
+	public function canAttackTower(enemy:Enemy, tower:Tower):Void
     {
         _sight.set(tower.x - enemy.x - enemy.origin.x, tower.y - enemy.y - enemy.origin.y);
 		if (enemy.canAttack(_sight.length)) {
@@ -78,6 +79,7 @@ class EnemyController extends GameObjectController<Enemy>
 	/***********************************Collison Functions*****************************************/
 	public function collideHomebase(enemy:Enemy, homeBase:HomeBase):Void{
 		homeBase.takeDamage(enemy);
+		trace("at home");
 		enemy.kill();
 	}
 	
