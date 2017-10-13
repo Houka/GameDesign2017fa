@@ -78,7 +78,7 @@ class Controller
 			enemyController.forEachAlive( function(e) towerController.canTargetEnemy(t,e) );
 		});
 		enemyController.forEachAlive( function(e) {
-			towerController.forEachAlive( function(t) enemyController.canAttackTower(e, t) );
+			towerController.forEachAlive( function(t) enemyController.canAttackTower(e, t, homeBase) );
 		});
 
 		collide();

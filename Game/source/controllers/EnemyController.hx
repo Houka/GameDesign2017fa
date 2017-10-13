@@ -39,7 +39,8 @@ class EnemyController extends GameObjectController<Enemy>
 				if(!obj.canMove || obj.isAtGoal())
 					obj.state = EnemyState.Idle;
 			case Attacking:
-				// TODO
+				if (!obj.isAttacking)
+					obj.state = EnemyState.Moving;
 			case Dying:
 				obj.canMove = false;
 				if (Std.random(5) == 1) 
@@ -48,12 +49,17 @@ class EnemyController extends GameObjectController<Enemy>
 		}
 	}
 	
-	public function canAttackTower(enemy:Enemy, tower:Tower):Void
+	public function canAttackTower(enemy:Enemy, tower:Tower, homebase:HomeBase):Void
     {
         _sight.set(tower.x - enemy.x - enemy.origin.x, tower.y - enemy.y - enemy.origin.y);
 		if (enemy.canAttack(_sight.length)) {
 			enemy.setGoal(Std.int(tower.x), Std.int(tower.y));
 			enemy.isAttacking = true;
+		} else {
+			if (enemy.isAttacking) {
+				enemy.isAttacking = false;
+				enemy.setGoal(Std.int(homebase.x), Std.int(homebase.y));
+			}
 		}
     }
 
@@ -79,7 +85,6 @@ class EnemyController extends GameObjectController<Enemy>
 	/***********************************Collison Functions*****************************************/
 	public function collideHomebase(enemy:Enemy, homeBase:HomeBase):Void{
 		homeBase.takeDamage(enemy);
-		trace("at home");
 		enemy.kill();
 	}
 	

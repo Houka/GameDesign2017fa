@@ -41,19 +41,6 @@ class SpawnPoint extends GameObject
         {
             _spawnCountup = 0; 
 			
-            // trace(numEnemiesForWave(0));
-			
-            // // TODO: remove test code
-            /*if (_enemyCountup < waves[0][0]) {
-                var npc = GameObjectFactory.createEnemy(this.x+this.origin.x,this.y+this.origin.y);
-                RenderBuffer.add(npc);
-            }
-
-            else if (_enemyCountup < waves[0][0] + waves[0][1]) {
-                var npc = GameObjectFactory.createTank(this.x+this.origin.x,this.y+this.origin.y);
-                RenderBuffer.add(npc);
-            }*/
-			
 			if (currentWave == 0 && _enemyCountup < waves[0][currentWave]) {
 				var npc = GameObjectFactory.createEnemy(this.x+this.origin.x,this.y+this.origin.y);
                 RenderBuffer.add(npc);
@@ -72,7 +59,6 @@ class SpawnPoint extends GameObject
 					_enemyCountup = 0;
 					currentWave += 1;
 					_waveCountup = 0;
-					trace(currentWave);
 				}
 				else if (currentWave == waves[0].length-1) {
 					finished = true;
