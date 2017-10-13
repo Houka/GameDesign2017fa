@@ -15,34 +15,10 @@ import RenderBuffer;
 import flixel.addons.text.FlxTypeText;
 import gameObjects.mapObjects.BuildArea; 
 import gameStates.GameState; 
+import Maps; 
 
-
-typedef JsonData = {
-	var terrain_map: Array<Array<Int>>; 
-    var waves: Array<Array<Int>>;
-    var tutorial_text: String; 
-}
 
 class LevelBuilder { 
-    var easyLevel:JsonData = { 
-    terrain_map : 
-         [[0,0,0,2,2,0,0,0,0,0,0,0,0],
-        [0,0,0,1,1,0,0,0,0,0,0,0,0],
-        [0,0,0,1,1,0,0,0,0,0,0,0,0],
-        [0,0,0,1,1,1,0,0,0,0,0,0,0],
-        [0,0,0,0,1,1,1,1,0,0,0,0,0],
-        [0,0,0,0,0,1,1,1,1,1,1,1,0],
-        [0,0,0,0,0,0,0,0,0,0,1,1,0],
-        [0,0,0,0,0,0,0,0,0,1,1,1,0],
-        [0,0,0,0,0,1,1,1,1,1,1,0,0],
-        [0,0,0,0,1,1,1,1,1,1,0,0,0],
-        [0,0,0,1,1,1,1,0,0,0,0,0,0],
-        [0,0,0,0,3,1,0,0,0,0,0,0,0]], 
-    waves: 
-        [[10, 20, 0]], 
-    tutorial_text: 
-        "welp"
-    }
 
     public var tutorialText: String = ""; 
 
@@ -60,8 +36,8 @@ class LevelBuilder {
         #if !flash
 		var value = File.getContent(path);
 		var json:JsonData = haxe.Json.parse(value);  
-
-		createTilemap(json.terrain_map, json.waves);
+        createTilemap(Maps._1.terrain_map, Maps._1.waves); 
+		// createTilemap(json.terrain_map, json.waves);
         setTutorialText(json.tutorial_text); 
         #end
 	}
@@ -73,6 +49,7 @@ class LevelBuilder {
         loader.addEventListener(Event.COMPLETE, parseJsonFlash);
         //loader.load(new URLRequest("../assets/data/easyMap.json"));
         // createTilemap(easyLevel.terrain_map, easyLevel.waves);
+         createTilemap(Maps._1.terrain_map, Maps._1.waves); 
         createTilemap(json.terrain_map, json.waves);
         #else
 		parseJson(path); 

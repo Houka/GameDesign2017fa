@@ -14,6 +14,7 @@
 		[0,0,0,0,3,1,0,0,0,0,0,0,0]], 
 	"waves": 
 		[[0, 10, 0]], 
+	"waves_interval": 5, 
 	"tutorial_text": 
 		"This enemy type is known as a tank -- they're slower and have a higher HP!"
 

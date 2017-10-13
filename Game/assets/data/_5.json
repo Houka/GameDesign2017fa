@@ -16,6 +16,7 @@
 		[0,0,0,0,0,0,0,3,0,0,0,0]], 
 	"waves": 
 		[[20, 20, 0]], 
+	"waves_interval": 10, 
 	"tutorial_text": 
 		"Watch out for the different paths enemies can take!"
 }
