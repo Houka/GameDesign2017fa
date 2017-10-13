@@ -10,6 +10,7 @@ import flixel.text.FlxText;
 import flixel.group.FlxGroup;
 import gameObjects.GameObject;
 import gameStates.*;
+import flixel.addons.text.FlxTypeText;
 
 /**
  * @author Chang Lu
@@ -29,7 +30,9 @@ class HUD extends FlxTypedGroup<FlxObject>
         super(MaxSize);
 
         healthText = new flixel.text.FlxText(30, 10, 0, "x" + HUD.HEALTH, 12);
+        healthText.setFormat(12, FlxColor.BLACK);
         currencyText = new flixel.text.FlxText(30, 30, 0, "x" + HUD.CURRENCY_AMOUNT, 12);
+        currencyText.setFormat(12, FlxColor.BLACK);
         add(healthText);
         add(currencyText);
     }
@@ -68,5 +71,11 @@ class HUD extends FlxTypedGroup<FlxObject>
 
     public static function addHUD(state:FlxState):Void{
         state.add(HUD.hud);
+    }
+
+    public static function addTutorialText(tutText: String): Void { 
+        var text: FlxTypeText = new FlxTypeText(0, 640, 1000, tutText, 15);
+        HUD.hud.add(text);
+        text.start();
     }
 }

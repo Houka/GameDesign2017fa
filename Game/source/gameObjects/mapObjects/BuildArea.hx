@@ -14,6 +14,7 @@ import gameObjects.materials.GunBase;
 import AssetPaths;
 import RenderBuffer;
 import gameObjects.mapObjects.HUD; 
+import flixel.addons.text.FlxTypeText;
 
 /**
  * @author Chang Lu
@@ -45,16 +46,15 @@ class BuildArea extends FlxGroup
         this.height = height;
         materialsList = new List<TowerBlock>();
         matValuesList = new List<Int>();
-        lastTowerPoint = new FlxPoint(x+width/2,y+height-100);
+        lastTowerPoint = new FlxPoint(x+width/2-30,y+height-180);
         isBuilding = false;
 
         // background of shop
-        var bg = new GameObject(X,Y,AssetPaths.store__png,graphicsWidth,graphicsHeight);
+        var bg = new GameObject(X-70,Y,AssetPaths.store__png,298,600);
         bg.y+=10;
-        // bg.makeGraphic(cast(width),cast(height), FlxColor.GRAY, true);
         add(bg);
 
-        createTestBuidArea();
+        createTestBuildArea();
     }
 
     public function setPosition(x:Float,y:Float){
@@ -76,14 +76,8 @@ class BuildArea extends FlxGroup
     }
 
     // TODO: remove test function
-    private function createTestBuidArea():Void
+    private function createTestBuildArea():Void
     {
-        // title
-        var title = new FlxText(0, 0, 0, "STORE", 30);
-        title.setPosition(x+width/2-title.fieldWidth/2, y+20);
-        title.alignment = FlxTextAlign.CENTER;
-        add(title);
-
         // buttons
         var ammoX = x+10;
         var ammoY = y+this.height-100;
@@ -101,8 +95,8 @@ class BuildArea extends FlxGroup
             {name:"Ammo 3 \n\n 3", callback:function() addAmmo(GameObjectFactory.createAmmunition(ammoX,ammoY))}
         ];
         var gap = 10;
-        var paddingX = 30;
-        var paddingY = 100;
+        var paddingX = 0;
+        var paddingY = 120;
         var width = 50;
         var height = 50;
         var row = 0;
@@ -120,11 +114,11 @@ class BuildArea extends FlxGroup
             }
         }
 
-        var btn3: FlxButton = new FlxButton(x+this.width/2-40, y+this.height/2-50, "Remove", popMaterial);
+        var btn3: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2-50, "Remove", removeMaterial);
         add(btn3);
-        var btn4: FlxButton = new FlxButton(x+this.width/2-40, y+this.height/2, "Remove Ammo", function() remove(ammo));
+        var btn4: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2, "Remove Ammo", function() remove(ammo));
         add(btn4);
-        var btn5: FlxButton = new FlxButton(x+this.width/2-40, y+this.height/2+50, "Build", function() isBuilding=true);
+        var btn5: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2+50, "Build", function() isBuilding=true);
         add(btn5);
 
     }
@@ -164,8 +158,25 @@ class BuildArea extends FlxGroup
         if (obj != null){
             lastTowerPoint.y += obj.height-5;
             remove(obj);
+            // HUD.CURRENCY_AMOUNT += matValuesList.pop(); 
+        }
+        return obj;
+    }
+
+    private function removeMaterial():TowerBlock { 
+        var obj = materialsList.pop();
+        if (obj != null){
+            lastTowerPoint.y += obj.height-5;
+            remove(obj);
             HUD.CURRENCY_AMOUNT += matValuesList.pop(); 
         }
         return obj;
+    }
+
+    private function removeCurrency() { 
+        for (i in matValuesList) {
+            HUD.CURRENCY_AMOUNT -= i; 
+        }
+        isBuilding = true; 
     }
 }
