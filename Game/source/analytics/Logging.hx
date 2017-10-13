@@ -1,4 +1,4 @@
-package;
+package analytics;
 
 extern class Logging {
     function new() : Void;

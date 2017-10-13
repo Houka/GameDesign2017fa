@@ -78,7 +78,7 @@
 
 	<!--Enable logging for analytics-->
 	<haxedef name="network-sandbox" />
-	<haxeflag name="-swf-lib" value="Logging.swc" />
+	<haxeflag name="-swf-lib" value="analytics/Logging.swc" />
 
 	-lib random
 
