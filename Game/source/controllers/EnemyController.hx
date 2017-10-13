@@ -40,7 +40,8 @@ class EnemyController extends GameObjectController<Enemy>
 					obj.state = EnemyState.Idle;
 			case Attacking:
 				if (!obj.isAttacking)
-					obj.state = EnemyState.Moving;
+					obj.state = EnemyState.Idle;
+					trace("YES");
 			case Dying:
 				obj.canMove = false;
 				if (Std.random(5) == 1) 
@@ -57,8 +58,8 @@ class EnemyController extends GameObjectController<Enemy>
 			enemy.isAttacking = true;
 		} else {
 			if (enemy.isAttacking) {
-				enemy.isAttacking = false;
 				enemy.setGoal(Std.int(homebase.x), Std.int(homebase.y));
+				enemy.isAttacking = false;
 			}
 		}
     }
