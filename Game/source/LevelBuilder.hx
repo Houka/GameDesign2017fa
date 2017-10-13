@@ -72,7 +72,8 @@ class LevelBuilder {
         var loader = new URLLoader();
         loader.addEventListener(Event.COMPLETE, parseJsonFlash);
         //loader.load(new URLRequest("../assets/data/easyMap.json"));
-        createTilemap(easyLevel.terrain_map, easyLevel.waves);
+        // createTilemap(easyLevel.terrain_map, easyLevel.waves);
+        createTilemap(json.terrain_map, json.waves);
         #else
 		parseJson(path); 
         #end
