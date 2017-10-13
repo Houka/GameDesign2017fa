@@ -46,7 +46,7 @@ class BuildArea extends FlxGroup
         this.height = height;
         materialsList = new List<TowerBlock>();
         matValuesList = new List<Int>();
-        lastTowerPoint = new FlxPoint(x+width/2,y+height-100);
+        lastTowerPoint = new FlxPoint(x+width/2-30,y+height-180);
         isBuilding = false;
 
         // background of shop
@@ -54,7 +54,7 @@ class BuildArea extends FlxGroup
         bg.y+=10;
         add(bg);
 
-        createTestBuidArea();
+        createTestBuildArea();
     }
 
     public function setPosition(x:Float,y:Float){
@@ -76,7 +76,7 @@ class BuildArea extends FlxGroup
     }
 
     // TODO: remove test function
-    private function createTestBuidArea():Void
+    private function createTestBuildArea():Void
     {
         // buttons
         var ammoX = x+10;

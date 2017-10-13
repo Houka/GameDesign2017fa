@@ -45,7 +45,6 @@ class HUD extends FlxTypedGroup<FlxObject>
 
     public static function reset(health:Int, currencyAmount:Int)
     {
-        trace("reset");
         HUD.HEALTH = health;
         HUD.CURRENCY_AMOUNT = currencyAmount;
         if (HUD.hud != null){

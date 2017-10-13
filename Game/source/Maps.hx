@@ -112,7 +112,7 @@ class Maps {
 	       	[[20, 20, 0]], 
 	    waves_interval: 10, 
 	    tutorial_text: 
-	        "Watch out for the different paths enemies can take!"
+	        ""
 	}
 
 	public static var _6:JsonData = { 
@@ -135,7 +135,7 @@ class Maps {
 	       	[[20, 20, 20]], 
 	    waves_interval: 10, 
 	    tutorial_text: 
-	        "Enemies can now attack towers placed on paths so beware!"
+	        ""
 	}
 
 
