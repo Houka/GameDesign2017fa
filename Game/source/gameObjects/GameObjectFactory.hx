@@ -90,7 +90,7 @@ class GameObjectFactory
     }
 
     public static function createSnow1Tile(x:Float,y:Float):Tile{
-        return new Tile(x, y, TileType.Indestructible, AssetPaths.snow__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+        return new Tile(x, y, TileType.Indestructible, AssetPaths.snow_1__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
 
     public static function createSpawnPoint(x:Float,y:Float, waveData: Array<Array<Int>>):SpawnPoint{
