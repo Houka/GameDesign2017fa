@@ -43,7 +43,7 @@ class WinState extends FlxSubState
 				// var nextLevel = currLevel += 1; 
 				// var nextLevelString: String = cast(nextLevel, String);
 				// FlxG.switchState(new GameState("AssetPaths._" + nextLevelString + "__json",Constants.MED_MAP));});
-		FlxG.switchState(new GameState(Maps._1,Constants.MED_MAP));});
+		FlxG.switchState(new GameState(this.level.nextLevelPath,this.level.nextConstantsPath));});
 		nextLevelButton.screenCenter();
 		nextLevelButton.y += 50; 
 		add(nextLevelButton);
