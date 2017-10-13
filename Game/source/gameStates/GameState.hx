@@ -70,12 +70,15 @@ class GameState extends FlxState
 
         // build level
         levelBuilder.generateLevel(this.level);
+        var tutorialText = levelBuilder.getTutorialText(); 
+        // trace(tutorialText);
 
         // create HUD
         HUD.reset(Constants.PLAYER_TEST_HEALTH, 3);
         HUD.loadHealthGraphic(AssetPaths.heart__png,16,16);
         HUD.loadCurrencyGraphic(AssetPaths.coin__png,16,16);
         HUD.addHUD(this);
+        HUD.addTutorialText(tutorialText);
 	}
 
 	override public function update(elapsed:Float):Void

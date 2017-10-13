@@ -122,9 +122,9 @@ class BuildArea extends FlxGroup
         var btn5: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2+50, "Build", function() isBuilding=true);
         add(btn5);
 
-        var text: FlxTypeText = new FlxTypeText(0, this.height-30, 300, "Tutorial text", 30);
-        add(text);
-        text.start();
+        // var text: FlxTypeText = new FlxTypeText(0, this.height-30, 300, "Tutorial text", 30);
+        // add(text);
+        // text.start();
 
     }
 

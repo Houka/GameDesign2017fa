@@ -10,6 +10,7 @@ import flixel.text.FlxText;
 import flixel.group.FlxGroup;
 import gameObjects.GameObject;
 import gameStates.*;
+import flixel.addons.text.FlxTypeText;
 
 /**
  * @author Chang Lu
@@ -68,5 +69,11 @@ class HUD extends FlxTypedGroup<FlxObject>
 
     public static function addHUD(state:FlxState):Void{
         state.add(HUD.hud);
+    }
+
+    public static function addTutorialText(tutText: String): Void { 
+        var text: FlxTypeText = new FlxTypeText(0, 640, 1000, tutText, 15);
+        HUD.hud.add(text);
+        text.start();
     }
 }

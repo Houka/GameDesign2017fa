@@ -14,11 +14,13 @@ import gameObjects.GameObjectFactory;
 import RenderBuffer; 
 import flixel.addons.text.FlxTypeText;
 import gameObjects.mapObjects.BuildArea; 
+import gameStates.GameState; 
 
 
 typedef JsonData = {
 	var terrain_map: Array<Array<Int>>; 
     var waves: Array<Array<Int>>;
+    var tutorial_text: String; 
 }
 
 class LevelBuilder { 
@@ -37,9 +39,12 @@ class LevelBuilder {
         [0,0,0,1,1,1,1,0,0,0,0,0,0],
         [0,0,0,0,3,1,0,0,0,0,0,0,0]], 
     waves: 
-        [[10, 20, 0]]
-
+        [[10, 20, 0]], 
+    tutorial_text: 
+        "welp"
     }
+
+    public var tutorialText: String = ""; 
 
 	public function new() { 
 	}
@@ -57,6 +62,7 @@ class LevelBuilder {
 		var json:JsonData = haxe.Json.parse(value);  
 
 		createTilemap(json.terrain_map, json.waves);
+        setTutorialText(json.tutorial_text); 
         #end
 	}
 
@@ -104,10 +110,11 @@ class LevelBuilder {
         }
     }
 
-    // private function createTutorialText(text: String) {
-    //     var text: FlxTypeText = new FlxTypeText(0, BuildArea.height-30, 300, "Tutorial text", 30);
-    //     BuildArea.add(text);
-    //     text.start();
+    public function getTutorialText():String { 
+        return tutorialText; 
+    }
 
-    // }
+    public function setTutorialText(text:String): Void { 
+        tutorialText = text; 
+    }
 }
