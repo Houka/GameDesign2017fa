@@ -72,7 +72,7 @@ class GameState extends FlxState
         levelBuilder.generateLevel(this.level);
 
         // create HUD
-        HUD.reset(Constants.PLAYER_TEST_HEALTH, 0);
+        HUD.reset(Constants.PLAYER_TEST_HEALTH, 3);
         HUD.loadHealthGraphic(AssetPaths.heart__png,16,16);
         HUD.loadCurrencyGraphic(AssetPaths.coin__png,16,16);
         HUD.addHUD(this);

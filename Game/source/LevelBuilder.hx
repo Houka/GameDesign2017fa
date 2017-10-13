@@ -88,6 +88,16 @@ class LevelBuilder {
                     var homeBase = GameObjectFactory.createHomeBase(j*Constants.TILE_WIDTH, i*Constants.TILE_HEIGHT); 
                     RenderBuffer.add(homeBase);
                 }
+
+                else if (map[i][j] == 0) {
+                    var tile:Tile;
+                    if (i+1 == map.length || map[i+1][j] != 0) 
+                        tile = GameObjectFactory.createSnowTile(j, i);
+                    else
+                        tile = GameObjectFactory.createSnow1Tile(j, i);
+                    tile.setLocation(j, i); 
+                    RenderBuffer.add(tile);
+                }
             }
         }
     }
