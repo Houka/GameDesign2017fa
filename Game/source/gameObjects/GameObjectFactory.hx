@@ -1,6 +1,7 @@
 package gameObjects;
 
 import flixel.math.FlxPoint;
+import flixel.util.FlxColor;
 import flixel.FlxG;
 import gameObjects.npcs.Enemy;
 import gameObjects.mapObjects.Projectile;
@@ -45,24 +46,22 @@ class GameObjectFactory
         return tower;
     }
 
-    public static function createProjectile(obj:GameObject, xTarget:Float, yTarget:Float):Projectile{
+    public static function createProjectile(obj:GameObject, xTarget:Float, yTarget:Float, ?timeout:Int=-1):Projectile{
     	return new Projectile(obj.x+obj.origin.x, obj.y+obj.origin.y, xTarget, yTarget, 
-    		Constants.PROJECTILE_ATTACK, Constants.PROJECTILE_SPEED, false, AssetPaths.fireball__png);
+    		Constants.PROJECTILE_ATTACK, Constants.PROJECTILE_SPEED, false, timeout, AssetPaths.fireball__png);
     }
 
-    public static function createRandomTowerBlock(x:Float,y:Float):TowerBlock{
-        switch (Std.random(2)) {
-            case 0:
-                return createGunBase(x,y);
-            case 1:
-                return createFoundation(x,y);
-            default:
-                return createFoundation(x,y);
+    public static function createGunBase(x:Float,y:Float,type:GunType):GunBase{
+        var gun = new GunBase(x,y,60, GunType.Normal,1, AttackType.Ground, 40, 100, AssetPaths.gun__png);
+
+        switch(type){
+            case Horizontal:
+            case Vertical:
+                gun.color = FlxColor.BLUE;
+            case Diagonal:
+                gun.color = FlxColor.RED;
         }
-    }
-
-    public static function createGunBase(x:Float,y:Float):GunBase{
-        return new GunBase(x,y,60, GunType.Normal,1, AttackType.Ground, 40, 100, AssetPaths.gun__png);
+        return gun;
     }
 
     public static function createFoundation(x:Float,y:Float):Foundation{
@@ -74,15 +73,23 @@ class GameObjectFactory
     }
 
     public static function createEnemy(x:Float,y:Float):Enemy{
-        return new Enemy(x,y,1,15,1,1,AttackType.Ground,AssetPaths.player__png,16,16);
+        return new Enemy(x,y,1,15,1,2,AttackType.Ground,AssetPaths.player__png, 16, 38);
     }
 
     public static function createTank(x:Float,y:Float):Enemy{
-        return new Enemy(x,y,0.5,25,1,0,AttackType.Ground,AssetPaths.player__png,16,16);
+        return new Enemy(x,y,0.5,25,1,2,AttackType.Ground,AssetPaths.tank__png,16,38);
     }
 
     public static function createTile(x:Float,y:Float):Tile{
         return new Tile(x, y, TileType.Indestructible, AssetPaths.path__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+    }
+
+    public static function createSnowTile(x:Float,y:Float):Tile{
+        return new Tile(x, y, TileType.Indestructible, AssetPaths.snow__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
+    }
+
+    public static function createSnow1Tile(x:Float,y:Float):Tile{
+        return new Tile(x, y, TileType.Indestructible, AssetPaths.snow__png, Constants.TILE_WIDTH, Constants.TILE_HEIGHT); 
     }
 
     public static function createSpawnPoint(x:Float,y:Float, waveData: Array<Array<Int>>):SpawnPoint{
@@ -100,4 +107,8 @@ class GameObjectFactory
     public static function createCoin(x:Float, y:Float, value:Int):Coin{
         return new Coin(x,y,value,AssetPaths.coin__png,16,16);
     }
+
+    // public static function createTutorial(x:Float, y:Float):Tutorial { 
+    //     return new Tutorial(x, y, ,)
+    // }
 }

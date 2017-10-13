@@ -24,7 +24,9 @@ class KeyboardController
 
     static public function quit():Void
     {
+        #if !flash
         Lib.close();
+        #end
     }
 
     /**

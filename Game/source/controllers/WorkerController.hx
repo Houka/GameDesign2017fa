@@ -21,7 +21,7 @@ class WorkerController extends GameObjectController<Worker>
 					obj.state = WorkerState.Idle;
 			case Dying:
 				obj.canMove = false;
-				obj.kill();
+				obj.destroy();
 		}
 	}
 

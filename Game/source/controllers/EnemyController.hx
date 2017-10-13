@@ -26,10 +26,11 @@ class EnemyController extends GameObjectController<Enemy>
 			case Idle: 
 				if(obj.canMove && obj.isAtGoal() && obj.walkPath.length > 0){
 					var goal = obj.walkPath.shift();
-					var randX= Std.random(Constants.TILE_WIDTH)-Constants.TILE_WIDTH*2;
-					var randY= Std.random(Constants.TILE_HEIGHT)-Constants.TILE_HEIGHT*2;
+					var randX= obj.walkPath.length == 0? 0 : Std.random(Constants.TILE_WIDTH)-Constants.TILE_WIDTH*2;
+					var randY= obj.walkPath.length == 0? 0 : Std.random(Constants.TILE_HEIGHT)-Constants.TILE_HEIGHT*2;
 					obj.setGoal(cast(goal.x+randX/4),cast(goal.y+randY/4));
 				}
+
 				if(obj.canMove && !obj.isAtGoal())
 					obj.state = EnemyState.Moving;
 			case Moving: 
@@ -46,7 +47,7 @@ class EnemyController extends GameObjectController<Enemy>
 				obj.canMove = false;
 				if (Std.random(5) == 1) 
 					RenderBuffer.add(GameObjectFactory.createCoin(obj.x-obj.origin.x, obj.y-obj.origin.y, Std.random(2)+1));
-				obj.kill();
+				obj.destroy();
 		}
 	}
 	

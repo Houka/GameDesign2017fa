@@ -1,6 +1,12 @@
 package; 
 
+#if flash
+import flash.net.URLLoader;
+import flash.net.URLRequest;
+import flash.events.Event;
+#else
 import sys.io.File; 
+#end
 import gameObjects.mapObjects.Tile; 
 import gameObjects.mapObjects.SpawnPoint; 
 import gameObjects.mapObjects.HomeBase; 
@@ -14,21 +20,54 @@ typedef JsonData = {
 }
 
 class LevelBuilder { 
+    var easyLevel:JsonData = { 
+    terrain_map : 
+         [[0,0,0,2,2,0,0,0,0,0,0,0,0],
+        [0,0,0,1,1,0,0,0,0,0,0,0,0],
+        [0,0,0,1,1,0,0,0,0,0,0,0,0],
+        [0,0,0,1,1,1,0,0,0,0,0,0,0],
+        [0,0,0,0,1,1,1,1,0,0,0,0,0],
+        [0,0,0,0,0,1,1,1,1,1,1,1,0],
+        [0,0,0,0,0,0,0,0,0,0,1,1,0],
+        [0,0,0,0,0,0,0,0,0,1,1,1,0],
+        [0,0,0,0,0,1,1,1,1,1,1,0,0],
+        [0,0,0,0,1,1,1,1,1,1,0,0,0],
+        [0,0,0,1,1,1,1,0,0,0,0,0,0],
+        [0,0,0,0,3,1,0,0,0,0,0,0,0]], 
+    waves: 
+        [[10, 20, 0]]
+
+    }
+
 	public function new() { 
 	}
 
+    public function parseJsonFlash(event){
+        var value = event.target.data();
+        var json:JsonData = haxe.Json.parse(value);  
+
+        createTilemap(json.terrain_map, json.waves);
+    }
 
 	public function parseJson(path: String) {
+        #if !flash
 		var value = File.getContent(path);
-		var json:JsonData = haxe.Json.parse(value); 
+		var json:JsonData = haxe.Json.parse(value);  
 
 		createTilemap(json.terrain_map, json.waves);
+        #end
 	}
 
 
 	public function generateLevel(path: String): Void { 
+        #if flash
+        var loader = new URLLoader();
+        loader.addEventListener(Event.COMPLETE, parseJsonFlash);
+        //loader.load(new URLRequest("../assets/data/easyMap.json"));
+        createTilemap(easyLevel.terrain_map, easyLevel.waves);
+        #else
 		parseJson(path); 
-
+        #end
 	}
 
 
@@ -49,9 +88,17 @@ class LevelBuilder {
                     var homeBase = GameObjectFactory.createHomeBase(j*Constants.TILE_WIDTH, i*Constants.TILE_HEIGHT); 
                     RenderBuffer.add(homeBase);
                 }
+
+                else if (map[i][j] == 0) {
+                    var tile:Tile;
+                    if (i+1 == map.length || map[i+1][j] != 0) 
+                        tile = GameObjectFactory.createSnowTile(j, i);
+                    else
+                        tile = GameObjectFactory.createSnow1Tile(j, i);
+                    tile.setLocation(j, i); 
+                    RenderBuffer.add(tile);
+                }
             }
         }
     }
-
-
 }

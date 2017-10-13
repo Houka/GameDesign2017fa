@@ -56,6 +56,8 @@ class LoseState extends FlxSubState
 	
 	private function quitGame():Void 
 	{
+		#if !flash
         Lib.close();
+        #end
 	}
 }
