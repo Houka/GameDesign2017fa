@@ -158,7 +158,6 @@ class BuildArea extends FlxGroup
         if (obj != null){
             lastTowerPoint.y += obj.height-5;
             remove(obj);
-            // HUD.CURRENCY_AMOUNT += matValuesList.pop(); 
         }
         return obj;
     }

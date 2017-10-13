@@ -51,7 +51,7 @@ class LevelBuilder {
         //loader.load(new URLRequest("../assets/data/easyMap.json"));
         // createTilemap(easyLevel.terrain_map, easyLevel.waves);
         // createTilemap(Maps._1.terrain_map, Maps._1.waves); 
-        SpawnPoint.wavesInterval = json.waves_interval; 
+        SpawnPoint.wavesInterval = path.waves_interval; 
         createTilemap(path.terrain_map, path.waves);
         #else
 		parseJson(path); 
