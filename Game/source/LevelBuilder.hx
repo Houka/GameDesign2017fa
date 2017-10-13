@@ -36,8 +36,8 @@ class LevelBuilder {
         #if !flash
 		var value = File.getContent(path);
 		var json:JsonData = haxe.Json.parse(value);  
-        createTilemap(Maps._1.terrain_map, Maps._1.waves); 
-		// createTilemap(json.terrain_map, json.waves);
+        // createTilemap(Maps._1.terrain_map, Maps._1.waves); 
+		createTilemap(json.terrain_map, json.waves);
         setTutorialText(json.tutorial_text); 
         #end
 	}
@@ -49,7 +49,8 @@ class LevelBuilder {
         loader.addEventListener(Event.COMPLETE, parseJsonFlash);
         //loader.load(new URLRequest("../assets/data/easyMap.json"));
         // createTilemap(easyLevel.terrain_map, easyLevel.waves);
-         createTilemap(Maps._1.terrain_map, Maps._1.waves); 
+        // createTilemap(Maps._1.terrain_map, Maps._1.waves); 
+        SpawnPoint.wavesInterval = json.waves_interval; 
         createTilemap(json.terrain_map, json.waves);
         #else
 		parseJson(path); 
