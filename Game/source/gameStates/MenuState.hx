@@ -19,11 +19,16 @@ class MenuState extends FlxState
 		text.screenCenter();
 		text.y -=100;
 		add(text);
-		
-		var playButton: FlxButton = new FlxButton(0, 0, "Easy", 
-			function() {FlxG.switchState(new GameState(AssetPaths.easyMap__json,Constants.EASY_MAP));});
-		playButton.screenCenter();
-		add(playButton);
+
+		var oneButton: FlxButton = new FlxButton(0, 0, "One", 
+			function() {FlxG.switchState(new GameState(AssetPaths._1__json,Constants.EASY_MAP));});
+		oneButton.screenCenter();
+		add(oneButton);
+
+		// var playButton: FlxButton = new FlxButton(0, 0, "Easy", 
+		// 	function() {FlxG.switchState(new GameState(AssetPaths.easyMap__json,Constants.EASY_MAP));});
+		// playButton.screenCenter();
+		// add(playButton);
 
 		var medLevelButton: FlxButton = new FlxButton(0, 0, "Medium", 
 			function() {FlxG.switchState(new GameState(AssetPaths.medMap__json,Constants.MED_MAP));});

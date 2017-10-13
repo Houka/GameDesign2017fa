@@ -12,6 +12,8 @@ import gameObjects.mapObjects.SpawnPoint;
 import gameObjects.mapObjects.HomeBase; 
 import gameObjects.GameObjectFactory; 
 import RenderBuffer; 
+import flixel.addons.text.FlxTypeText;
+import gameObjects.mapObjects.BuildArea; 
 
 
 typedef JsonData = {
@@ -101,4 +103,11 @@ class LevelBuilder {
             }
         }
     }
+
+    // private function createTutorialText(text: String) {
+    //     var text: FlxTypeText = new FlxTypeText(0, BuildArea.height-30, 300, "Tutorial text", 30);
+    //     BuildArea.add(text);
+    //     text.start();
+
+    // }
 }

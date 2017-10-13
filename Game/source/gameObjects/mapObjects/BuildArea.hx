@@ -14,6 +14,7 @@ import gameObjects.materials.GunBase;
 import AssetPaths;
 import RenderBuffer;
 import gameObjects.mapObjects.HUD; 
+import flixel.addons.text.FlxTypeText;
 
 /**
  * @author Chang Lu
@@ -114,12 +115,16 @@ class BuildArea extends FlxGroup
             }
         }
 
-        var btn3: FlxButton = new FlxButton(x+this.width/2-40, y+this.height/2-50, "Remove", popMaterial);
+        var btn3: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2-50, "Remove", popMaterial);
         add(btn3);
-        var btn4: FlxButton = new FlxButton(x+this.width/2-40, y+this.height/2, "Remove Ammo", function() remove(ammo));
+        var btn4: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2, "Remove Ammo", function() remove(ammo));
         add(btn4);
-        var btn5: FlxButton = new FlxButton(x+this.width/2-40, y+this.height/2+50, "Build", function() isBuilding=true);
+        var btn5: FlxButton = new FlxButton(x+this.width/2-70, y+this.height/2+50, "Build", function() isBuilding=true);
         add(btn5);
+
+        var text: FlxTypeText = new FlxTypeText(0, this.height-30, 300, "Tutorial text", 30);
+        add(text);
+        text.start();
 
     }
 
