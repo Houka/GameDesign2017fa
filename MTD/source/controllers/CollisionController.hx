@@ -1,4 +1,4 @@
-package;
+package controllers;
 
 import flixel.group.FlxGroup;
 import flixel.math.FlxPoint;
@@ -6,12 +6,14 @@ import flixel.math.FlxMath;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxG;
+import gameObjects.*;
+import ui.HUD;
 import Constants;
 
 class CollisionController{
 	// Public groups
 	public var bullets:FlxTypedGroup<Bullet>;
-	public var emitters:FlxTypedGroup<EnemyGibs>;
+	public var emitters:FlxTypedGroup<EnemyExplosion>;
 	public var enemies:FlxTypedGroup<Enemy>;
 	public var towerIndicators:FlxTypedGroup<FlxSprite>;
 	public var towers:FlxTypedGroup<Tower>;
@@ -23,7 +25,7 @@ class CollisionController{
 		// Add groups
 
 		bullets = new FlxTypedGroup<Bullet>();
-		emitters = new FlxTypedGroup<EnemyGibs>();
+		emitters = new FlxTypedGroup<EnemyExplosion>();
 		enemies = new FlxTypedGroup<Enemy>();
 		towers = new FlxTypedGroup<Tower>();
 		towerIndicators = new FlxTypedGroup<FlxSprite>();

@@ -1,11 +1,11 @@
-package;
+package gameObjects;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxPath;
 import flixel.math.FlxPoint;
+import ui.HUD;
 import AssetPaths;
-import HUD;
 
 class Enemy extends FlxSprite 
 {
@@ -27,8 +27,8 @@ class Enemy extends FlxSprite
 	{
 		reset(X, Y);
 		
-		if (Reg.PS != null)
-			health = Math.floor(Reg.PS.wave / 3) + 1;
+		if (Constants.PS != null)
+			health = Math.floor(Constants.PS.wave / 3) + 1;
 		
 		maxHealth = health;
 	}
@@ -65,17 +65,17 @@ class Enemy extends FlxSprite
 	{
 		FlxG.sound.play("enemykill");
 		
-		var emitter = Reg.PS.emitters.recycle(EnemyGibs.new);
+		var emitter = Constants.PS.emitters.recycle(EnemyExplosion.new);
 		emitter.startAtPosition(x, y);
 		
-		Reg.PS.enemiesToKill--;
+		Constants.PS.enemiesToKill--;
 		
-		if (Reg.PS.enemiesToKill <= 0)
-			Reg.PS.killedWave();
+		if (Constants.PS.enemiesToKill <= 0)
+			Constants.PS.killedWave();
 		
 		if (GainMoney)
 		{
-			var money:Int = (Reg.PS.wave < 5) ? 2 : 1;
+			var money:Int = (Constants.PS.wave < 5) ? 2 : 1;
 			HUD.money += money;
 		}
 		

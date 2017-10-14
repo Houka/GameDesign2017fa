@@ -1,14 +1,12 @@
-package;
+package gameObjects;
 
 import flash.display.BlendMode;
 import flixel.util.FlxColor;
 import flixel.effects.particles.FlxEmitter;
 import flixel.effects.particles.FlxParticle;
-#if flash
 import flixel.FlxG;
-#end
 
-class EnemyGibs extends FlxEmitter
+class EnemyExplosion extends FlxEmitter
 {
 	private static inline var SPEED:Int = 10;
 	private static inline var SIZE:Int = 10;
@@ -41,7 +39,7 @@ class EnemyGibs extends FlxEmitter
 			add(p);
 		}
 		
-		Reg.PS.emitters.add(this);
+		Constants.PS.emitters.add(this);
 	}
 	
 	/**

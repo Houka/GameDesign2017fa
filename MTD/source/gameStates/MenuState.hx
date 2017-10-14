@@ -1,4 +1,4 @@
-package;
+package gameStates;
 
 import flash.display.BlendMode;
 import flixel.FlxG;
@@ -11,6 +11,8 @@ import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.tile.FlxTilemap;
 import openfl.Lib;
+import gameObjects.Enemy;
+import utils.Button;
 import Constants;
 
 class MenuState extends FlxState

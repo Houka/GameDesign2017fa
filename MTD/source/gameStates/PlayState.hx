@@ -1,4 +1,4 @@
-package;
+package gameStates;
 
 import flash.display.BlendMode;
 import flixel.FlxG;
@@ -12,10 +12,13 @@ import flixel.tweens.FlxEase;
 import flixel.util.FlxColor;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import controllers.CollisionController;
+import ui.InGameMenu;
+import ui.HUD;
+import utils.Button;
+import gameObjects.*;
 import Constants;
 import AssetPaths;
-import CollisionController;
-import InGameMenu;
 
 class PlayState extends FlxState
 {
@@ -27,7 +30,7 @@ class PlayState extends FlxState
 	// Game Object groups
 	public var collisionController:CollisionController;
 	public var bullets:FlxTypedGroup<Bullet>;
-	public var emitters:FlxTypedGroup<EnemyGibs>;
+	public var emitters:FlxTypedGroup<EnemyExplosion>;
 	public var enemies:FlxTypedGroup<Enemy>;
 	public var towerIndicators:FlxTypedGroup<FlxSprite>;
 	private var _towers:FlxTypedGroup<Tower>;
@@ -75,7 +78,7 @@ class PlayState extends FlxState
 	 */
 	override public function create():Void
 	{
-		Reg.PS = this;
+		Constants.PS = this;
 		
 		Constants.playMusic("bg_music");
 		
@@ -444,7 +447,7 @@ class PlayState extends FlxState
 			}
 		}
 
-		enemy.followPath(path, 20 + Reg.PS.wave);
+		enemy.followPath(path, 20 + Constants.PS.wave);
 		_spawnCounter = 0;
 	}
 	

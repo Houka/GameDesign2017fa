@@ -3,6 +3,7 @@ package;
 import flixel.math.FlxPoint;
 import flixel.tile.FlxTilemap;
 import flixel.FlxG;
+import gameStates.PlayState;
 import AssetPaths;
 
 /*
@@ -34,6 +35,7 @@ class Constants{
 	// Constants vars
 	public static var TILE_SIZE:Int = 64;
 	public static var HUD_TEXT_SIZE:Int = 14;
+	public static var PS:PlayState;
 
 	// Level data
 	public static var demo:Level = {

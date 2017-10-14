@@ -1,4 +1,4 @@
-package;
+package gameObjects;
 
 import flash.display.BlendMode;
 import flixel.FlxG;

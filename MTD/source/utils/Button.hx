@@ -1,4 +1,4 @@
-package;
+package utils;
 
 import flixel.util.FlxColor;
 import flixel.ui.FlxButton;

@@ -1,4 +1,4 @@
-package;
+package ui;
 
 import flash.display.Sprite;
 import flixel.group.FlxGroup;
@@ -7,6 +7,8 @@ import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.FlxSprite;
 import flixel.FlxG;
+import gameObjects.Tower;
+import utils.Button;
 import Constants;
 
 enum MenuType
