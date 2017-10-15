@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="HelloWorld" file="HelloWorld" main="Main" version="0.0.1" company="HaxeFlixel" />
+	<app title="MTD" file="MTD" main="Main" version="0.0.1" company="HaxeFlixel" />
 
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
@@ -14,7 +14,7 @@
 	<!-- ____________________________ Window Settings ___________________________ -->
 
 	<!--These window settings apply to all targets-->
-	<window width="640" height="480" fps="60" background="#000000" hardware="true" vsync="true" />
+	<window width="960" height="720" fps="60" background="#000000" hardware="true" vsync="true" />
 
 	<!--HTML5-specific-->
 	<window if="html5" resizable="false" />
@@ -36,7 +36,7 @@
 	<haxelib name="flixel" />
 
 	<!--In case you want to use the addons package-->
-	<!--<haxelib name="flixel-addons" />-->
+	<haxelib name="flixel-addons" />
 
 	<!--In case you want to use the ui package-->
 	<!--<haxelib name="flixel-ui" />-->
@@ -53,7 +53,7 @@
 	<!--<haxedef name="FLX_NO_MOUSE_ADVANCED" />-->
 
 	<!--Disable the native cursor API on Flash-->
-	<!--<haxedef name="FLX_NO_NATIVE_CURSOR" />-->
+	<haxedef name="FLX_NO_NATIVE_CURSOR" />
 
 	<!--Optimise inputs, be careful you will get null errors if you don't use conditionals in your game-->
 	<haxedef name="FLX_NO_MOUSE" if="mobile" />
@@ -76,7 +76,17 @@
 	<!--Enable this for Nape release builds for a serious peformance improvement-->
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
 
+	<!--Enable logging for analytics-->
+	<haxedef name="network-sandbox" />
+	<haxeflag name="-swf-lib" value="Logging.swc" />
+
+	-lib random
+
 	<!-- _________________________________ Custom _______________________________ -->
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
+	<icon path="assets/icon.svg" />
+
+	<assets path="assets" rename="assets" exclude="*.ogg" if="flash" />
+
 </project>
