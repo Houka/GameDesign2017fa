@@ -42,7 +42,7 @@ class Constants{
 		map:"assets/maps/demo.csv",
 		mapWidth: 40,
 		mapHeight:30,
-		tilemap:"assets/tiles/tilemap.png",
+		tilemap:"assets/tiles/auto_tilemap.png",
 		start: toCameraCoordinates(5,0),					 
 		goal: toCameraCoordinates(34,29),
 		health: 9,

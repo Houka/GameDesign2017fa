@@ -17,6 +17,8 @@ import Constants;
 
 class MenuState extends FlxState
 {
+	private static inline var SELECTION_MENU_OFFSET_X:Int = -250;
+
 	private var _level:Level;
 	private var _startPosition:FlxPoint;
 	private var _endPosition:FlxPoint;
@@ -38,23 +40,24 @@ class MenuState extends FlxState
 		
 		// Load a map from CSV data; note that the tile graphic does not need to be a file; in this case, it's BitmapData.
 		_level = Constants.demo;
-		_map = Constants.loadMap(_level);
+		_map = Constants.loadMap(_level, true);
 		_startPosition  = _level.start;
 		_endPosition = _level.goal;
 
 		// Menu BG
 		var menuBG = new FlxSprite(0,0, AssetPaths.menu__png);
-		menuBG.setPosition(FlxG.width/2 - menuBG.origin.x,FlxG.height/2 - menuBG.origin.y);
+		menuBG.setPosition(FlxG.width/2 - menuBG.origin.x + SELECTION_MENU_OFFSET_X, FlxG.height/2 - menuBG.origin.y);
 		menuBG.scrollFactor.x = menuBG.scrollFactor.y = 0;
-		
+		menuBG.alpha = 0.85;
+
 		// Game title
-		var headline = new FlxText(0, FlxG.height/2 - menuBG.origin.y, FlxG.width, "MTD", 75);
+		var headline = new FlxText(SELECTION_MENU_OFFSET_X, FlxG.height/2 - menuBG.origin.y, FlxG.width, "MTD", 75);
 		headline.scrollFactor.x = headline.scrollFactor.y = 0;
 		headline.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,5);
 		headline.alignment = CENTER;
 		
 		// Credits
-		var credits = new FlxText(0, FlxG.height/2 + menuBG.origin.y - 10, FlxG.width, "Sun Bear Studios", 14);
+		var credits = new FlxText(SELECTION_MENU_OFFSET_X, FlxG.height/2 + menuBG.origin.y - 10, FlxG.width, "Sun Bear Studios", 14);
 		credits.scrollFactor.x = credits.scrollFactor.y = 0;
 		credits.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,1);
 		credits.alignment = CENTER;
@@ -69,6 +72,7 @@ class MenuState extends FlxState
 			levelButton.label.size = buttonSize;
 			levelButton.screenCenter();
 			levelButton.y += i*25 - 75;
+			levelButton.x += SELECTION_MENU_OFFSET_X;
 			levelButtons.push(levelButton);
 		}
 		
@@ -102,6 +106,7 @@ class MenuState extends FlxState
 		quitButton.label.size = buttonSize;
 		quitButton.screenCenter();
 		quitButton.y += 100;
+		quitButton.x += SELECTION_MENU_OFFSET_X;
 		add(quitButton);
 		#end
 

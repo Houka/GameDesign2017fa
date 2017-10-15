@@ -67,6 +67,7 @@ class PlayState extends FlxState
 	// level specific variables
 	private var _level:Level;
 	private var _defaultPath:Array<FlxPoint>;
+	private var speed:Int = 100; // the base speed that each enemy starts with
 
 	public function new(level:Level){
 		super();
@@ -242,6 +243,22 @@ class PlayState extends FlxState
 		
 		super.update(elapsed);
 	} // End update
+
+	public function removeTower(tower:Tower):Void{
+		_towers.remove(tower, true);
+		_map.setTile(Std.int(tower.x / Constants.TILE_SIZE), Std.int(tower.y / Constants.TILE_SIZE), 0, false);
+		
+		// Remove the indicator for this tower as well
+		for (indicator in towerIndicators)
+		{
+			if (indicator.x ==  tower.getMidpoint().x - 1 && indicator.y ==  tower.getMidpoint().y - 1)
+			{
+				towerIndicators.remove(indicator, true);
+				indicator.visible = false;
+				indicator = null;
+			}
+		}
+	}
 	
 	private function sellConfirmCallback(Sure:Bool):Void
 	{
@@ -252,20 +269,9 @@ class PlayState extends FlxState
 		
 		if (Sure)
 		{
-			_towers.remove( InGameMenu.towerSelected, true);
-			_map.setTile(Std.int(InGameMenu.towerSelected.x / Constants.TILE_SIZE), Std.int(InGameMenu.towerSelected.y / Constants.TILE_SIZE), 0, false);
 			InGameMenu.towerSelected.visible = false;
-			
-			// Remove the indicator for this tower as well
-			for (indicator in towerIndicators)
-			{
-				if (indicator.x ==  InGameMenu.towerSelected.getMidpoint().x - 1 && indicator.y ==  InGameMenu.towerSelected.getMidpoint().y - 1)
-				{
-					towerIndicators.remove(indicator, true);
-					indicator.visible = false;
-					indicator = null;
-				}
-			}
+
+			removeTower(InGameMenu.towerSelected);
 			
 			// If there are no towers, having the tutorial text and sell button is a bit superfluous
 			if (_towers.countLiving() == -1 && _towers.countDead() == -1)
@@ -438,6 +444,9 @@ class PlayState extends FlxState
 		var enemy = enemies.recycle(Enemy.new.bind(0, 0));
 		enemy.init(_enemySpawnPosition.x, _enemySpawnPosition.y - 12);
 
+		//	try to get path to goal (considering towers). 
+		//  If there is no path then default to shortest path without considering towers
+
 		var path = _map.findPath(_enemySpawnPosition, _goalPosition.copyTo());
 		if (path == null){
 			// copy the default path in
@@ -447,7 +456,7 @@ class PlayState extends FlxState
 			}
 		}
 
-		enemy.followPath(path, 20 + Constants.PS.wave);
+		enemy.followPath(path, speed + wave);
 		_spawnCounter = 0;
 	}
 	

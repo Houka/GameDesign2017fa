@@ -68,6 +68,23 @@ class Tower extends FlxSprite
 		
 		super.update(elapsed);
 	}
+
+	
+	/**
+	 * Inflict horrible pain on this tower
+	 * 
+	 * @param	Damage	The damage to deal to this enemy.
+	 */
+	override public function hurt(Damage:Float):Void
+	{
+		health -= Damage;
+		alpha -= Damage;
+		
+		if (health <= 0){
+			kill();
+			Constants.PS.removeTower(this);
+		}
+	}
 	
 	/**
 	 * Used to determine value of a tower when selling it. Equivalent to half its next upgrade costs plus half its base cost.

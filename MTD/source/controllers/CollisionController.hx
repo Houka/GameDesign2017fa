@@ -41,6 +41,10 @@ class CollisionController{
 		// If a bullet hits an enemy, it will lose health
 		
 		FlxG.overlap(bullets, enemies, hitEnemy);
+
+		// If an enemy is within attacking range of a tower
+
+		enemies.forEachAlive(hitTower);
 	}
 
 	public function addToState(state:FlxState):Void{
@@ -84,6 +88,30 @@ class CollisionController{
 		
 		Constants.play("assets/sounds/hurt.mp3");
 	}
+
+	/**
+	 * Called when an enemy is within attacking range with a tower. Enemy stops to attack tower
+	 */
+	public function hitTower(enemy:Enemy):Void
+	{
+		// return if its already attacking someone
+		if(enemy.isAttacking)
+			return;
+
+		var midpoint = enemy.getMidpoint();
+		var nearest = getNearestTower(midpoint.x, midpoint.y, enemy.attackRange);
+
+		// return if there are no towers within range
+		if (nearest == null)
+			return;
+
+		// pause its path if it has one
+		if (enemy.path != null){
+			enemy.pausePath();
+		}
+
+		enemy.attack(nearest);
+	}
 	
 	/**
 	 * Called when a point tries to select a tower. Returns null if the point doesn't overlap with a tower
@@ -93,5 +121,34 @@ class CollisionController{
 			if (tower.alive && FlxMath.pointInCoordinates(x, y, Std.int(tower.x), Std.int(tower.y), Std.int(tower.width), Std.int(tower.height)))
 				return tower;
 		return null;
+	}
+
+
+	/**
+	 * Used to get the nearest tower within a particular search radius
+	 * 
+	 * @param	X				The X position of the screen touch.
+	 * @param	Y				The Y position of the screen touch.
+	 * @param	SearchRadius	How far from the touch point to search.
+	 * @return	The nearest tower, as a Tower object.
+	 */
+	public function getNearestTower(X:Float, Y:Float, SearchRadius:Float):Tower
+	{
+		var minDistance:Float = SearchRadius;
+		var closestTower:Tower = null;
+		var searchPoint = FlxPoint.get(X, Y);
+		
+		for (tower in towers)
+		{
+			var dist:Float = searchPoint.distanceTo(tower.getMidpoint());
+			
+			if (dist < minDistance)
+			{
+				closestTower = tower;
+				minDistance = dist;
+			}
+		}
+		
+		return closestTower;
 	}
 }

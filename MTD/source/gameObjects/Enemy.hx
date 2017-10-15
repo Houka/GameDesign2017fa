@@ -6,10 +6,25 @@ import flixel.util.FlxPath;
 import flixel.math.FlxPoint;
 import ui.HUD;
 import AssetPaths;
+import Constants;
 
 class Enemy extends FlxSprite 
 {
 	public var maxHealth:Float = 1.0;
+	public var attackBase:Float = 0.5;
+	public var attackRange:Int = Constants.TILE_SIZE;
+	public var isAttacking:Bool = false;
+
+	// path variables
+	private var _savedPath:Array<FlxPoint>;
+	private var _savedPathIndex:Int;
+	private var _savedSpeed:Int;
+	private var _savedOnComplete:FlxPath->Void;
+
+	// attacking vars
+	private var _targetTower:Tower;
+	private var _attackInterval:Int = 1;
+	private var _attackCounter:Int = 0;
 	
 	/**
 	 * Create a new enemy. Used in the menu and playstate.
@@ -39,6 +54,28 @@ class Enemy extends FlxSprite
 	override public function update(elapsed:Float):Void
 	{
 		alpha = health / maxHealth; 
+
+		// what to do during attacking state
+
+		if (isAttacking){
+			_attackCounter += Std.int(FlxG.timeScale);
+
+			if (_attackCounter > (_attackInterval * FlxG.updateFramerate)){
+				_targetTower.hurt(attackBase);
+				_attackCounter = 0;
+			}
+
+		 	// stop attacking a dead tower and go back to path
+			if (!_targetTower.alive){
+		 		isAttacking = false;
+		 		path = new FlxPath().start(_savedPath, _savedSpeed, 0, true);
+		 		path.onComplete = _savedOnComplete;
+		 		path.addAt(getMidpoint().x,getMidpoint().y,_savedPathIndex);
+		 		path.setNode(_savedPathIndex);
+		 		_targetTower = null;
+	 		}
+		}
+
 		super.update(elapsed);
 	}
 	
@@ -95,7 +132,29 @@ class Enemy extends FlxSprite
 		Path[0].x = x;
 		Path[0].y = y;
 		
+		_savedPath = Path;
+		_savedSpeed = Speed;
+		_savedOnComplete=OnComplete;
 		path = new FlxPath().start(Path, Speed, 0, true);
 		path.onComplete = OnComplete;
 	}
+
+
+	public function pausePath():Void{
+		_savedPathIndex = path.nodeIndex;
+		path.cancel();
+	}
+
+	/**
+	 *	Starts attacking the tower that is within range until it has died
+	 */
+	 public function attack(tower:Tower):Void{
+	 	if (tower.alive){
+	 		// keep attacking the tower at set intervals
+	 		isAttacking = true;
+
+	 		// TODO: add attacking animation play here
+	 		_targetTower = tower;
+	 	}
+	 }
 }
