@@ -382,7 +382,7 @@ class InGameMenu extends FlxGroup{
 		_towerRange.pixels.draw(RANGE_SPRITE);
 		
 		#if flash
-		_towerRange.blend = BlendMode.INVERT;
+		// _towerRange.blend = BlendMode.INVERT;
 		#else
 		_towerRange.alpha = 0.5;
 		#end

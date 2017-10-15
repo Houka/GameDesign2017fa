@@ -148,11 +148,11 @@ class MenuState extends FlxState
 	#if !js
 	private function quitGame():Void 
 	{
-		#if (flash || neko)
-        	Lib.close();
-        #else
-        	Sys.exit(0);
-        #end
+		// #if (neko)
+  //       	Lib.close();
+  //       #else
+  //       	Sys.exit(0);
+  //       #end
 	}
 	#end
 }
