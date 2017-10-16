@@ -80,9 +80,9 @@ class Controller
 		gameObjects.sort(byY, FlxSort.ASCENDING); 
 
 		gameObjects.forEach(function (t) {if (!t.exists) { gameObjects.remove(t, true); }}); 
-		enemyController.forEachAlive( function(e) {
-			towerController.forEachAlive( function(t) enemyController.canAttackTower(e, t, homeBase) );
-		});
+		// enemyController.forEachAlive( function(e) {
+		// 	towerController.forEachAlive( function(t) enemyController.canAttackTower(e, t, homeBase) );
+		// });
 	}
 
 	public function add(obj:GameObject):Void{

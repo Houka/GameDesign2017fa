@@ -51,19 +51,19 @@ class EnemyController extends GameObjectController<Enemy>
 		}
 	}
 	
-	public function canAttackTower(enemy:Enemy, tower:Tower, homebase:HomeBase):Void
-    {
-        _sight.set(tower.x - enemy.x - enemy.origin.x, tower.y - enemy.y - enemy.origin.y);
-		if (enemy.canAttack(_sight.length)) {
-			enemy.setGoal(Std.int(tower.x), Std.int(tower.y));
-			enemy.isAttacking = true;
-		} else {
-			if (enemy.isAttacking) {
-				enemy.setGoal(Std.int(homebase.x), Std.int(homebase.y));
-				enemy.isAttacking = false;
-			}
-		}
-    }
+	// public function canAttackTower(enemy:Enemy, tower:Tower, homebase:HomeBase):Void
+ //    {
+ //        _sight.set(tower.x - enemy.x - enemy.origin.x, tower.y - enemy.y - enemy.origin.y);
+	// 	if (enemy.canAttack(_sight.length)) {
+	// 		enemy.setGoal(Std.int(tower.x), Std.int(tower.y));
+	// 		enemy.isAttacking = true;
+	// 	} else {
+	// 		if (enemy.isAttacking) {
+	// 			enemy.setGoal(Std.int(homebase.x), Std.int(homebase.y));
+	// 			enemy.isAttacking = false;
+	// 		}
+	// 	}
+ //    }
 
 	override private function updateAnimation(obj:Enemy): Void{
 		super.updateAnimation(obj);
