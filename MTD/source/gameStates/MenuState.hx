@@ -99,29 +99,7 @@ class MenuState extends FlxState
 		for (b in levelButtons)
 			add(b);
 
-		// Only have a quit button if it is anything besides html (because how do you quit out of a browser game?)
-		#if !js
-		// Quit button
-		var quitButton: FlxButton = new Button(0, 0, "[Q]uit", quitGame,100);
-		quitButton.label.size = buttonSize;
-		quitButton.screenCenter();
-		quitButton.y += 100;
-		quitButton.x += SELECTION_MENU_OFFSET_X;
-		add(quitButton);
-		#end
-
 		super.create();
-	}
-	
-	override public function update(elapsed:Float):Void
-	{
-		#if !js
-		// Begin the game on a P keypress.
-		if (FlxG.keys.justReleased.Q)
-			quitGame();
-		#end
-
-		super.update(elapsed);
 	}
 	
 	/**
@@ -144,15 +122,4 @@ class MenuState extends FlxState
 	{
 		FlxG.switchState(new PlayState(level));
 	}
-
-	#if !js
-	private function quitGame():Void 
-	{
-		// #if (neko)
-  //       	Lib.close();
-  //       #else
-  //       	Sys.exit(0);
-  //       #end
-	}
-	#end
 }
