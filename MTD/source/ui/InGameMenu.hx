@@ -85,7 +85,7 @@ class InGameMenu extends FlxGroup{
 		_rangeButton = new Button(14, height, "Range (##): $##", upgradeRangeCallback);
 		_areYouSure = new FlxText(20, height + 3, 200, "Tower value $###, really sell?");
 		_areYouSure.color = FlxColor.BLACK;
-		_buildGunBaseButton = new Button(500, height, "Build GunBase", createGunBaseCallback); 
+		// _buildGunBaseButton = new Button(500, height, "Build GunBase", createGunBaseCallback); 
 
 		// text
 		_tutText = new FlxText(0, height - 10, FlxG.width, "Click on a Tower to Upgrade it!");
@@ -119,7 +119,7 @@ class InGameMenu extends FlxGroup{
 		sellConfirmMenu.add(new Button(280, height, "[N]o", sellConfirmCallback.bind(false)));
 		sellConfirmMenu.visible = false;
 
-		buildMenu.add(_buildGunBaseButton);
+		// buildMenu.add(_buildGunBaseButton);
 
 		// Helper Sprites
 		_buildHelper = new FlxSprite(0, 0, AssetPaths.tower_placement__png);
@@ -132,8 +132,12 @@ class InGameMenu extends FlxGroup{
 		var bg = new FlxSprite(0, FlxG.height - 16);
 		bg.makeGraphic(FlxG.width, 16, FlxColor.WHITE);
 
+		var store = new FlxSprite(FlxG.width-320, 40);
+		store.loadGraphic(AssetPaths.store__png);
+
 		// add to overall menu
 		add(bg);
+		add(store);
 		add(_towerRange);
 		add(_buildHelper);
 		add(defaultMenu);
@@ -141,6 +145,8 @@ class InGameMenu extends FlxGroup{
 		add(sellMenu);
 		add(sellConfirmMenu);
 		add(buildMenu);
+
+		createBuildButtons(); 
 	}
 
 	override public function kill():Void{
@@ -314,8 +320,9 @@ class InGameMenu extends FlxGroup{
 		updateRangeSprite(InGameMenu.towerSelected.getMidpoint(), InGameMenu.towerSelected.range);
 	}
 
-	private function createGunBaseCallback(): Void { 
+	private function createGunBaseCallback(Skip: Bool=false): Void { 
 		buildingMode = !buildingMode;
+
 	}
 
 
@@ -326,7 +333,6 @@ class InGameMenu extends FlxGroup{
 	{
 		if (towerPrice > HUD.money || towerSelected != null)
 			return;
-		
 		buildingMode = !buildingMode;
 		#if !mobile
 		_towerRange.visible = !_towerRange.visible;
@@ -412,5 +418,40 @@ class InGameMenu extends FlxGroup{
 			Constants.toggleCursors(Normal);
 		buildingMode = Value;
 		return buildingMode;
+	}
+
+	private function createBuildButtons():Void { 
+		var buttons = [
+			{name: "Gun 1"}, 
+			{name: "Gun 2"}, 
+			{name: "Gun 3"}, 
+			{name: "Snow"}, 
+			{name: "Ice"}, 
+			{name: "Metal"}, 
+			{name: "Ammo 1"}, 
+			{name: "Ammo 2"}, 
+			{name: "Ammo 3"}
+		]; 
+
+		var gap = 10; 
+		var width = 50; 
+		var height = 50; 
+		var x = FlxG.width-260;
+		var y = 150;
+		var row = 0; 
+		var col = -1; 
+
+		for (i in 0...buttons.length) {
+			col++; 
+			var btn:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), buttons[i].name,buildTowerCallback.bind(false));
+			btn.loadGraphic(AssetPaths.button__png, true, width, height); 
+			add(btn);
+
+			if ((i+1)%3 == 0) {
+				row++; 
+				col = -1; 
+			}
+		}
+
 	}
 }
