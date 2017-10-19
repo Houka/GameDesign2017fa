@@ -10,6 +10,7 @@ import flixel.FlxG;
 import gameObjects.Tower;
 import utils.Button;
 import Constants;
+import flixel.ui.FlxButton; 
 
 enum MenuType
 {
@@ -33,6 +34,7 @@ class InGameMenu extends FlxGroup{
 	public var upgradeMenu:FlxGroup;
 	public var sellMenu:FlxGroup;
 	public var sellConfirmMenu:FlxGroup;
+	public var buildMenu: FlxGroup; 
 
 	// Game Object variables
 	public var towerPrice:Int = 8;
@@ -55,6 +57,8 @@ class InGameMenu extends FlxGroup{
 	private var _firerateButton:Button;
 	private var _rangeButton:Button;
 
+	private var _buildGunBaseButton: Button;
+
 	// Sprites
 	public var _towerRange:FlxSprite;	// TODO: somehow make this private cleanly
 	private var _buildHelper:FlxSprite;
@@ -67,6 +71,7 @@ class InGameMenu extends FlxGroup{
 		upgradeMenu = new FlxGroup();
 		sellMenu = new FlxGroup();
 		sellConfirmMenu = new FlxGroup();
+		buildMenu = new FlxGroup();
 
 		// buttons
 		var height:Int = FlxG.height - 18;
@@ -80,6 +85,7 @@ class InGameMenu extends FlxGroup{
 		_rangeButton = new Button(14, height, "Range (##): $##", upgradeRangeCallback);
 		_areYouSure = new FlxText(20, height + 3, 200, "Tower value $###, really sell?");
 		_areYouSure.color = FlxColor.BLACK;
+		_buildGunBaseButton = new Button(500, height, "Build GunBase", createGunBaseCallback); 
 
 		// text
 		_tutText = new FlxText(0, height - 10, FlxG.width, "Click on a Tower to Upgrade it!");
@@ -113,6 +119,8 @@ class InGameMenu extends FlxGroup{
 		sellConfirmMenu.add(new Button(280, height, "[N]o", sellConfirmCallback.bind(false)));
 		sellConfirmMenu.visible = false;
 
+		buildMenu.add(_buildGunBaseButton);
+
 		// Helper Sprites
 		_buildHelper = new FlxSprite(0, 0, AssetPaths.tower_placement__png);
 		_buildHelper.visible = false;
@@ -132,6 +140,7 @@ class InGameMenu extends FlxGroup{
 		add(upgradeMenu);
 		add(sellMenu);
 		add(sellConfirmMenu);
+		add(buildMenu);
 	}
 
 	override public function kill():Void{
@@ -304,6 +313,12 @@ class InGameMenu extends FlxGroup{
 		
 		updateRangeSprite(InGameMenu.towerSelected.getMidpoint(), InGameMenu.towerSelected.range);
 	}
+
+	private function createGunBaseCallback(): Void { 
+		buildingMode = !buildingMode;
+	}
+
+
 	/**
 	 * A function that is called when the user enters build mode.
 	 */

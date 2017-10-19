@@ -34,6 +34,7 @@ class PlayState extends FlxState
 	public var enemies:FlxTypedGroup<Enemy>;
 	public var towerIndicators:FlxTypedGroup<FlxSprite>;
 	private var _towers:FlxTypedGroup<Tower>;
+	private var _gunBases:FlxTypedGroup<GunBase>; 
 
 	// HUD/Menu Groups
 	private var _topGui:FlxGroup;
@@ -99,6 +100,7 @@ class PlayState extends FlxState
 		emitters = collisionController.emitters;
 		enemies = collisionController.enemies;
 		_towers = collisionController.towers;
+		_gunBases = collisionController.gunBases; 
 		towerIndicators = collisionController.towerIndicators;
 		
 		// Set up bottom default GUI
@@ -192,6 +194,7 @@ class PlayState extends FlxState
 			if (inGameMenu.buildingMode)
 			{
 				buildTower();
+				buildGunBase(); 
 			}
 			else
 			{
@@ -382,6 +385,16 @@ class PlayState extends FlxState
 		inGameMenu.towerPrice += Std.int(inGameMenu.towerPrice * 0.3);
 		_towerButton.text = "Buy [T]ower ($" + inGameMenu.towerPrice + ")";
 		inGameMenu.toggleMenus(General);
+	}
+
+	private function buildGunBase(): Void { 
+		// Snap to grid
+		var xPos:Float = FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE);
+		var yPos:Float = FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE);
+
+		_gunBases.add(new GunBase(xPos, yPos)); 
+		_map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
+
 	}
 	
 	/**
