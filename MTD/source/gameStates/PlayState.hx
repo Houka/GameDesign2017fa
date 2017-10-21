@@ -365,13 +365,13 @@ class PlayState extends FlxState
 		}
 		
 		// Can't place towers off the road
-		if (_map.getTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE)) != 0)
-		{
-			Constants.play("deny");
+		// if (_map.getTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE)) != 0)
+		// {
+		// 	Constants.play("deny");
 			
-			inGameMenu.toggleMenus(General);
-			return;
-		}
+		// 	inGameMenu.toggleMenus(General);
+		// 	return;
+		// }
 		
 		_towers.add(new Tower(xPos, yPos, inGameMenu.towerPrice));
 
@@ -389,11 +389,14 @@ class PlayState extends FlxState
 
 	private function buildGunBase(): Void { 
 		// Snap to grid
-		var xPos:Float = FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE);
-		var yPos:Float = FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE);
+		// var xPos:Float = FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE);
+		// var yPos:Float = FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE);
 
-		_gunBases.add(new GunBase(xPos, yPos)); 
-		_map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
+		// _gunBases.add(new GunBase(xPos, yPos)); 
+		// _map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
+		_gunBases.add(new GunBase(FlxG.width-320, 40));
+
+
 
 	}
 	

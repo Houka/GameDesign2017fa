@@ -85,7 +85,6 @@ class InGameMenu extends FlxGroup{
 		_rangeButton = new Button(14, height, "Range (##): $##", upgradeRangeCallback);
 		_areYouSure = new FlxText(20, height + 3, 200, "Tower value $###, really sell?");
 		_areYouSure.color = FlxColor.BLACK;
-		// _buildGunBaseButton = new Button(500, height, "Build GunBase", createGunBaseCallback); 
 
 		// text
 		_tutText = new FlxText(0, height - 10, FlxG.width, "Click on a Tower to Upgrade it!");
@@ -119,7 +118,7 @@ class InGameMenu extends FlxGroup{
 		sellConfirmMenu.add(new Button(280, height, "[N]o", sellConfirmCallback.bind(false)));
 		sellConfirmMenu.visible = false;
 
-		// buildMenu.add(_buildGunBaseButton);
+		buildMenu.add(new FlxButton(FlxG.width-200, FlxG.height-150, "build")); 
 
 		// Helper Sprites
 		_buildHelper = new FlxSprite(0, 0, AssetPaths.tower_placement__png);
@@ -321,7 +320,24 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function createGunBaseCallback(Skip: Bool=false): Void { 
-		buildingMode = !buildingMode;
+		//make sure to differentiate between building and placing the actual tower 
+		//what are you trying to do?
+			//every click on a button means you're adding to a pre-existing tower
+			//that's being placed at the bottom of the store
+
+		//then when you click on the screen itself the tower will be placed at the clicked location
+
+		//what are the steps for this?
+			//1. when click the gun1 button, place the gunbase at the bottom of the store
+			//A. add build button
+			//B. When click build, small version of gunbase follows cursor
+			//C. Can place small gunbase onto the path 
+			//2. when click on path, then place the created gunbase on that path
+			//3. when click on path, gunbase at the bottom of the store disappears
+			//4. remove the health options from all of the materials
+			//5.
+			buildingMode = !buildingMode;
+
 
 	}
 
@@ -443,7 +459,7 @@ class InGameMenu extends FlxGroup{
 
 		for (i in 0...buttons.length) {
 			col++; 
-			var btn:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), buttons[i].name,buildTowerCallback.bind(false));
+			var btn:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), buttons[i].name,createGunBaseCallback.bind(false));
 			btn.loadGraphic(AssetPaths.button__png, true, width, height); 
 			add(btn);
 
