@@ -198,13 +198,8 @@ class PlayState extends FlxState
 		
 		if (FlxG.mouse.justReleased)
 		{
-			trace("buildingMode: " + inGameMenu.buildingMode);
-			trace("buyingMode: "+ inGameMenu.buyingMode); 
-			trace("placingMode: "+ inGameMenu.placingMode);
 			if (inGameMenu.placingMode) {
-				trace(inGameMenu.buildingMode);
 				buildTower();
-				inGameMenu.placingMode != inGameMenu.placingMode; 
 			}
 
 			else if (inGameMenu.buyingMode) {
@@ -416,6 +411,7 @@ class PlayState extends FlxState
 		inGameMenu.towerPrice += Std.int(inGameMenu.towerPrice * 0.3);
 		_towerButton.text = "Buy [T]ower ($" + inGameMenu.towerPrice + ")";
 		inGameMenu.toggleMenus(General);
+		inGameMenu.placingMode = false;
 	}
 
 	private function buildGunBase(): Void { 
