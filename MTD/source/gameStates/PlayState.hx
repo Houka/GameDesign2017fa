@@ -281,6 +281,15 @@ class PlayState extends FlxState
 				indicator = null;
 			}
 		}
+
+		for (t in towerBlocks) {
+			if (t.x ==  tower.getMidpoint().x && t.y ==  tower.getMidpoint().y)
+			{
+				towerBlocks.remove(t); 
+				t.visible = false; 
+				t = null;
+			}
+		}
 	}
 	
 	private function sellConfirmCallback(Sure:Bool):Void
@@ -396,7 +405,6 @@ class PlayState extends FlxState
 		var tower: Tower = new Tower(xPos, yPos, inGameMenu.towerPrice, towerBlocks);
 		_towers.add(tower);
 		var level = 0; 
-		trace(towerBlocks.slice(_currTowerStartIndex));
 		for (t in towerBlocks.slice(_currTowerStartIndex)) {
 			var xpos = tower.x+tower.origin.x;
             var ypos = tower.y+tower.origin.y-level*Constants.HEIGHT_OFFSET;
@@ -423,13 +431,13 @@ class PlayState extends FlxState
 
 	/** A function that adds a new gunbase and then iterates the number of layers in the tower. **/
 	private function buildGunBase(): Void { 
-		addMaterial(new GunBase(FlxG.width-320, 40-_layerNum*Constants.HEIGHT_OFFSET)); 
+		addMaterial(new GunBase(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET)); 
 		_layerNum++;
 	}
 
 	/** A function that adds a new foundation and then iterates the number of layers in the tower. **/
 	private function buildFoundation(): Void { 
-		addMaterial(new Foundation(FlxG.width-320, 40-_layerNum*Constants.HEIGHT_OFFSET)); 
+		addMaterial(new Foundation(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET)); 
 		_layerNum++; 
 	}
 

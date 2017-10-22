@@ -139,6 +139,7 @@ class InGameMenu extends FlxGroup{
 		// add to overall menu
 		add(bg);
 		add(store);
+		trace("store added");
 		add(_towerRange);
 		add(_buildHelper);
 		add(defaultMenu);
@@ -447,6 +448,7 @@ class InGameMenu extends FlxGroup{
 		return placingMode; 
 	}
 
+	/** A function that creates the buttons in the store. */
 	private function createBuildButtons():Void { 
 		var buttons = [
 			{name: "Gun 1"}, 
