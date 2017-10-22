@@ -203,7 +203,7 @@ class PlayState extends FlxState
 				buildTower();
 				inGameMenu.placingMode != inGameMenu.placingMode; 
 			}
-			
+
 			else if (inGameMenu.buyingMode) {
 				if (InGameMenu.currItem < 3) {
 					buildGunBase();  
@@ -391,8 +391,16 @@ class PlayState extends FlxState
 			return;
 		}
 		
-		_towers.add(new Tower(xPos, yPos, inGameMenu.towerPrice, towerBlocks));
-		gunBases.add(new GunBase(xPos, yPos)); 
+		var tower: Tower = new Tower(xPos, yPos, inGameMenu.towerPrice, towerBlocks);
+		_towers.add(tower);
+		var level = 0; 
+		for (t in towerBlocks) {
+			var xpos = tower.x+tower.origin.x;
+            var ypos = tower.y+tower.origin.y+level*Constants.HEIGHT_OFFSET;
+            level++;
+            t.setPosition(xpos,ypos);
+		}
+		// gunBases.add(new GunBase(xPos, yPos)); 
 
 		_map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
 		
