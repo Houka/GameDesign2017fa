@@ -10,6 +10,7 @@ import flixel.FlxG;
 import gameObjects.Tower;
 import utils.Button;
 import Constants;
+import gameStates.PlayState; 
 import flixel.ui.FlxButton; 
 
 enum MenuType
@@ -322,33 +323,16 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function createGunBaseCallback(Skip: Bool=false): Void { 
-		//make sure to differentiate between building and placing the actual tower 
-		//what are you trying to do?
-			//every click on a button means you're adding to a pre-existing tower
-			//that's being placed at the bottom of the store
-
-		//then when you click on the screen itself the tower will be placed at the clicked location
-
-		//what are the steps for this?
-			//1. when click the gun1 button, place the gunbase at the bottom of the store
-			//A. add build button
-			//B. When click build, small version of gunbase follows cursor
-				//when click build, checks to see if any gunbases are in list of materials
-				//if there are such materials, will place that gunbase on the path where user clicks 
-			//C. Can place small gunbase onto the path 
-			//2. when click on path, then place the created gunbase on that path
-			//3. when click on path, gunbase at the bottom of the store disappears
-			//4. remove the health options from all of the materials
-			//5.
-			// buildingMode = !buildingMode;
 			buyingMode = !buyingMode; 
-
-
 	}
 
 	private function placeGunBaseCallback(Skip: Bool=false): Void {
-		placingMode = !placingMode; 
-		trace(placingMode);
+		if (PlayState.gunBases.length > 0) {
+			placingMode = !placingMode; 
+		}
+		else { 
+			Constants.play("deny");
+		}
 	}
 
 
@@ -439,8 +423,9 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function set_buildingMode(Value:Bool):Bool{
-		if(Value)
+		if(Value) {
 			Constants.toggleCursors(Build);
+		}
 		else
 			Constants.toggleCursors(Normal);
 		buildingMode = Value;
@@ -448,19 +433,17 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function set_buyingMode(Value:Bool):Bool{
-		// if(Value)
-		// 	Constants.toggleCursors(Build);
-		// else
-		// 	Constants.toggleCursors(Normal);
 		buyingMode = Value;
 		return buyingMode;
 	}
 
 	private function set_placingMode(Value:Bool):Bool{
-		if(Value)
-			Constants.toggleCursors(Build);
-		else 
-			Constants.toggleCursors(Normal);
+		// if(Value) {
+		// 	trace("set placing");
+		// 	Constants.toggleCursors(Build);
+		// }
+		// else 
+		// 	Constants.toggleCursors(Normal);
 		placingMode=Value; 
 		return placingMode; 
 	}

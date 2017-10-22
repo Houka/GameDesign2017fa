@@ -18,6 +18,7 @@ class CollisionController{
 	public var towerIndicators:FlxTypedGroup<FlxSprite>;
 	public var towers:FlxTypedGroup<Tower>;
 	public var gunBases:FlxTypedGroup<GunBase>; 
+	public var towerBlocks:FlxTypedGroup<TowerBlock>; 
 
 	// Single game elements
 	public var goal:FlxSprite;
@@ -31,6 +32,7 @@ class CollisionController{
 		towers = new FlxTypedGroup<Tower>();
 		towerIndicators = new FlxTypedGroup<FlxSprite>();
 		gunBases = new FlxTypedGroup<GunBase>(); 
+		towerBlocks = new FlxTypedGroup<TowerBlock>(); 
 		
 		goal = new FlxSprite(goalPosition.x, goalPosition.y, AssetPaths.homebase__png);
 	}
@@ -57,6 +59,7 @@ class CollisionController{
 		state.add(towerIndicators);
 		state.add(goal);	
 		state.add(gunBases);	
+		state.add(towerBlocks);
 	}
 	
 	/**

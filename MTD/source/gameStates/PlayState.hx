@@ -19,6 +19,7 @@ import utils.Button;
 import gameObjects.*;
 import Constants;
 import AssetPaths;
+import Type; 
 
 class PlayState extends FlxState
 {
@@ -34,7 +35,8 @@ class PlayState extends FlxState
 	public var enemies:FlxTypedGroup<Enemy>;
 	public var towerIndicators:FlxTypedGroup<FlxSprite>;
 	private var _towers:FlxTypedGroup<Tower>;
-	private var _gunBases:FlxTypedGroup<GunBase>; 
+	public static var gunBases:FlxTypedGroup<GunBase>; 
+	public static var towerBlocks:FlxTypedGroup<TowerBlock>; 
 
 	// HUD/Menu Groups
 	private var _topGui:FlxGroup;
@@ -55,6 +57,7 @@ class PlayState extends FlxState
 	
 	// Other objects
 	private var _map:FlxTilemap;
+	private var _layerNum:Int; 
 	
 	// Private variables
 	private var _gameOver:Bool = false;
@@ -100,8 +103,9 @@ class PlayState extends FlxState
 		emitters = collisionController.emitters;
 		enemies = collisionController.enemies;
 		_towers = collisionController.towers;
-		_gunBases = collisionController.gunBases; 
+		gunBases = collisionController.gunBases; 
 		towerIndicators = collisionController.towerIndicators;
+		towerBlocks = collisionController.towerBlocks; 
 		
 		// Set up bottom default GUI
 		
@@ -197,14 +201,13 @@ class PlayState extends FlxState
 			// 	// buildGunBase(); 
 			// }
 			if (inGameMenu.placingMode) {
-				trace("in placing mode");
 				inGameMenu.buildingMode = true; 
 				buildTower();
+				inGameMenu.placingMode != inGameMenu.placingMode; 
 			}
 			else if (inGameMenu.buyingMode) {
 				buildGunBase();  
 				inGameMenu.buyingMode != inGameMenu.buyingMode; 
-				trace("in buyingMode");
 			}
 
 			else
@@ -344,7 +347,6 @@ class PlayState extends FlxState
 	 */
 	private function buildTower():Void
 	{
-		trace("ugh");
 		// Can't place towers on GUI
 		if (FlxG.mouse.y > FlxG.height - 16)
 		{
@@ -386,6 +388,7 @@ class PlayState extends FlxState
 		}
 		
 		_towers.add(new Tower(xPos, yPos, inGameMenu.towerPrice));
+		gunBases.add(new GunBase(xPos, yPos)); 
 
 		_map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
 		
@@ -400,14 +403,16 @@ class PlayState extends FlxState
 	}
 
 	private function buildGunBase(): Void { 
-		// Snap to grid
-		// var xPos:Float = FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE);
-		// var yPos:Float = FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE);
-
-		// _gunBases.add(new GunBase(xPos, yPos)); 
-		// _map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
-		_gunBases.add(new GunBase(FlxG.width-320, 40));
-		inGameMenu.buyingMode != inGameMenu.buyingMode; 
+		if (gunBases.length == 0) {
+			gunBases.add(new GunBase(FlxG.width-320, 40));
+			towerBlocks.add(new GunBase(FlxG.width, 40)); 
+			_layerNum = 1; 
+		}
+		else { 
+			gunBases.add(new GunBase(FlxG.width-320, 40-_layerNum*Constants.HEIGHT_OFFSET));
+			_layerNum++;
+		}
+		// inGameMenu.buyingMode != inGameMenu.buyingMode; 
 
 
 

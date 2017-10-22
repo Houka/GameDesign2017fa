@@ -13,9 +13,8 @@ abstract GunType(Int) {
   var Diagonal = 2;   // x shape
 }
 
-class GunBase extends FlxSprite 
+class GunBase extends TowerBlock 
 {
-	public var healthPoints: Int;  
 	public var type: GunType;
 	public var attackPoints: Int; 
 	public var attackRange: Int; 
@@ -33,10 +32,9 @@ class GunBase extends FlxSprite
 	}
 	
 
-	public function init(X:Float, Y:Float, HealthPoints:Int, Type:GunType, AttackPoints:Int, AttackRange:Int, AttackRate:Int):Void
+	public function init(X:Float, Y:Float, Type:GunType, AttackPoints:Int, AttackRange:Int, AttackRate:Int):Void
 	{
 		reset(X, Y);
-		healthPoints = HealthPoints; 
 		type = Type; 
 		attackPoints = AttackPoints; 
 		attackRange = AttackRange; 

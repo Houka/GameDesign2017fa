@@ -12,10 +12,9 @@ abstract FoundationType(Int) {
 }
 
 
-class Foundation extends FlxSprite 
+class Foundation extends TowerBlock
 {
 	public var type:FoundationType; 
-	private var healthPoints:Int; 
 
 	public function new(X:Float, Y:Float) 
 	{
@@ -26,10 +25,9 @@ class Foundation extends FlxSprite
 		#end
 	}
 
-	public function init(X:Float, Y:Float, HealthPoints:Int, Type:FoundationType):Void
+	public function init(X:Float, Y:Float, Type:FoundationType):Void
 	{
 		reset(X, Y);
-		healthPoints = HealthPoints; 
 		type = Type; 
 	}
 	
