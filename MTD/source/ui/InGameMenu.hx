@@ -327,14 +327,13 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function placeGunBaseCallback(Skip: Bool=false): Void {
-		if (PlayState.gunBases.length > 0) {
+		if (PlayState.towerBlocks.length > 0) {
 			placingMode = !placingMode; 
 		}
 		else { 
 			Constants.play("deny");
 		}
 	}
-
 
 
 	/**

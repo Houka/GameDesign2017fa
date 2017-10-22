@@ -36,6 +36,8 @@ class Constants{
 	public static var TILE_SIZE:Int = 64;
 	public static var HUD_TEXT_SIZE:Int = 14;
 	public static var PS:PlayState;
+
+	static public inline var MAX_HEIGHT:Int = 5;
 	static public inline var HEIGHT_OFFSET:Float = 15; //the y-distance between layers
 
 	// Level data

@@ -36,7 +36,7 @@ class PlayState extends FlxState
 	public var towerIndicators:FlxTypedGroup<FlxSprite>;
 	private var _towers:FlxTypedGroup<Tower>;
 	public static var gunBases:FlxTypedGroup<GunBase>; 
-	public static var towerBlocks:FlxTypedGroup<TowerBlock>; 
+	public static var towerBlocks:List<TowerBlock>; 
 
 	// HUD/Menu Groups
 	private var _topGui:FlxGroup;
@@ -105,7 +105,8 @@ class PlayState extends FlxState
 		_towers = collisionController.towers;
 		gunBases = collisionController.gunBases; 
 		towerIndicators = collisionController.towerIndicators;
-		towerBlocks = collisionController.towerBlocks; 
+		
+		towerBlocks = new List<TowerBlock>();
 		
 		// Set up bottom default GUI
 		
@@ -387,7 +388,7 @@ class PlayState extends FlxState
 			return;
 		}
 		
-		_towers.add(new Tower(xPos, yPos, inGameMenu.towerPrice));
+		_towers.add(new Tower(xPos, yPos, inGameMenu.towerPrice, towerBlocks));
 		gunBases.add(new GunBase(xPos, yPos)); 
 
 		_map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
@@ -403,20 +404,23 @@ class PlayState extends FlxState
 	}
 
 	private function buildGunBase(): Void { 
-		if (gunBases.length == 0) {
-			gunBases.add(new GunBase(FlxG.width-320, 40));
-			towerBlocks.add(new GunBase(FlxG.width, 40)); 
+		if (towerBlocks.length == 0) {
+			addMaterial(new GunBase(FlxG.width, 40)); 
 			_layerNum = 1; 
 		}
 		else { 
-			gunBases.add(new GunBase(FlxG.width-320, 40-_layerNum*Constants.HEIGHT_OFFSET));
+			addMaterial(new GunBase(FlxG.width-320, 40-_layerNum*Constants.HEIGHT_OFFSET)); 
 			_layerNum++;
 		}
-		// inGameMenu.buyingMode != inGameMenu.buyingMode; 
-
-
+		inGameMenu.buyingMode != inGameMenu.buyingMode;
 
 	}
+
+	private function addMaterial(obj:TowerBlock):Void{
+            towerBlocks.push(obj);
+            add(obj);
+    }
+
 	
 	/**
 	 * Used to display either the wave number or Game Over message via the animated fly-in, fly-out text.
