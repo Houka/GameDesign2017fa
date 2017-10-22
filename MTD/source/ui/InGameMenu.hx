@@ -40,6 +40,7 @@ class InGameMenu extends FlxGroup{
 	// Game Object variables
 	public var towerPrice:Int = 8;
 	private var _speed:Int = 1;
+	public static var currItem:Int; 
 
 	// Bools
 	public var buildingMode(default,set):Bool = false;
@@ -322,8 +323,9 @@ class InGameMenu extends FlxGroup{
 		updateRangeSprite(InGameMenu.towerSelected.getMidpoint(), InGameMenu.towerSelected.range);
 	}
 
-	private function createGunBaseCallback(Skip: Bool=false): Void { 
+	private function createTowerCallback(Skip: Bool=false, ItemNum: Int): Void { 
 			buyingMode = !buyingMode; 
+			currItem = ItemNum; 
 	}
 
 	private function placeGunBaseCallback(Skip: Bool=false): Void {
@@ -470,7 +472,7 @@ class InGameMenu extends FlxGroup{
 
 		for (i in 0...buttons.length) {
 			col++; 
-			var btn:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), buttons[i].name,createGunBaseCallback.bind(false));
+			var btn:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), buttons[i].name,createTowerCallback.bind(false, i));
 			btn.loadGraphic(AssetPaths.button__png, true, width, height); 
 			add(btn);
 

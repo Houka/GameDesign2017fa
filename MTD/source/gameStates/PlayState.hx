@@ -129,6 +129,8 @@ class PlayState extends FlxState
 		_centerText = new FlxText( -200, FlxG.height / 2 - 20, FlxG.width, "", 16);
 		_centerText.alignment = CENTER;
 		_centerText.borderStyle = SHADOW;
+
+		_layerNum = 0;
 		
 		#if flash
 		_centerText.blend = BlendMode.INVERT;
@@ -196,18 +198,19 @@ class PlayState extends FlxState
 		
 		if (FlxG.mouse.justReleased)
 		{
-			// if (inGameMenu.buildingMode)
-			// {
-			// 	buildTower();
-			// 	// buildGunBase(); 
-			// }
 			if (inGameMenu.placingMode) {
 				inGameMenu.buildingMode = true; 
 				buildTower();
 				inGameMenu.placingMode != inGameMenu.placingMode; 
 			}
+			
 			else if (inGameMenu.buyingMode) {
-				buildGunBase();  
+				if (InGameMenu.currItem < 3) {
+					buildGunBase();  
+				}
+				else if (InGameMenu.currItem >= 3 && InGameMenu.currItem < 6) {
+					buildFoundation();
+				}
 				inGameMenu.buyingMode != inGameMenu.buyingMode; 
 			}
 
@@ -404,16 +407,13 @@ class PlayState extends FlxState
 	}
 
 	private function buildGunBase(): Void { 
-		if (towerBlocks.length == 0) {
-			addMaterial(new GunBase(FlxG.width, 40)); 
-			_layerNum = 1; 
-		}
-		else { 
-			addMaterial(new GunBase(FlxG.width-320, 40-_layerNum*Constants.HEIGHT_OFFSET)); 
-			_layerNum++;
-		}
-		inGameMenu.buyingMode != inGameMenu.buyingMode;
+		addMaterial(new GunBase(FlxG.width-320, 40-_layerNum*Constants.HEIGHT_OFFSET)); 
+		_layerNum++;
+	}
 
+	private function buildFoundation(): Void { 
+		addMaterial(new Foundation(FlxG.width-320, 40-_layerNum*Constants.HEIGHT_OFFSET)); 
+		_layerNum++; 
 	}
 
 	private function addMaterial(obj:TowerBlock):Void{
