@@ -198,8 +198,11 @@ class PlayState extends FlxState
 		
 		if (FlxG.mouse.justReleased)
 		{
+			trace("buildingMode: " + inGameMenu.buildingMode);
+			trace("buyingMode: "+ inGameMenu.buyingMode); 
+			trace("placingMode: "+ inGameMenu.placingMode);
 			if (inGameMenu.placingMode) {
-				inGameMenu.buildingMode = true; 
+				trace(inGameMenu.buildingMode);
 				buildTower();
 				inGameMenu.placingMode != inGameMenu.placingMode; 
 			}
@@ -207,9 +210,11 @@ class PlayState extends FlxState
 			else if (inGameMenu.buyingMode) {
 				if (InGameMenu.currItem < 3) {
 					buildGunBase();  
+					InGameMenu.currItem = -1; 
 				}
 				else if (InGameMenu.currItem >= 3 && InGameMenu.currItem < 6) {
 					buildFoundation();
+					InGameMenu.currItem = -1; 
 				}
 				inGameMenu.buyingMode != inGameMenu.buyingMode; 
 			}

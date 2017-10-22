@@ -120,7 +120,7 @@ class InGameMenu extends FlxGroup{
 		sellConfirmMenu.add(new Button(280, height, "[N]o", sellConfirmCallback.bind(false)));
 		sellConfirmMenu.visible = false;
 
-		buildMenu.add(new FlxButton(FlxG.width-200, FlxG.height-150, "build", placeGunBaseCallback.bind(true))); 
+		buildMenu.add(new FlxButton(FlxG.width-200, FlxG.height-150, "build", placeTowerCallback.bind(true))); 
 
 		// Helper Sprites
 		_buildHelper = new FlxSprite(0, 0, AssetPaths.tower_placement__png);
@@ -322,11 +322,11 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function createTowerCallback(Skip: Bool=false, ItemNum: Int): Void { 
-			buyingMode = !buyingMode; 
+			buyingMode = true; 
 			currItem = ItemNum; 
 	}
 
-	private function placeGunBaseCallback(Skip: Bool=false): Void {
+	private function placeTowerCallback(Skip: Bool=false): Void {
 		if (PlayState.towerBlocks.length > 0) {
 			placingMode = !placingMode; 
 		}
