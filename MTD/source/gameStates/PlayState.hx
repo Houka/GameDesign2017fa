@@ -200,7 +200,12 @@ class PlayState extends FlxState
 		
 		if (FlxG.mouse.justReleased)
 		{
-			if (inGameMenu.placingMode) {
+			if (inGameMenu.removingMode) {
+				popMaterial(); 
+				inGameMenu.removingMode = false; 
+			}
+
+			else if (inGameMenu.placingMode) {
 				buildTower();
 			}
 

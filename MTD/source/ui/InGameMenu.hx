@@ -46,6 +46,7 @@ class InGameMenu extends FlxGroup{
 	public var buildingMode(default,set):Bool = false;
 	public var buyingMode(default,set):Bool = false; 
 	public var placingMode(default,set):Bool = false; 
+	public var removingMode(default,set):Bool = false; 
 
 	// Text
 	private var _tutText:FlxText;
@@ -120,7 +121,8 @@ class InGameMenu extends FlxGroup{
 		sellConfirmMenu.add(new Button(280, height, "[N]o", sellConfirmCallback.bind(false)));
 		sellConfirmMenu.visible = false;
 
-		buildMenu.add(new FlxButton(FlxG.width-200, FlxG.height-150, "build", placeTowerCallback.bind(true))); 
+		buildMenu.add(new FlxButton(FlxG.width-260, FlxG.height-150, "Build", placeTowerCallback.bind(true))); 
+		buildMenu.add(new FlxButton(FlxG.width-160, FlxG.height-150, "Remove", removeTowerLayerCallback.bind(true)));
 
 		// Helper Sprites
 		_buildHelper = new FlxSprite(0, 0, AssetPaths.tower_placement__png);
@@ -139,7 +141,6 @@ class InGameMenu extends FlxGroup{
 		// add to overall menu
 		add(bg);
 		add(store);
-		trace("store added");
 		add(_towerRange);
 		add(_buildHelper);
 		add(defaultMenu);
@@ -336,6 +337,10 @@ class InGameMenu extends FlxGroup{
 		}
 	}
 
+	private function removeTowerLayerCallback(Skip: Bool=false):Void { 
+		removingMode = true; 
+	}
+
 
 	/**
 	 * A function that is called when the user enters build mode.
@@ -446,6 +451,11 @@ class InGameMenu extends FlxGroup{
 		// 	Constants.toggleCursors(Normal);
 		placingMode=Value; 
 		return placingMode; 
+	}
+
+	private function set_removingMode(Value:Bool):Bool{
+		removingMode=Value; 
+		return removingMode; 
 	}
 
 	/** A function that creates the buttons in the store. */
