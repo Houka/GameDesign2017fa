@@ -42,6 +42,8 @@ class InGameMenu extends FlxGroup{
 
 	// Bools
 	public var buildingMode(default,set):Bool = false;
+	public var buyingMode(default,set):Bool = false; 
+	public var placingMode(default,set):Bool = false; 
 
 	// Text
 	private var _tutText:FlxText;
@@ -118,7 +120,7 @@ class InGameMenu extends FlxGroup{
 		sellConfirmMenu.add(new Button(280, height, "[N]o", sellConfirmCallback.bind(false)));
 		sellConfirmMenu.visible = false;
 
-		buildMenu.add(new FlxButton(FlxG.width-200, FlxG.height-150, "build")); 
+		buildMenu.add(new FlxButton(FlxG.width-200, FlxG.height-150, "build", placeGunBaseCallback.bind(true))); 
 
 		// Helper Sprites
 		_buildHelper = new FlxSprite(0, 0, AssetPaths.tower_placement__png);
@@ -331,15 +333,24 @@ class InGameMenu extends FlxGroup{
 			//1. when click the gun1 button, place the gunbase at the bottom of the store
 			//A. add build button
 			//B. When click build, small version of gunbase follows cursor
+				//when click build, checks to see if any gunbases are in list of materials
+				//if there are such materials, will place that gunbase on the path where user clicks 
 			//C. Can place small gunbase onto the path 
 			//2. when click on path, then place the created gunbase on that path
 			//3. when click on path, gunbase at the bottom of the store disappears
 			//4. remove the health options from all of the materials
 			//5.
-			buildingMode = !buildingMode;
+			// buildingMode = !buildingMode;
+			buyingMode = !buyingMode; 
 
 
 	}
+
+	private function placeGunBaseCallback(Skip: Bool=false): Void {
+		placingMode = !placingMode; 
+		trace(placingMode);
+	}
+
 
 
 	/**
@@ -434,6 +445,24 @@ class InGameMenu extends FlxGroup{
 			Constants.toggleCursors(Normal);
 		buildingMode = Value;
 		return buildingMode;
+	}
+
+	private function set_buyingMode(Value:Bool):Bool{
+		// if(Value)
+		// 	Constants.toggleCursors(Build);
+		// else
+		// 	Constants.toggleCursors(Normal);
+		buyingMode = Value;
+		return buyingMode;
+	}
+
+	private function set_placingMode(Value:Bool):Bool{
+		if(Value)
+			Constants.toggleCursors(Build);
+		else 
+			Constants.toggleCursors(Normal);
+		placingMode=Value; 
+		return placingMode; 
 	}
 
 	private function createBuildButtons():Void { 

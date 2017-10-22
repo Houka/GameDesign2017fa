@@ -82,7 +82,7 @@ class PlayState extends FlxState
 	{
 		Constants.PS = this;
 		
-		Constants.playMusic("bg_music");
+		// Constants.playMusic("bg_music");
 		
 		FlxG.timeScale = 1;
 		
@@ -191,11 +191,22 @@ class PlayState extends FlxState
 		
 		if (FlxG.mouse.justReleased)
 		{
-			if (inGameMenu.buildingMode)
-			{
+			// if (inGameMenu.buildingMode)
+			// {
+			// 	buildTower();
+			// 	// buildGunBase(); 
+			// }
+			if (inGameMenu.placingMode) {
+				trace("in placing mode");
+				inGameMenu.buildingMode = true; 
 				buildTower();
-				buildGunBase(); 
 			}
+			else if (inGameMenu.buyingMode) {
+				buildGunBase();  
+				inGameMenu.buyingMode != inGameMenu.buyingMode; 
+				trace("in buyingMode");
+			}
+
 			else
 			{
 				var selectedTower:Bool = false;
@@ -333,6 +344,7 @@ class PlayState extends FlxState
 	 */
 	private function buildTower():Void
 	{
+		trace("ugh");
 		// Can't place towers on GUI
 		if (FlxG.mouse.y > FlxG.height - 16)
 		{
@@ -365,13 +377,13 @@ class PlayState extends FlxState
 		}
 		
 		// Can't place towers off the road
-		// if (_map.getTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE)) != 0)
-		// {
-		// 	Constants.play("deny");
+		if (_map.getTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE)) != 0)
+		{
+			Constants.play("deny");
 			
-		// 	inGameMenu.toggleMenus(General);
-		// 	return;
-		// }
+			inGameMenu.toggleMenus(General);
+			return;
+		}
 		
 		_towers.add(new Tower(xPos, yPos, inGameMenu.towerPrice));
 
@@ -395,6 +407,7 @@ class PlayState extends FlxState
 		// _gunBases.add(new GunBase(xPos, yPos)); 
 		// _map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
 		_gunBases.add(new GunBase(FlxG.width-320, 40));
+		inGameMenu.buyingMode != inGameMenu.buyingMode; 
 
 
 
