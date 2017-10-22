@@ -29,13 +29,13 @@ class Tower extends FlxSprite
 	private var _initialCost:Int = 0;
 	private var _indicator:FlxSprite;
 
-	public var children:List<TowerBlock>; 
+	public var children:Array<TowerBlock>; 
 
 	
 	/**
 	 * Create a new tower at X and Y with default range, fire rate, and damage; create this tower's indicator.
 	 */
-	public function new(X:Float, Y:Float, Cost:Int, materials:List<TowerBlock>)
+	public function new(X:Float, Y:Float, Cost:Int, materials:Array<TowerBlock>)
 	{
 		super(X, Y, AssetPaths.tower__png);
 		
@@ -44,7 +44,7 @@ class Tower extends FlxSprite
 		Constants.PS.towerIndicators.add(_indicator);
 		
 		_initialCost = Cost;
-		this.children = new List<TowerBlock>();
+		this.children = new Array<TowerBlock>();
 		for (m in materials) {
 			addTowerBlock(m);
 		}
@@ -192,7 +192,7 @@ class Tower extends FlxSprite
 	public function addTowerBlock(obj:TowerBlock):Bool{
         if (!obj.inTower && children.length < Constants.MAX_HEIGHT){
             obj.inTower = true;
-            children.add(obj);
+            children.push(obj);
             return true;
         }
 

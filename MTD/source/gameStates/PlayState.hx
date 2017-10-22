@@ -36,7 +36,7 @@ class PlayState extends FlxState
 	public var towerIndicators:FlxTypedGroup<FlxSprite>;
 	private var _towers:FlxTypedGroup<Tower>;
 	public static var gunBases:FlxTypedGroup<GunBase>; 
-	public static var towerBlocks:List<TowerBlock>; 
+	public static var towerBlocks:Array<TowerBlock>; 
 
 	// HUD/Menu Groups
 	private var _topGui:FlxGroup;
@@ -58,6 +58,7 @@ class PlayState extends FlxState
 	// Other objects
 	private var _map:FlxTilemap;
 	private var _layerNum:Int; 
+	private var _currTowerStartIndex: Int; 
 	
 	// Private variables
 	private var _gameOver:Bool = false;
@@ -106,7 +107,7 @@ class PlayState extends FlxState
 		gunBases = collisionController.gunBases; 
 		towerIndicators = collisionController.towerIndicators;
 		
-		towerBlocks = new List<TowerBlock>();
+		towerBlocks = new Array<TowerBlock>();
 		
 		// Set up bottom default GUI
 		
@@ -131,6 +132,7 @@ class PlayState extends FlxState
 		_centerText.borderStyle = SHADOW;
 
 		_layerNum = 0;
+		_currTowerStartIndex = 0;
 		
 		#if flash
 		_centerText.blend = BlendMode.INVERT;
@@ -394,9 +396,10 @@ class PlayState extends FlxState
 		var tower: Tower = new Tower(xPos, yPos, inGameMenu.towerPrice, towerBlocks);
 		_towers.add(tower);
 		var level = 0; 
-		for (t in towerBlocks) {
+		trace(towerBlocks.slice(_currTowerStartIndex));
+		for (t in towerBlocks.slice(_currTowerStartIndex)) {
 			var xpos = tower.x+tower.origin.x;
-            var ypos = tower.y+tower.origin.y+level*Constants.HEIGHT_OFFSET;
+            var ypos = tower.y+tower.origin.y-level*Constants.HEIGHT_OFFSET;
             level++;
             t.setPosition(xpos,ypos);
 		}
@@ -415,18 +418,22 @@ class PlayState extends FlxState
 		//Reset everything for next building iteration
 		inGameMenu.placingMode = false;
 		_layerNum = 0; 
+		_currTowerStartIndex = towerBlocks.length; 
 	}
 
+	/** A function that adds a new gunbase and then iterates the number of layers in the tower. **/
 	private function buildGunBase(): Void { 
 		addMaterial(new GunBase(FlxG.width-320, 40-_layerNum*Constants.HEIGHT_OFFSET)); 
 		_layerNum++;
 	}
 
+	/** A function that adds a new foundation and then iterates the number of layers in the tower. **/
 	private function buildFoundation(): Void { 
 		addMaterial(new Foundation(FlxG.width-320, 40-_layerNum*Constants.HEIGHT_OFFSET)); 
 		_layerNum++; 
 	}
 
+	/** A function that adds a gunBase or foundation to the towerBlocks list. **/
 	private function addMaterial(obj:TowerBlock):Void{
         towerBlocks.push(obj);
         add(obj);
