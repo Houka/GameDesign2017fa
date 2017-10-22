@@ -60,11 +60,12 @@ class CollisionController{
 	 * Called when trying to clean up after the game is done
 	 */
 	public function kill():Void{
+		towers.forEach(function(t) Constants.PS.removeTower(t));
+
 		enemies.kill();
 		towerIndicators.kill();
-		towers.kill();
 		bullets.kill();
-		// emitters.kill();
+		towers.kill();
 	}
 	
 	/**
@@ -104,11 +105,6 @@ class CollisionController{
 		// return if there are no towers within range
 		if (nearest == null)
 			return;
-
-		// pause its path if it has one
-		if (enemy.path != null){
-			enemy.pausePath();
-		}
 
 		enemy.attack(nearest);
 	}

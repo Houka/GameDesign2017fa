@@ -17,8 +17,7 @@ class Enemy extends FlxSprite
 
 	// path variables
 	private var _savedPath:Array<FlxPoint>;
-	private var _savedPathIndex:Int;
-	private var _savedSpeed:Int;
+	private var _savedSpeed:Float;
 	private var _savedOnComplete:FlxPath->Void;
 
 	// attacking vars
@@ -46,6 +45,13 @@ class Enemy extends FlxSprite
 			health = Math.floor(Constants.PS.wave / 3) + 1;
 		
 		maxHealth = health;
+		isAttacking = false;
+		_targetTower = null;
+
+		// reset path vars
+		_savedPath = null;
+		_savedSpeed = null;
+		_savedOnComplete = null;
 	}
 	
 	/**
@@ -66,12 +72,16 @@ class Enemy extends FlxSprite
 			}
 
 		 	// stop attacking a dead tower and go back to path
-			if (!_targetTower.alive){
-		 		isAttacking = false;
+			if (_targetTower!=null && !_targetTower.alive){
+				// resume path
 		 		path = new FlxPath().start(_savedPath, _savedSpeed, 0, true);
-		 		path.onComplete = _savedOnComplete;
-		 		path.addAt(getMidpoint().x,getMidpoint().y,_savedPathIndex);
-		 		path.setNode(_savedPathIndex);
+				path.onComplete = _savedOnComplete;
+				_savedPath = null;
+				_savedSpeed = null;
+				_savedOnComplete = null;
+
+				// stop attacking
+		 		isAttacking = false;
 		 		_targetTower = null;
 	 		}
 		}
@@ -132,29 +142,43 @@ class Enemy extends FlxSprite
 		Path[0].x = x;
 		Path[0].y = y;
 		
-		_savedPath = Path;
-		_savedSpeed = Speed;
-		_savedOnComplete=OnComplete;
 		path = new FlxPath().start(Path, Speed, 0, true);
 		path.onComplete = OnComplete;
 	}
 
 
 	public function pausePath():Void{
-		_savedPathIndex = path.nodeIndex;
+		_savedSpeed = path.speed;
+		_savedOnComplete = path.onComplete;
+		_savedPath = copyPathFrom(path.nodes, path.nodeIndex);
+		_savedPath.insert(0, getMidpoint());
 		path.cancel();
+		path = null;
 	}
 
 	/**
 	 *	Starts attacking the tower that is within range until it has died
 	 */
 	 public function attack(tower:Tower):Void{
-	 	if (tower.alive){
+	 	if (tower!=null && tower.alive){
 	 		// keep attacking the tower at set intervals
 	 		isAttacking = true;
 
 	 		// TODO: add attacking animation play here
 	 		_targetTower = tower;
+
+	 		pausePath();
 	 	}
+	 }
+
+	 private function copyPathFrom(Path:Array<FlxPoint>,Index:Int):Array<FlxPoint>{
+		var result:Array<FlxPoint> = new Array<FlxPoint>();
+		var tempPoint:FlxPoint;
+		for (i in Index...Path.length){
+			tempPoint = new FlxPoint(Path[i].x,Path[i].y);
+			result.push(tempPoint);
+		}
+
+		return result;
 	 }
 }
