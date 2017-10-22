@@ -411,7 +411,10 @@ class PlayState extends FlxState
 		inGameMenu.towerPrice += Std.int(inGameMenu.towerPrice * 0.3);
 		_towerButton.text = "Buy [T]ower ($" + inGameMenu.towerPrice + ")";
 		inGameMenu.toggleMenus(General);
+
+		//Reset everything for next building iteration
 		inGameMenu.placingMode = false;
+		_layerNum = 0; 
 	}
 
 	private function buildGunBase(): Void { 
