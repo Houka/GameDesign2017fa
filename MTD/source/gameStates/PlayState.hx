@@ -66,8 +66,8 @@ class PlayState extends FlxState
 
 	// level specific variables
 	private var _level:Level;
-	private var _defaultPath:Array<FlxPoint>;
-	private var speed:Int = 100; // the base speed that each enemy starts with
+	private var _possiblePaths:Array<Array<FlxPoint>>;
+	private var _speed:Int = 100; // the base _speed that each enemy starts with
 
 	public function new(level:Level){
 		super();
@@ -90,7 +90,8 @@ class PlayState extends FlxState
 		_map = Constants.loadMap(_level);
 		_enemySpawnPosition = _level.start;
 		_goalPosition = _level.goal;
-		_defaultPath = _map.findPath(_enemySpawnPosition, _goalPosition.copyTo());
+		_possiblePaths = new Array<Array<FlxPoint>>();
+		addPath(_map.findPath(_enemySpawnPosition, _goalPosition.copyTo()));
 		
 		// Add groups
 
@@ -258,6 +259,10 @@ class PlayState extends FlxState
 				indicator = null;
 			}
 		}
+
+		// Remove the radius sprite as well and reset the menu if the selected tower was just destroyed
+		if (InGameMenu.towerSelected  != null && InGameMenu.towerSelected == tower)
+			inGameMenu.toggleMenus(General);
 	}
 	
 	private function sellConfirmCallback(Sure:Bool):Void
@@ -450,13 +455,10 @@ class PlayState extends FlxState
 		var path = _map.findPath(_enemySpawnPosition, _goalPosition.copyTo());
 		if (path == null){
 			// copy the default path in
-			path = [];
-			for (i in _defaultPath){
-				path.push(i.copyTo());
-			}
+			path = getPath(0);
 		}
 
-		enemy.followPath(path, speed + wave);
+		enemy.followPath(path, _speed + wave);
 		_spawnCounter = 0;
 	}
 	
@@ -476,5 +478,30 @@ class PlayState extends FlxState
 		_towerButton.onDown.callback = resetCallback.bind(false);
 		
 		Constants.play("game_over");
+	}
+
+	private function getPath(index:Int):Array<FlxPoint>{
+		var path:Array<FlxPoint>;
+		var tempPoint:FlxPoint;
+		path = [];
+		for (i in _possiblePaths[index]){
+			tempPoint = new FlxPoint(i.x,i.y);
+			path.push(tempPoint);
+		}
+
+		return path;
+	}
+
+	private function addPath(Value:Array<FlxPoint>):Array<FlxPoint>{
+		var path = new Array<FlxPoint>();
+
+		var tempPoint:FlxPoint;
+		for (i in Value){
+			tempPoint = new FlxPoint(i.x,i.y);
+			path.push(tempPoint);
+		}
+
+		_possiblePaths.push(path);
+		return path;
 	}
 }
