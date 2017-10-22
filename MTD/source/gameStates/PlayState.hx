@@ -400,7 +400,6 @@ class PlayState extends FlxState
             level++;
             t.setPosition(xpos,ypos);
 		}
-		// gunBases.add(new GunBase(xPos, yPos)); 
 
 		_map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
 		
@@ -425,8 +424,16 @@ class PlayState extends FlxState
 	}
 
 	private function addMaterial(obj:TowerBlock):Void{
-            towerBlocks.push(obj);
-            add(obj);
+        towerBlocks.push(obj);
+        add(obj);
+    }
+
+    private function popMaterial():TowerBlock {
+    	var obj = towerBlocks.pop(); 
+    	if (obj != null) {
+    		remove(obj);
+    	}
+    	return obj; 
     }
 
 	

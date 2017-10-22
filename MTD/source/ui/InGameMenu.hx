@@ -61,8 +61,6 @@ class InGameMenu extends FlxGroup{
 	private var _firerateButton:Button;
 	private var _rangeButton:Button;
 
-	private var _buildGunBaseButton: Button;
-
 	// Sprites
 	public var _towerRange:FlxSprite;	// TODO: somehow make this private cleanly
 	private var _buildHelper:FlxSprite;
