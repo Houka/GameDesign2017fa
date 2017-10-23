@@ -76,7 +76,7 @@ class CollisionController{
 		enemy.hurt(bullet.damage);
 		bullet.kill();
 		
-		Constants.play("assets/sounds/enemy_hit.mp3");
+		Constants.play("enemy_hit");
 	}
 
 	/**
@@ -87,7 +87,7 @@ class CollisionController{
 		HUD.health--;
 		enemy.explode(false);
 		
-		Constants.play("assets/sounds/hurt.mp3");
+		Constants.play("hurt");
 	}
 
 	/**

@@ -72,9 +72,7 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		Constants.PS = this;
-		
-		Constants.playMusic("bg_music");
-		
+		// Constants.playMusic("bg_music");
 		FlxG.timeScale = 1;
 		
 		// Create map
@@ -102,7 +100,7 @@ class PlayState extends FlxState
 
 		HUD.init(_level,loseGame,function() {});
 		
-		// Set up miscellaneous items: center text, buildhelper, and the tower range image
+		// Set up miscellaneous items: center text
 		
 		_centerText = new FlxText( -200, FlxG.height / 2 - 20, FlxG.width, "", 16);
 		_centerText.alignment = CENTER;
@@ -119,11 +117,6 @@ class PlayState extends FlxState
 		// Call this to set up for first wave
 		
 		killedWave();
-		
-		// This is a good place to put watch statements during development.
-		#if debug
-		//FlxG.watch.add( _sellMenu, "visible" );
-		#end
 	}
 	
 	/**

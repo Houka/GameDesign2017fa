@@ -14,6 +14,9 @@ typedef Level = {
 	var health: Int;			// how much health does homebase have
 	var money: Int; 			// starting money
 	var defaultTowerPrice: Int;
+	var waves: Array<Array<Int>>;	// each int represents an enemy type starting from index 0. 
+									// each row in the 2d array is a wave
+									// each wave spawns the cooresponding enemy type in order
 }
 
 class Levels{
@@ -27,7 +30,8 @@ class Levels{
 		goal: toCameraCoordinates(34,29),
 		health: 9,
 		money: 50,
-		defaultTowerPrice: 8
+		defaultTowerPrice: 8,
+		waves:[]
 	}
 
 	public static var level1(default,never):Level = {
@@ -39,7 +43,12 @@ class Levels{
 		goal: toCameraCoordinates(7,9),
 		health: 9,
 		money: 50,
-		defaultTowerPrice: 8
+		defaultTowerPrice: 8,
+		waves:[
+			[0,0,0,0],
+			[0,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0]
+		]
 	}
 
 	public static var level2(default,never):Level = {
@@ -51,7 +60,11 @@ class Levels{
 		goal: toCameraCoordinates(7,9),
 		health: 9,
 		money: 50,
-		defaultTowerPrice: 8
+		defaultTowerPrice: 8,
+		waves:[
+			[0,0,0,0],
+			[1,1,1,1]
+		]
 	}
 
 	// Playable level list

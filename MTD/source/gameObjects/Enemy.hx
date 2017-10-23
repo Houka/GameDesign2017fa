@@ -36,10 +36,9 @@ class Enemy extends FlxSprite
 	/**
 	 * Create a new enemy. Used in the menu and playstate.
 	 */
-	override public function new(X:Float = 0, Y:Float = 0) 
+	override public function new(X:Float = 0, Y:Float = 0)
 	{
 		super(X, Y);
-		loadGraphic(AssetPaths.enemy_spritesheet_64x64__png, true, 64, 64);
 		health = maxHealth;
 		init(X,Y);
 	}
@@ -50,6 +49,7 @@ class Enemy extends FlxSprite
 	public function init(X:Float, Y:Float)
 	{
 		reset(X, Y);
+		setType(0);
 		
 		if (Constants.PS != null)
 			health = Math.floor(Constants.PS.wave / 3) + 1;
@@ -62,6 +62,7 @@ class Enemy extends FlxSprite
 		_savedPath = null;
 		_savedSpeed = null;
 		_savedOnComplete = null;
+		angle = 0;
 
 		// add animations
 		animation.add("idle",[0],_framerate, false);
@@ -153,7 +154,7 @@ class Enemy extends FlxSprite
 	 */
 	public function explode(GainMoney:Bool):Void
 	{
-		FlxG.sound.play("enemykill");
+		Constants.play("enemy_kill");
 		
 		var emitter = Constants.PS.collisionController.emitters.recycle(EnemyExplosion.new);
 		emitter.startAtPosition(getMidpoint().x, getMidpoint().y);
@@ -211,6 +212,18 @@ class Enemy extends FlxSprite
 	 		_targetTower = tower;
 
 	 		pausePath();
+	 	}
+	 }
+
+	 /**
+	  * Sets the type of this enemy
+	  */
+	 public function setType(type:Int):Void{
+	 	switch(type){
+	 		case 0:
+				loadGraphic(AssetPaths.enemy1_spritesheet_64x64__png, true, 64, 64);
+	 		case 1:
+				loadGraphic(AssetPaths.enemy2_spritesheet_64x64__png, true, 64, 64);
 	 	}
 	 }
 
