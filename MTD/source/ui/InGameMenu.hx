@@ -10,6 +10,8 @@ import flixel.FlxG;
 import gameObjects.Tower;
 import utils.Button;
 import Constants;
+import gameStates.PlayState; 
+import flixel.ui.FlxButton; 
 
 enum MenuType
 {
@@ -33,13 +35,18 @@ class InGameMenu extends FlxGroup{
 	public var upgradeMenu:FlxGroup;
 	public var sellMenu:FlxGroup;
 	public var sellConfirmMenu:FlxGroup;
+	public var buildMenu: FlxGroup; 
 
 	// Game Object variables
 	public var towerPrice:Int = 8;
 	private var _speed:Int = 1;
+	public static var currItem:Int; 
 
 	// Bools
 	public var buildingMode(default,set):Bool = false;
+	public var buyingMode(default,set):Bool = false; 
+	public var placingMode(default,set):Bool = false; 
+	public var removingMode(default,set):Bool = false; 
 
 	// Text
 	private var _tutText:FlxText;
@@ -67,6 +74,7 @@ class InGameMenu extends FlxGroup{
 		upgradeMenu = new FlxGroup();
 		sellMenu = new FlxGroup();
 		sellConfirmMenu = new FlxGroup();
+		buildMenu = new FlxGroup();
 
 		// buttons
 		var height:Int = FlxG.height - 18;
@@ -113,6 +121,9 @@ class InGameMenu extends FlxGroup{
 		sellConfirmMenu.add(new Button(280, height, "[N]o", sellConfirmCallback.bind(false)));
 		sellConfirmMenu.visible = false;
 
+		buildMenu.add(new FlxButton(FlxG.width-260, FlxG.height-150, "Build", placeTowerCallback.bind(true))); 
+		buildMenu.add(new FlxButton(FlxG.width-160, FlxG.height-150, "Remove", removeTowerLayerCallback.bind(true)));
+
 		// Helper Sprites
 		_buildHelper = new FlxSprite(0, 0, AssetPaths.tower_placement__png);
 		_buildHelper.visible = false;
@@ -124,14 +135,21 @@ class InGameMenu extends FlxGroup{
 		var bg = new FlxSprite(0, FlxG.height - 16);
 		bg.makeGraphic(FlxG.width, 16, FlxColor.WHITE);
 
+		var store = new FlxSprite(FlxG.width-320, 40);
+		store.loadGraphic(AssetPaths.store__png);
+
 		// add to overall menu
 		add(bg);
+		add(store);
 		add(_towerRange);
 		add(_buildHelper);
 		add(defaultMenu);
 		add(upgradeMenu);
 		add(sellMenu);
 		add(sellConfirmMenu);
+		add(buildMenu);
+
+		createBuildButtons(); 
 	}
 
 	override public function kill():Void{
@@ -304,6 +322,26 @@ class InGameMenu extends FlxGroup{
 		
 		updateRangeSprite(InGameMenu.towerSelected.getMidpoint(), InGameMenu.towerSelected.range);
 	}
+
+	private function createTowerCallback(Skip: Bool=false, ItemNum: Int): Void { 
+			buyingMode = true; 
+			currItem = ItemNum; 
+	}
+
+	private function placeTowerCallback(Skip: Bool=false): Void {
+		if (PlayState.towerBlocks.length > 0) {
+			placingMode = !placingMode; 
+		}
+		else { 
+			Constants.play("deny");
+		}
+	}
+
+	private function removeTowerLayerCallback(Skip: Bool=false):Void { 
+		removingMode = true; 
+	}
+
+
 	/**
 	 * A function that is called when the user enters build mode.
 	 */
@@ -311,7 +349,6 @@ class InGameMenu extends FlxGroup{
 	{
 		if (towerPrice > HUD.money || towerSelected != null)
 			return;
-		
 		buildingMode = !buildingMode;
 		#if !mobile
 		_towerRange.visible = !_towerRange.visible;
@@ -391,11 +428,69 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function set_buildingMode(Value:Bool):Bool{
-		if(Value)
+		if(Value) {
 			Constants.toggleCursors(Build);
+		}
 		else
 			Constants.toggleCursors(Normal);
 		buildingMode = Value;
 		return buildingMode;
+	}
+
+	private function set_buyingMode(Value:Bool):Bool{
+		buyingMode = Value;
+		return buyingMode;
+	}
+
+	private function set_placingMode(Value:Bool):Bool{
+		// if(Value) {
+		// 	trace("set placing");
+		// 	Constants.toggleCursors(Build);
+		// }
+		// else 
+		// 	Constants.toggleCursors(Normal);
+		placingMode=Value; 
+		return placingMode; 
+	}
+
+	private function set_removingMode(Value:Bool):Bool{
+		removingMode=Value; 
+		return removingMode; 
+	}
+
+	/** A function that creates the buttons in the store. */
+	private function createBuildButtons():Void { 
+		var buttons = [
+			{name: "Gun 1"}, 
+			{name: "Gun 2"}, 
+			{name: "Gun 3"}, 
+			{name: "Snow"}, 
+			{name: "Ice"}, 
+			{name: "Metal"}, 
+			{name: "Ammo 1"}, 
+			{name: "Ammo 2"}, 
+			{name: "Ammo 3"}
+		]; 
+
+		var gap = 10; 
+		var width = 50; 
+		var height = 50; 
+		var x = FlxG.width-260;
+		var y = 150;
+		var row = 0; 
+		var col = -1; 
+
+		for (i in 0...buttons.length) {
+			col++; 
+			var btn:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), buttons[i].name,createTowerCallback.bind(false, i));
+			btn.loadGraphic(AssetPaths.button__png, true, width, height); 
+			add(btn);
+
+			if ((i+1)%3 == 0) {
+				row++; 
+				col = -1; 
+			}
+		}
+
 	}
 }
