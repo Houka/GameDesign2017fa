@@ -21,7 +21,7 @@ class Foundation extends TowerBlock
 		super(X, Y, AssetPaths.tower_base__png);
 		
 		#if flash
-		blend = BlendMode.INVERT;
+		blend = BlendMode.NORMAL;
 		#end
 	}
 

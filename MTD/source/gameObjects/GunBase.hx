@@ -29,7 +29,7 @@ class GunBase extends TowerBlock
 		super(X, Y, AssetPaths.gun__png);
 		
 		#if flash
-		blend = BlendMode.INVERT;
+		blend = BlendMode.NORMAL;
 		#end
 	}
 	

@@ -136,7 +136,7 @@ class PlayState extends FlxState
 		_currTowerStartIndex = 0;
 		
 		#if flash
-		_centerText.blend = BlendMode.INVERT;
+		_centerText.blend = BlendMode.NORMAL;
 		#end
 		
 		// Add everything to the state

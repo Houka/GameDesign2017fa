@@ -16,7 +16,7 @@ class TowerBlock extends FlxSprite
 	{
 		super(X, Y, SimpleGraphic);		
 		#if flash
-		blend = BlendMode.INVERT;
+		blend = BlendMode.NORMAL;
 		#end
 		inTower = false; 
 	}

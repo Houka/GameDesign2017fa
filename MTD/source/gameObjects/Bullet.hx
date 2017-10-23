@@ -26,7 +26,7 @@ class Bullet extends FlxSprite
 		makeGraphic(3, 3);
 		
 		#if flash
-		blend = BlendMode.INVERT;
+		blend = BlendMode.NORMAL;
 		#end
 	}
 	
