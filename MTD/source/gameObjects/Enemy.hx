@@ -155,8 +155,8 @@ class Enemy extends FlxSprite
 	{
 		FlxG.sound.play("enemykill");
 		
-		var emitter = Constants.PS.emitters.recycle(EnemyExplosion.new);
-		emitter.startAtPosition(x, y);
+		var emitter = Constants.PS.collisionController.emitters.recycle(EnemyExplosion.new);
+		emitter.startAtPosition(getMidpoint().x, getMidpoint().y);
 		
 		Constants.PS.enemiesToKill--;
 		

@@ -35,11 +35,11 @@ class EnemyExplosion extends FlxEmitter
 				color = FlxColor.WHITE;
 			#end
 
-			p.makeGraphic(2, 2, FlxColor.BLACK);
+			p.makeGraphic(5, 5, FlxColor.BLACK);
 			add(p);
 		}
 		
-		Constants.PS.emitters.add(this);
+		Constants.PS.collisionController.emitters.add(this);
 	}
 	
 	/**
