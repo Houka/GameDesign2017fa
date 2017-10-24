@@ -198,7 +198,6 @@ class Tower extends FlxSprite
             children.push(obj);
             return true;
         }
-
         return false;
     }
 

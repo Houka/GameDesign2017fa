@@ -420,7 +420,7 @@ class PlayState extends FlxState
             t.setPosition(xpos,ypos);
 		}
 
-		_map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
+		// _map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
 		
 		inGameMenu.builtFirstTower();
 		
