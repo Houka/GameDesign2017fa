@@ -15,7 +15,7 @@ class Enemy extends FlxSprite
 	private static inline var _framerate:Int = 5;
 
 	public var maxHealth:Float = 1.0;
-	public var attackBase:Float = 0.5;
+	public var attackBase:Float = 0.1;
 	public var attackRange:Int = Constants.TILE_SIZE;
 	public var isAttacking:Bool = false;
 

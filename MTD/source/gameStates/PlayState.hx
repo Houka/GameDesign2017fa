@@ -25,8 +25,8 @@ class PlayState extends FlxState
 {
 	// Public variables
 	public var enemiesToKill:Int = 0;
-	public var enemiesToSpawn:Int = 0;
 	public var wave:Int = 0;
+	private var enemiesToSpawn:Int = 0;
 	
 	// Game Object groups
 	public var collisionController:CollisionController;
