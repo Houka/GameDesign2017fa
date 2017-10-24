@@ -173,7 +173,7 @@ class InGameMenu extends FlxGroup{
 
 		// If needed, updates the grid highlight square buildHelper and the range indicator
 		
-		if (buildingMode)
+		if (placingMode)
 		{
 			_buildHelper.x = FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE);
 			_buildHelper.y = FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE);

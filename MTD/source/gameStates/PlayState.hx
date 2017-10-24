@@ -207,10 +207,14 @@ class PlayState extends FlxState
 			}
 
 			else if (inGameMenu.placingMode) {
+				// inGameMenu.buildingMode = true; 
 				buildTower();
+				inGameMenu._towerRange.visible = true;
+
 			}
 
 			else if (inGameMenu.buyingMode) {
+				inGameMenu._towerRange.visible = false; 
 				if (InGameMenu.currItem < 3) {
 					buildGunBase();  
 					InGameMenu.currItem = -1; 
@@ -288,13 +292,8 @@ class PlayState extends FlxState
 			}
 		}
 
-		for (t in towerBlocks) {
-			if (t.x ==  tower.getMidpoint().x && t.y ==  tower.getMidpoint().y)
-			{
-				towerBlocks.remove(t); 
-				t.visible = false; 
-				t = null;
-			}
+		for (c in tower.children) {
+			remove(c);
 		}
 		// Remove the radius sprite as well and reset the menu if the selected tower was just destroyed
 		if (InGameMenu.towerSelected  != null && InGameMenu.towerSelected == tower)

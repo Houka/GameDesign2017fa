@@ -1,0 +1,17 @@
+<game>
+<name>MTD</name>
+<description></description>
+<short>A short.</short>
+<team name="MTD">
+<member>SunBear Studios</member>
+</team>
+<source>
+<format>html5</format>
+<!--
+ <format>html5</format> if your game is compiled for HTML5(WebGL).
+-->
+<background>#ffffff</background>
+<width>960</width>
+<height>720</height>
+</source>
+</game>

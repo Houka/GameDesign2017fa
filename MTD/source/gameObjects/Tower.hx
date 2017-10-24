@@ -37,7 +37,7 @@ class Tower extends FlxSprite
 	 */
 	public function new(X:Float, Y:Float, Cost:Int, materials:Array<TowerBlock>)
 	{
-		super(X, Y, AssetPaths.tower__png);
+		super(X, Y);
 		
 		_indicator = new FlxSprite(getMidpoint().x - 1, getMidpoint().y - 1);
 		_indicator.makeGraphic(2, 2);
@@ -89,6 +89,9 @@ class Tower extends FlxSprite
 		alpha -= Damage;
 		
 		if (health <= 0){
+			// for (c in this.children) {
+			// 	remove(c);
+			// }
 			Constants.PS.removeTower(this);
 			kill();
 		}
@@ -166,7 +169,7 @@ class Tower extends FlxSprite
 		rangeLevel++;
 		rangePrice = Std.int(rangePrice * COST_INCREASE);
 	}
-	
+
 	/**
 	 * Upgrading damage increases the damage value passed to bullets, and later enemies, by 1.
 	 * Also updates the damageLevel and damagePrice (1.5 x LEVEL) values for display and player money impact.
