@@ -220,7 +220,7 @@ class PlayState extends FlxState
 					InGameMenu.currItem = -1; 
 				}
 				else if (InGameMenu.currItem >= 3 && InGameMenu.currItem < 6) {
-					buildFoundation();
+					buildFoundation(InGameMenu.currItem);
 					InGameMenu.currItem = -1; 
 				}
 				inGameMenu.buyingMode != inGameMenu.buyingMode; 
@@ -444,8 +444,8 @@ class PlayState extends FlxState
 	}
 
 	/** A function that adds a new foundation and then iterates the number of layers in the tower. **/
-	private function buildFoundation(): Void { 
-		addMaterial(new Foundation(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET)); 
+	private function buildFoundation(ItemNum: Int): Void { 
+		addMaterial(new Foundation(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET, ItemNum)); 
 		_layerNum++; 
 	}
 

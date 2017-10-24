@@ -38,6 +38,8 @@ class Tower extends FlxSprite
 	public function new(X:Float, Y:Float, Cost:Int, materials:Array<TowerBlock>)
 	{
 		super(X, Y);
+
+		health = 0; 
 		
 		_indicator = new FlxSprite(getMidpoint().x - 1, getMidpoint().y - 1);
 		_indicator.makeGraphic(2, 2);
@@ -190,6 +192,7 @@ class Tower extends FlxSprite
 	}
 
 	public function addTowerBlock(obj:TowerBlock):Bool{
+		addTowerHealth(); 
         if (!obj.inTower && children.length < Constants.MAX_HEIGHT){
             obj.inTower = true;
             children.push(obj);
@@ -197,5 +200,13 @@ class Tower extends FlxSprite
         }
 
         return false;
+    }
+
+    private function addTowerHealth(): Void { 
+    	for (i in this.children) {
+    		if (Std.is(i, Foundation)) {
+    			health += cast(i, Foundation).healthPoints; 
+    		}
+    	}
     }
 }
