@@ -386,8 +386,8 @@ class PlayState extends FlxState
 		}
 		
 		// Snap to grid
-		var xPos:Float = FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE);
-		var yPos:Float = FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE);
+		var xPos:Float = (FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 12;
+		var yPos:Float = (FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 12;
 		
 		// Can't place towers on other towers
 		for (tower in _towers)
