@@ -39,7 +39,10 @@
 	<haxelib name="flixel-addons" />
 
 	<!--Embed js libraries in index.html-->
-	<template path="templates/index.html" rename="index.html" />
+	<dependency name="./Logging.min.js" if="html5"/>
+	<dependency name="./jquery-2.1.4.min.js" if="html5"/>
+	<template path="source/Logging.min.js" rename="./Logging.min.js" if="html5"/>
+	<template path="source/jquery-2.1.4.min.js" rename="./jquery-2.1.4.min.js" if="html5"/>
 
 	<!--In case you want to use the ui package-->
 	<!--<haxelib name="flixel-ui" />-->

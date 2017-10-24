@@ -1,12 +1,10 @@
-time
-mouse press pos (x,y)
-mouse release pos (x,y)
+event-driven logging:
+mouse press pos (x,y,time)
+mouse release pos (x,y,time)
 
-towers destroyed
+health change (hp, time)
+game over (wave num, level num)
 
-health over time
-game over (wave, map)
+wave start(currency, wave num, towers destroyed, time)
 
-wave start(currency)
-
-tower build(position, materials)
+tower build(position (x,y), materials, time)
