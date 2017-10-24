@@ -38,9 +38,10 @@ class InGameMenu extends FlxGroup{
 	public var buildMenu: FlxGroup; 
 
 	// Game Object variables
-	public var towerPrice:Int = 8;
+	public var towerPrice:Int = 0;
 	private var _speed:Int = 1;
 	public static var currItem:Int; 
+	private var matValuesList = new List<Int>();
 
 	// Bools
 	public var buildingMode(default,set):Bool = false;
@@ -173,7 +174,7 @@ class InGameMenu extends FlxGroup{
 
 		// If needed, updates the grid highlight square buildHelper and the range indicator
 		
-		if (buildingMode)
+		if (placingMode)
 		{
 			_buildHelper.x = FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE);
 			_buildHelper.y = FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE);
@@ -323,14 +324,26 @@ class InGameMenu extends FlxGroup{
 		updateRangeSprite(InGameMenu.towerSelected.getMidpoint(), InGameMenu.towerSelected.range);
 	}
 
-	private function createTowerCallback(Skip: Bool=false, ItemNum: Int): Void { 
-			buyingMode = true; 
-			currItem = ItemNum; 
+	private function createTowerCallback(Skip: Bool=false, ItemNum: Int, Price:Int): Void { 
+		buyingMode = true; 
+		currItem = ItemNum; 
+		//If the player has enough money, keep track of the current price of the tower.
+		if (towerPrice < HUD.money) {
+			towerPrice += Price; 
+			matValuesList.push(Price); 
+		}
+		else { 
+			Constants.play("deny");
+		}
 	}
 
 	private function placeTowerCallback(Skip: Bool=false): Void {
 		if (PlayState.towerBlocks.length > 0) {
 			placingMode = !placingMode; 
+			//Remove the amt tower is worth from the player's money and reset towerPrice.
+			HUD.money -= towerPrice; 
+			towerPrice = 0;
+			matValuesList.clear();	
 		}
 		else { 
 			Constants.play("deny");
@@ -339,6 +352,7 @@ class InGameMenu extends FlxGroup{
 
 	private function removeTowerLayerCallback(Skip: Bool=false):Void { 
 		removingMode = true; 
+		towerPrice -= matValuesList.pop(); 
 	}
 
 
@@ -461,15 +475,15 @@ class InGameMenu extends FlxGroup{
 	/** A function that creates the buttons in the store. */
 	private function createBuildButtons():Void { 
 		var buttons = [
-			{name: "Gun 1"}, 
-			{name: "Gun 2"}, 
-			{name: "Gun 3"}, 
-			{name: "Snow"}, 
-			{name: "Ice"}, 
-			{name: "Metal"}, 
-			{name: "Ammo 1"}, 
-			{name: "Ammo 2"}, 
-			{name: "Ammo 3"}
+			{name: "Gun 1 \n 1", price: 1}, 
+			{name: "Gun 2 \n 2", price: 2}, 
+			{name: "Gun 3 \n 3", price: 3}, 
+			{name: "Snow \n 1", price: 1}, 
+			{name: "Ice \n 2", price: 2}, 
+			{name: "Metal \n 3", price: 3}, 
+			{name: "Ammo 1 \n 1", price: 1}, 
+			{name: "Ammo 2 \n 2", price: 2}, 
+			{name: "Ammo 3 \n 3", price: 3}
 		]; 
 
 		var gap = 10; 
@@ -482,7 +496,7 @@ class InGameMenu extends FlxGroup{
 
 		for (i in 0...buttons.length) {
 			col++; 
-			var btn:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), buttons[i].name,createTowerCallback.bind(false, i));
+			var btn:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), buttons[i].name,createTowerCallback.bind(false, i, buttons[i].price));
 			btn.loadGraphic(AssetPaths.button__png, true, width, height); 
 			add(btn);
 

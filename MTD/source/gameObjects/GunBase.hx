@@ -6,8 +6,7 @@ import flixel.FlxSprite;
 import flixel.math.FlxVelocity;
 import AssetPaths;
 
-//Three types of Guns: Normal [which always hits], Scatter aka spray [covers wider range, 
-//but may not always hit], and donut????
+
 @:enum
 abstract GunType(Int) {
   var Horizontal = 0;  // - shape
@@ -29,7 +28,7 @@ class GunBase extends TowerBlock
 		super(X, Y, AssetPaths.gun__png);
 		
 		#if flash
-		blend = BlendMode.INVERT;
+		blend = BlendMode.NORMAL;
 		#end
 	}
 	

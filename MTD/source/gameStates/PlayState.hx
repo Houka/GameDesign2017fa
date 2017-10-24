@@ -136,7 +136,7 @@ class PlayState extends FlxState
 		_currTowerStartIndex = 0;
 		
 		#if flash
-		_centerText.blend = BlendMode.INVERT;
+		_centerText.blend = BlendMode.NORMAL;
 		#end
 		
 		// Add everything to the state
@@ -207,16 +207,20 @@ class PlayState extends FlxState
 			}
 
 			else if (inGameMenu.placingMode) {
+				// inGameMenu.buildingMode = true; 
 				buildTower();
+				inGameMenu._towerRange.visible = true;
+
 			}
 
 			else if (inGameMenu.buyingMode) {
+				inGameMenu._towerRange.visible = false; 
 				if (InGameMenu.currItem < 3) {
 					buildGunBase();  
 					InGameMenu.currItem = -1; 
 				}
 				else if (InGameMenu.currItem >= 3 && InGameMenu.currItem < 6) {
-					buildFoundation();
+					buildFoundation(InGameMenu.currItem);
 					InGameMenu.currItem = -1; 
 				}
 				inGameMenu.buyingMode != inGameMenu.buyingMode; 
@@ -288,13 +292,8 @@ class PlayState extends FlxState
 			}
 		}
 
-		for (t in towerBlocks) {
-			if (t.x ==  tower.getMidpoint().x && t.y ==  tower.getMidpoint().y)
-			{
-				towerBlocks.remove(t); 
-				t.visible = false; 
-				t = null;
-			}
+		for (c in tower.children) {
+			remove(c);
 		}
 		// Remove the radius sprite as well and reset the menu if the selected tower was just destroyed
 		if (InGameMenu.towerSelected  != null && InGameMenu.towerSelected == tower)
@@ -387,8 +386,8 @@ class PlayState extends FlxState
 		}
 		
 		// Snap to grid
-		var xPos:Float = FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE);
-		var yPos:Float = FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE);
+		var xPos:Float = (FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 12;
+		var yPos:Float = (FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 12;
 		
 		// Can't place towers on other towers
 		for (tower in _towers)
@@ -421,7 +420,7 @@ class PlayState extends FlxState
             t.setPosition(xpos,ypos);
 		}
 
-		_map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
+		// _map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
 		
 		inGameMenu.builtFirstTower();
 		
@@ -445,8 +444,8 @@ class PlayState extends FlxState
 	}
 
 	/** A function that adds a new foundation and then iterates the number of layers in the tower. **/
-	private function buildFoundation(): Void { 
-		addMaterial(new Foundation(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET)); 
+	private function buildFoundation(ItemNum: Int): Void { 
+		addMaterial(new Foundation(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET, ItemNum)); 
 		_layerNum++; 
 	}
 

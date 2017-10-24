@@ -7,28 +7,30 @@ import flixel.math.FlxVelocity;
 
 @:enum
 abstract FoundationType(Int) {
-  var Wood = 0;
-  var Metal = 1;
+  var Wood = 1;
+  var Metal = 2;
+  var Ice = 3; 
 }
 
 
 class Foundation extends TowerBlock
 {
-	public var type:FoundationType; 
+	public var healthPoints:Int; 
 
-	public function new(X:Float, Y:Float) 
+	public function new(X:Float, Y:Float, HealthPoints:Int) 
 	{
 		super(X, Y, AssetPaths.tower_base__png);
-		
+		this.healthPoints = HealthPoints; 
+
 		#if flash
-		blend = BlendMode.INVERT;
+		blend = BlendMode.NORMAL;
 		#end
 	}
 
-	public function init(X:Float, Y:Float, Type:FoundationType):Void
+	public function init(X:Float, Y:Float, HealthPoints:Int):Void
 	{
 		reset(X, Y);
-		type = Type; 
+		healthPoints = HealthPoints; 
 	}
 	
 	override public function update(elapsed:Float):Void

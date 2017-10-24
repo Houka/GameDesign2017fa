@@ -22,7 +22,7 @@ class EnemyExplosion extends FlxEmitter
 		lifespan.set(1, 1);
 		
 		#if flash
-		blend = BlendMode.INVERT;
+		blend = BlendMode.NORMAL;
 		#end
 		
 		for (i in 0...SIZE)

@@ -60,7 +60,7 @@ class Enemy extends FlxSprite
 
 		// reset path vars
 		_savedPath = null;
-		_savedSpeed = null;
+		_savedSpeed = 0;
 		_savedOnComplete = null;
 
 		// add animations
@@ -98,7 +98,7 @@ class Enemy extends FlxSprite
 		 		path = new FlxPath().start(_savedPath, _savedSpeed, 0, true);
 				path.onComplete = _savedOnComplete;
 				_savedPath = null;
-				_savedSpeed = null;
+				_savedSpeed = 0;
 				_savedOnComplete = null;
 
 				// stop attacking
