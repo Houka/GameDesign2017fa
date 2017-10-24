@@ -38,7 +38,7 @@ class InGameMenu extends FlxGroup{
 	public var buildMenu: FlxGroup; 
 
 	// Game Object variables
-	public var towerPrice:Int = 8;
+	public var towerPrice:Int = 0;
 	private var _speed:Int = 1;
 	public static var currItem:Int; 
 
@@ -323,14 +323,22 @@ class InGameMenu extends FlxGroup{
 		updateRangeSprite(InGameMenu.towerSelected.getMidpoint(), InGameMenu.towerSelected.range);
 	}
 
-	private function createTowerCallback(Skip: Bool=false, ItemNum: Int): Void { 
-			buyingMode = true; 
-			currItem = ItemNum; 
+	private function createTowerCallback(Skip: Bool=false, ItemNum: Int, Price:Int): Void { 
+		buyingMode = true; 
+		currItem = ItemNum; 
+		if (towerPrice < HUD.money) {
+			towerPrice += Price; 
+		}
+		else { 
+			Constants.play("deny");
+		}
 	}
 
 	private function placeTowerCallback(Skip: Bool=false): Void {
 		if (PlayState.towerBlocks.length > 0) {
 			placingMode = !placingMode; 
+			HUD.money -= towerPrice; 
+			towerPrice = 0; 
 		}
 		else { 
 			Constants.play("deny");
@@ -461,15 +469,15 @@ class InGameMenu extends FlxGroup{
 	/** A function that creates the buttons in the store. */
 	private function createBuildButtons():Void { 
 		var buttons = [
-			{name: "Gun 1"}, 
-			{name: "Gun 2"}, 
-			{name: "Gun 3"}, 
-			{name: "Snow"}, 
-			{name: "Ice"}, 
-			{name: "Metal"}, 
-			{name: "Ammo 1"}, 
-			{name: "Ammo 2"}, 
-			{name: "Ammo 3"}
+			{name: "Gun 1 \n 1", price: 1}, 
+			{name: "Gun 2 \n 2", price: 2}, 
+			{name: "Gun 3 \n 3", price: 3}, 
+			{name: "Snow \n 1", price: 1}, 
+			{name: "Ice \n 2", price: 2}, 
+			{name: "Metal \n 3", price: 3}, 
+			{name: "Ammo 1 \n 1", price: 1}, 
+			{name: "Ammo 2 \n 2", price: 2}, 
+			{name: "Ammo 3 \n 3", price: 3}
 		]; 
 
 		var gap = 10; 
@@ -482,7 +490,7 @@ class InGameMenu extends FlxGroup{
 
 		for (i in 0...buttons.length) {
 			col++; 
-			var btn:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), buttons[i].name,createTowerCallback.bind(false, i));
+			var btn:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), buttons[i].name,createTowerCallback.bind(false, i, buttons[i].price));
 			btn.loadGraphic(AssetPaths.button__png, true, width, height); 
 			add(btn);
 

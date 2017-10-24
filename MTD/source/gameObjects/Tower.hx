@@ -89,9 +89,6 @@ class Tower extends FlxSprite
 		alpha -= Damage;
 		
 		if (health <= 0){
-			// for (c in this.children) {
-			// 	remove(c);
-			// }
 			Constants.PS.removeTower(this);
 			kill();
 		}
