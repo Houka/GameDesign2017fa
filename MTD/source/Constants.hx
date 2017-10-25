@@ -61,12 +61,84 @@ class Constants{
 		start: toCameraCoordinates(5,0),
 		goal: toCameraCoordinates(7,9),
 		health: 9,
-		money: 50,
-		defaultTowerPrice: 8
+		money: 1,
+		defaultTowerPrice: 1
 	}
 
 	public static var level2:Level = {
 		map:"assets/maps/level2.csv",
+		mapWidth: 15,
+		mapHeight:11,
+		tilemap:"assets/tiles/tilemap.png",
+		start: toCameraCoordinates(5,0),
+		goal: toCameraCoordinates(7,9),
+		health: 9,
+		money: 50,
+		defaultTowerPrice: 8
+	}
+
+	public static var level3:Level = {
+		map:"assets/maps/level3.csv",
+		mapWidth: 15,
+		mapHeight:11,
+		tilemap:"assets/tiles/tilemap.png",
+		start: toCameraCoordinates(5,0),
+		goal: toCameraCoordinates(7,9),
+		health: 9,
+		money: 50,
+		defaultTowerPrice: 8
+	}
+
+	public static var level4:Level = {
+		map:"assets/maps/level4.csv",
+		mapWidth: 15,
+		mapHeight:11,
+		tilemap:"assets/tiles/tilemap.png",
+		start: toCameraCoordinates(5,0),
+		goal: toCameraCoordinates(7,9),
+		health: 9,
+		money: 50,
+		defaultTowerPrice: 8
+	}
+
+	public static var level5:Level = {
+		map:"assets/maps/level5.csv",
+		mapWidth: 15,
+		mapHeight:11,
+		tilemap:"assets/tiles/tilemap.png",
+		start: toCameraCoordinates(5,0),
+		goal: toCameraCoordinates(7,9),
+		health: 9,
+		money: 50,
+		defaultTowerPrice: 8
+	}
+
+	public static var level6:Level = {
+		map:"assets/maps/level6.csv",
+		mapWidth: 15,
+		mapHeight:11,
+		tilemap:"assets/tiles/tilemap.png",
+		start: toCameraCoordinates(5,0),
+		goal: toCameraCoordinates(7,9),
+		health: 9,
+		money: 50,
+		defaultTowerPrice: 8
+	}
+
+	public static var level7:Level = {
+		map:"assets/maps/level7.csv",
+		mapWidth: 15,
+		mapHeight:11,
+		tilemap:"assets/tiles/tilemap.png",
+		start: toCameraCoordinates(5,0),
+		goal: toCameraCoordinates(7,9),
+		health: 9,
+		money: 50,
+		defaultTowerPrice: 8
+	}
+
+	public static var level8:Level = {
+		map:"assets/maps/level8.csv",
 		mapWidth: 15,
 		mapHeight:11,
 		tilemap:"assets/tiles/tilemap.png",
