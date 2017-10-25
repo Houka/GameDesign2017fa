@@ -35,7 +35,7 @@ class MenuState extends FlxState
 		Constants.toggleCursors(CursorType.Normal);
 
 		// camera and framerate settings
-		FlxG.cameras.bgColor = FlxColor.WHITE;
+		FlxG.cameras.bgColor = FlxColor.fromInt(0xff85bbff);
 		FlxG.timeScale = 1;
 		
 		// Load a map from CSV data; note that the tile graphic does not need to be a file; in this case, it's BitmapData.

@@ -194,6 +194,7 @@ class InGameMenu extends FlxGroup{
 		upgradeMenu.visible = false;
 		defaultMenu.visible = false;
 		_towerRange.visible = false;
+		Constants.toggleCursors(Normal);
 		
 		switch (Menu)
 		{
@@ -206,6 +207,7 @@ class InGameMenu extends FlxGroup{
 				updateUpgradeLabels();
 				upgradeMenu.visible = true;
 			case Sell:
+				Constants.toggleCursors(Destroy);
 				sellMenu.visible = true;
 			case ConfirmSell:
 				sellConfirmCheck();

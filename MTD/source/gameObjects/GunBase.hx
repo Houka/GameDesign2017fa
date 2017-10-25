@@ -25,7 +25,7 @@ class GunBase extends TowerBlock
 
 	public function new(X:Float, Y:Float) 
 	{
-		super(X, Y, AssetPaths.gun__png);
+		super(X, Y, AssetPaths.gun1__png);
 		
 		#if flash
 		blend = BlendMode.NORMAL;

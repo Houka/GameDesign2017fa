@@ -37,7 +37,7 @@ class Tower extends FlxSprite
 	 */
 	public function new(X:Float, Y:Float, Cost:Int, materials:Array<TowerBlock>)
 	{
-		super(X, Y);
+		super(X, Y,AssetPaths.tower__png);
 
 		health = 0; 
 		

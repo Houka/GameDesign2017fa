@@ -39,7 +39,7 @@ class Enemy extends FlxSprite
 	override public function new(X:Float = 0, Y:Float = 0) 
 	{
 		super(X, Y);
-		loadGraphic(AssetPaths.enemy_spritesheet_64x64__png, true, 64, 64);
+		loadGraphic(AssetPaths.boy_spritesheet_64x64__png, true, 64, 64);
 		health = maxHealth;
 		init(X,Y);
 	}
