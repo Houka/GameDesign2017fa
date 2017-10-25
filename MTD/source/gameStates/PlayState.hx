@@ -20,6 +20,7 @@ import gameObjects.*;
 import Constants;
 import Levels;
 import AssetPaths;
+import Type; 
 
 class PlayState extends FlxState
 {
@@ -30,6 +31,8 @@ class PlayState extends FlxState
 	
 	// Game Object groups
 	public var collisionController:CollisionController;
+	public static var gunBases:FlxTypedGroup<GunBase>; 
+	public static var towerBlocks:Array<TowerBlock>; 
 
 	// HUD/Menu Groups
 	private var inGameMenu:InGameMenu;
@@ -46,6 +49,8 @@ class PlayState extends FlxState
 	
 	// Other objects
 	private var _map:FlxTilemap;
+	private var _layerNum:Int; 
+	private var _currTowerStartIndex: Int; 
 	
 	// Private variables
 	private var _gameOver:Bool = false;
@@ -72,7 +77,9 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		Constants.PS = this;
+
 		// Constants.playMusic("bg_music");
+		
 		FlxG.timeScale = 1;
 		
 		// Create map
@@ -86,6 +93,8 @@ class PlayState extends FlxState
 		// Add groups
 
 		collisionController = new CollisionController(_goalPosition);
+		gunBases = collisionController.gunBases; 		
+		towerBlocks = new Array<TowerBlock>();
 		
 		// Set up bottom default GUI
 		
@@ -105,6 +114,9 @@ class PlayState extends FlxState
 		_centerText = new FlxText( -200, FlxG.height / 2 - 20, FlxG.width, "", 16);
 		_centerText.alignment = CENTER;
 		_centerText.borderStyle = SHADOW;
+
+		_layerNum = 0;
+		_currTowerStartIndex = 0;
 		
 		// Add everything to the state
 		
@@ -163,10 +175,31 @@ class PlayState extends FlxState
 		
 		if (FlxG.mouse.justReleased)
 		{
-			if (inGameMenu.buildingMode)
-			{
-				buildTower();
+			if (inGameMenu.removingMode) {
+				popMaterial(); 
+				inGameMenu.removingMode = false; 
 			}
+
+			else if (inGameMenu.placingMode) {
+				// inGameMenu.buildingMode = true; 
+				buildTower();
+				inGameMenu._towerRange.visible = true;
+
+			}
+
+			else if (inGameMenu.buyingMode) {
+				inGameMenu._towerRange.visible = false; 
+				if (InGameMenu.currItem < 3) {
+					buildGunBase();  
+					InGameMenu.currItem = -1; 
+				}
+				else if (InGameMenu.currItem >= 3 && InGameMenu.currItem < 6) {
+					buildFoundation(InGameMenu.currItem);
+					InGameMenu.currItem = -1; 
+				}
+				inGameMenu.buyingMode != inGameMenu.buyingMode; 
+			}
+
 			else
 			{
 				var selectedTower:Bool = false;
@@ -236,6 +269,9 @@ class PlayState extends FlxState
 			}
 		}
 
+		for (c in tower.children) {
+			remove(c);
+		}
 		// Remove the radius sprite as well and reset the menu if the selected tower was just destroyed
 		if (InGameMenu.towerSelected  != null && InGameMenu.towerSelected == tower)
 			inGameMenu.toggleMenus(General);
@@ -327,8 +363,8 @@ class PlayState extends FlxState
 		}
 		
 		// Snap to grid
-		var xPos:Float = FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE);
-		var yPos:Float = FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE);
+		var xPos:Float = (FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 12;
+		var yPos:Float = (FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 12;
 		
 		// Can't place towers on other towers
 		for (tower in collisionController.towers)
@@ -351,7 +387,15 @@ class PlayState extends FlxState
 			return;
 		}
 		
-		collisionController.towers.add(new Tower(xPos, yPos, inGameMenu.towerPrice));
+		var tower: Tower = new Tower(xPos, yPos, inGameMenu.towerPrice, towerBlocks);
+		collisionController.towers.add(tower);
+		var level = 0; 
+		for (t in towerBlocks.slice(_currTowerStartIndex)) {
+			var xpos = tower.x+tower.origin.x;
+            var ypos = tower.y+tower.origin.y-level*Constants.HEIGHT_OFFSET;
+            level++;
+            t.setPosition(xpos,ypos);
+		}
 
 		_map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
 		
@@ -363,7 +407,39 @@ class PlayState extends FlxState
 		inGameMenu.towerPrice += Std.int(inGameMenu.towerPrice * 0.3);
 		_towerButton.text = "Buy [T]ower ($" + inGameMenu.towerPrice + ")";
 		inGameMenu.toggleMenus(General);
+
+		//Reset everything for next building iteration
+		inGameMenu.placingMode = false;
+		_layerNum = 0; 
+		_currTowerStartIndex = towerBlocks.length; 
 	}
+
+	/** A function that adds a new gunbase and then iterates the number of layers in the tower. **/
+	private function buildGunBase(): Void { 
+		addMaterial(new GunBase(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET)); 
+		_layerNum++;
+	}
+
+	/** A function that adds a new foundation and then iterates the number of layers in the tower. **/
+	private function buildFoundation(ItemNum: Int): Void { 
+		addMaterial(new Foundation(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET, ItemNum)); 
+		_layerNum++; 
+	}
+
+	/** A function that adds a gunBase or foundation to the towerBlocks list. **/
+	private function addMaterial(obj:TowerBlock):Void{
+        towerBlocks.push(obj);
+        add(obj);
+    }
+
+    private function popMaterial():TowerBlock {
+    	var obj = towerBlocks.pop(); 
+    	if (obj != null) {
+    		remove(obj);
+    	}
+    	return obj; 
+    }
+
 	
 	/**
 	 * Used to display either the wave number or Game Over message via the animated fly-in, fly-out text.
