@@ -26,7 +26,7 @@ class PlayState extends FlxState
 	// Public variables
 	public var enemiesToKill:Int = 0;
 	public var wave:Int = 0;
-	private var enemiesToSpawn:Int = 0;
+	private var enemiesToSpawn:Array<Int> = [];
 	
 	// Game Object groups
 	public var collisionController:CollisionController;
@@ -200,7 +200,10 @@ class PlayState extends FlxState
 			_waveCounter -= Std.int(FlxG.timeScale);
 			_nextWaveButton.text = "[N]ext Wave in " + Math.ceil(_waveCounter / FlxG.updateFramerate);
 			
-			if (_waveCounter <= 0)
+		
+			if (wave >= _level.waves.length)
+				winGame();
+			else if (_waveCounter <= 0)
 			{
 				spawnWave();
 			}
@@ -209,7 +212,7 @@ class PlayState extends FlxState
 		{
 			_spawnCounter += Std.int(FlxG.timeScale);
 			
-			if (_spawnCounter > _spawnInterval * FlxG.updateFramerate && enemiesToSpawn > 0)
+			if (_spawnCounter > _spawnInterval * FlxG.updateFramerate && enemiesToSpawn.length > 0)
 			{
 				spawnEnemy();
 			}
@@ -367,13 +370,13 @@ class PlayState extends FlxState
 	 * 
 	 * @param	End		Whether or not this is the end of the game. If true, message will say "Game Over! :("
 	 */
-	private function announceWave(End:Bool = false):Void
+	private function announceWave(End:Bool = false, ?gameOverText:String):Void
 	{
 		_centerText.x = -200;
 		_centerText.text = "Wave " + wave;
 		
 		if (End)
-			_centerText.text = "Game Over! :(";
+			_centerText.text = gameOverText;
 		
 		FlxTween.tween(_centerText, { x: 0 }, 2, { ease: FlxEase.expoOut, onComplete: hideText });
 		
@@ -400,10 +403,14 @@ class PlayState extends FlxState
 		if (_gameOver)
 			return;
 		
+		if (wave >= _level.waves.length)
+			return;
+		
+
 		wave++;
 		announceWave();
-		enemiesToKill = 5 + wave;
-		enemiesToSpawn = enemiesToKill;
+		enemiesToSpawn = _level.waves[wave-1].copy();
+		enemiesToKill = enemiesToSpawn.length;
 		
 		_nextWaveButton.visible = false;
 		
@@ -417,10 +424,10 @@ class PlayState extends FlxState
 	 */
 	private function spawnEnemy():Void
 	{
-		enemiesToSpawn--;
+		var type = enemiesToSpawn.shift();
 		
-		var enemy = collisionController.enemies.recycle(Enemy.new.bind(0, 0));
-		enemy.init(_enemySpawnPosition.x, _enemySpawnPosition.y - 12);
+		var enemy = collisionController.enemies.recycle(Enemy.new.bind(0, 0, 0));
+		enemy.init(_enemySpawnPosition.x, _enemySpawnPosition.y - 12, type);
 
 		//	try to get path to goal (considering towers). 
 		//  If there is no path then default to shortest path without considering towers
@@ -434,6 +441,24 @@ class PlayState extends FlxState
 		enemy.followPath(path, _speed + wave);
 		_spawnCounter = 0;
 	}
+
+	/**
+	 * Called when you win. Of course!
+	 */
+	private function winGame():Void
+	{
+		_gameOver = true;
+		
+		collisionController.kill();
+		inGameMenu.kill();
+		
+		announceWave(true,"You Win! :)");
+		
+		_towerButton.text = "[R]estart";
+		_towerButton.onDown.callback = resetCallback.bind(false);
+		
+		Constants.play("game_over");
+	}
 	
 	/**
 	 * Called when you lose. Of course!
@@ -445,7 +470,7 @@ class PlayState extends FlxState
 		collisionController.kill();
 		inGameMenu.kill();
 		
-		announceWave(true);
+		announceWave(true,"Game Over! :(");
 		
 		_towerButton.text = "[R]estart";
 		_towerButton.onDown.callback = resetCallback.bind(false);

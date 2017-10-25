@@ -45,9 +45,9 @@ class Levels{
 		money: 50,
 		defaultTowerPrice: 8,
 		waves:[
-			[0,0,0,0],
-			[0,0,0,0,0,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0,0,0]
+			[0],
+			[0,0],
+			[0,0,0]
 		]
 	}
 
@@ -62,8 +62,8 @@ class Levels{
 		money: 50,
 		defaultTowerPrice: 8,
 		waves:[
-			[0,0,0,0],
-			[1,1,1,1]
+			[0,0,0,0,0],
+			[1,1,1,1,1]
 		]
 	}
 

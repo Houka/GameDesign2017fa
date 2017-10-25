@@ -36,20 +36,20 @@ class Enemy extends FlxSprite
 	/**
 	 * Create a new enemy. Used in the menu and playstate.
 	 */
-	override public function new(X:Float = 0, Y:Float = 0)
+	override public function new(X:Float = 0, Y:Float = 0, Type:Int = 0)
 	{
 		super(X, Y);
 		health = maxHealth;
-		init(X,Y);
+		init(X,Y,Type);
 	}
 	
 	/**
 	 * Reset this enemy at X,Y and reset their health. Used for object pooling in the PlayState.
 	 */
-	public function init(X:Float, Y:Float)
+	public function init(X:Float, Y:Float,Type:Int)
 	{
 		reset(X, Y);
-		setType(0);
+		setType(Type);
 		
 		if (Constants.PS != null)
 			health = Math.floor(Constants.PS.wave / 3) + 1;
@@ -224,6 +224,8 @@ class Enemy extends FlxSprite
 				loadGraphic(AssetPaths.enemy1_spritesheet_64x64__png, true, 64, 64);
 	 		case 1:
 				loadGraphic(AssetPaths.enemy2_spritesheet_64x64__png, true, 64, 64);
+			default:
+				trace("No such enemy type: "+ type);
 	 	}
 	 }
 
