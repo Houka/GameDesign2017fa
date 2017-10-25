@@ -223,7 +223,7 @@ class PlayState extends FlxState
 					buildFoundation(InGameMenu.currItem);
 					InGameMenu.currItem = -1; 
 				}
-				inGameMenu.buyingMode != inGameMenu.buyingMode; 
+				inGameMenu.buyingMode = false; 
 			}
 
 			else
