@@ -174,6 +174,10 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float):Void
 	{
 		// Update enemies left indicator
+		var clickedTower = collisionController.overlapsTower(Std.int(FlxG.mouse.x), Std.int(FlxG.mouse.y));
+		if (clickedTower != null ) {
+			trace(clickedTower.children);
+		}
 		
 		_enemyText.text = "Enemies left: " + enemiesToKill;
 		
@@ -439,7 +443,7 @@ class PlayState extends FlxState
 
 	/** A function that adds a new gunbase and then iterates the number of layers in the tower. **/
 	private function buildGunBase(): Void { 
-		addMaterial(new GunBase(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET)); 
+		addMaterial(new GunBase(FlxG.width-180, 500-_layerNum*(Constants.HEIGHT_OFFSET+5))); 
 		_layerNum++;
 	}
 

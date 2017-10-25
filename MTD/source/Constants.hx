@@ -19,6 +19,7 @@ typedef Level = {
 	var health: Int;			// how much health does homebase have
 	var money: Int; 			// starting money
 	var defaultTowerPrice: Int;
+	//@:optional var buttonsAvail: List<Int>; 	// buttons available at each stage (indicated by index)
 }
 
 enum CursorType
@@ -38,7 +39,7 @@ class Constants{
 	public static var PS:PlayState;
 
 	static public inline var MAX_HEIGHT:Int = 5;
-	static public inline var HEIGHT_OFFSET:Float = 15; //the y-distance between layers
+	static public inline var HEIGHT_OFFSET:Float = 25; //the y-distance between layers
 
 	// Level data
 	public static var demo:Level = {
@@ -62,7 +63,8 @@ class Constants{
 		goal: toCameraCoordinates(7,9),
 		health: 9,
 		money: 1,
-		defaultTowerPrice: 1
+		defaultTowerPrice: 1, 
+		//buttonsAvail: 0
 	}
 
 	public static var level2:Level = {
