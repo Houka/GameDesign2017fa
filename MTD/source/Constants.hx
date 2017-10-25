@@ -149,6 +149,30 @@ class Constants{
 		defaultTowerPrice: 8
 	}
 
+	public static var level9:Level = {
+		map:"assets/maps/level9.csv",
+		mapWidth: 15,
+		mapHeight:11,
+		tilemap:"assets/tiles/tilemap.png",
+		start: toCameraCoordinates(5,0),
+		goal: toCameraCoordinates(7,9),
+		health: 9,
+		money: 50,
+		defaultTowerPrice: 8
+	}
+
+	public static var level10:Level = {
+		map:"assets/maps/level10.csv",
+		mapWidth: 15,
+		mapHeight:11,
+		tilemap:"assets/tiles/tilemap.png",
+		start: toCameraCoordinates(5,0),
+		goal: toCameraCoordinates(7,9),
+		health: 9,
+		money: 50,
+		defaultTowerPrice: 8
+	}
+
 	// Constant functions
 	public static function loadMap(lvl:Level, ?IsAuto:Bool = false):FlxTilemap{
 		var map = new FlxTilemap();
