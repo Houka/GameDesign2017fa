@@ -325,10 +325,11 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function createTowerCallback(Skip: Bool=false, ItemNum: Int, Price:Int): Void { 
-		buyingMode = true; 
-		currItem = ItemNum; 
 		//If the player has enough money, keep track of the current price of the tower.
 		if (towerPrice < HUD.money) {
+			buyingMode = true; 
+			currItem = ItemNum; 
+			trace("have enough money");
 			towerPrice += Price; 
 			matValuesList.push(Price); 
 		}

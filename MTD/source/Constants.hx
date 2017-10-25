@@ -99,7 +99,7 @@ class Constants{
 		start: toCameraCoordinates(5,0),
 		goal: toCameraCoordinates(7,9),
 		health: 9,
-		money: 50,
+		money: 2,
 		defaultTowerPrice: 8
 	}
 

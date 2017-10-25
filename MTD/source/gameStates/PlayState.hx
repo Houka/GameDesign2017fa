@@ -174,10 +174,10 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float):Void
 	{
 		// Update enemies left indicator
-		var clickedTower = collisionController.overlapsTower(Std.int(FlxG.mouse.x), Std.int(FlxG.mouse.y));
-		if (clickedTower != null ) {
-			trace(clickedTower.children);
-		}
+		// var clickedTower = collisionController.overlapsTower(Std.int(FlxG.mouse.x), Std.int(FlxG.mouse.y));
+		// if (clickedTower != null ) {
+		// 	trace(clickedTower.children);
+		// }
 		
 		_enemyText.text = "Enemies left: " + enemiesToKill;
 		
@@ -390,8 +390,8 @@ class PlayState extends FlxState
 		}
 		
 		// Snap to grid
-		var xPos:Float = (FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 12;
-		var yPos:Float = (FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 12;
+		var xPos:Float = (FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 18;
+		var yPos:Float = (FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 18;
 		
 		// Can't place towers on other towers
 		for (tower in _towers)
