@@ -89,7 +89,7 @@ class PlayState extends FlxState
 	private var drawStyle:DrawStyle = { smoothing: true };
 
 	private var _tutStateTracker:Int = 1; 
-	private var _tutText: FlxTypeText = new FlxTypeText(0, 200, FlxG.width, "", 30);
+	private var _tutText: FlxTypeText = new FlxTypeText(0, 250, FlxG.width, "", 30);
 
 	public function new(level:Level){
 		super();
@@ -626,12 +626,12 @@ class PlayState extends FlxState
 	}
 
 	private function tutorialUpdate(): Void { 
-		var _tutTextList: Array<String> = ["Welcome to permafrost. \nPlease click anywhere to continue.", 
-											"Your job is to stop the greedy kids from getting to the North Pole. \n 
-											Start by building your first Snowman Defense Turret.", 
+		var _tutTextList: Array<String> = ["Welcome to permafrost. \nClick anywhere to continue.", 
+											"Your job is to stop the greedy \nkids from getting to the \nNorth Pole. 
+											\n\nStart by building your first \nSnowman Defense Turret.", 
 											"Great! Now click build!", 
-											"Place your tower on the map. \nClick on your tower to check its health and attack.", 
-											"Placing your tower will start the first wave of pesky kids.", 
+											"Place your tower on the map. \n\nClick on your tower to check \nits health and attack.", 
+											"Placing your tower will start \nthe first wave of pesky kids.", 
 											"Well done! We are going to need a stronger tower for wave 2. \n
 											We can add more snow to increase health.", 
 											"Now add a Snowman Turret.", 
@@ -692,8 +692,27 @@ class PlayState extends FlxState
 				_tutStateTracker+= 1; 
 			}
 
+			if (_tutStateTracker == 1) {
+				overlay.x = -100; 
+				overlay.y = 0;
+				overlay.setGraphicSize(FlxG.width-620, FlxG.height);
+				_tutText.x = -120;
+			}
+
+			if (_tutStateTracker == 2) {
+				_tutText.y += 50;
+			}
+
+			if (_tutStateTracker == 3) {
+				_tutText.y -= 200; 
+				overlay.y -= 400;
+				overlay.height = 50;
+			}
+
 
 			if (_tutStateTracker == 4) {
+				overlay.y += 900; 
+				_tutText.y += 450;
 				//MAKE SURE TO ALSO SHOW HEALTH AND STATS 
 				if (_towers.length == 1) {
 					//release slow wave of few kids
@@ -702,10 +721,8 @@ class PlayState extends FlxState
 				}
 			} 
 
-
-
-	
 		}
+		//tween overlay as well as change size???
 		//fix tutorial button 
 		//make sure store doesn't cover map
 		//FIX MONEY ERRORS
@@ -725,7 +742,16 @@ class PlayState extends FlxState
 		//stored in list and iterate through depending on what click they're at
 		//click changes index in list and therefore text 
 		//need overlay 
+		//click shouldn't restart --> should just essentially 'skip' to completed text
 
 		//should track click state and sequence of actions 
+
+		/** 1. Get positioning and overlay correct for everything before enemies
+		2. Disable other buttons
+		3. Work on states past the one you stopped at */
+	}
+
+	private function setOverlay():Void {
+		overlay.setGraphicSize(FlxG.width-600, FlxG.height);
 	}
 }
