@@ -21,6 +21,8 @@ import Constants;
 import AssetPaths;
 import Type;
 import flixel.addons.text.FlxTypeText; 
+import flixel.math.FlxRect; 
+using flixel.util.FlxSpriteUtil;
 
 
 class PlayState extends FlxState
@@ -29,6 +31,7 @@ class PlayState extends FlxState
 	public var enemiesToKill:Int = 0;
 	public var enemiesToSpawn:Int = 0;
 	public var wave:Int = 0;
+	public static var isTutorial:Bool = false; 
 	
 	// Game Object groups
 	public var collisionController:CollisionController;
@@ -75,6 +78,13 @@ class PlayState extends FlxState
 	private var _level:Level;
 	private var _possiblePaths:Array<Array<FlxPoint>>;
 	private var _speed:Int = 100; // the base _speed that each enemy starts with
+
+	//  tutorial specific variables
+	private var canvas = new FlxSprite();
+
+	
+	var lineStyle:LineStyle = { color: FlxColor.BLACK, thickness: 1 };
+	var drawStyle:DrawStyle = { smoothing: true };
 
 	private var _tutStateTracker:Int = 0; 
 	private var _tutText: FlxTypeText = new FlxTypeText(300, 100, 600, "", 20);
@@ -158,6 +168,9 @@ class PlayState extends FlxState
 
 		if (_level.isTutorial) {
 			add(_tutText);
+			isTutorial = true;
+			canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
+			add(canvas);
 		}
 		
 		// This is a good place to put watch statements during development.
@@ -211,7 +224,6 @@ class PlayState extends FlxState
 		collisionController.update(elapsed);
 
 		if (!_level.isTutorial) {
-
 			// Controls mouse clicks, which either build a tower or offer the option to upgrade a tower.
 			
 			if (FlxG.mouse.justReleased)
@@ -614,10 +626,12 @@ class PlayState extends FlxState
 											"And each tower can be up to 3 layers high.", 
 											"Now build your upgraded tower and good luck!"];
 
+
+		//don't know why text repeats twice before working properly 
 		if (FlxG.mouse.justReleased) {
 			_tutText.resetText(_tutTextList[_tutStateTracker]);
 			_tutText.start();
-			
+
 			if (_tutStateTracker == 0) {
 				_tutStateTracker+= 1; 
 			}
@@ -625,18 +639,30 @@ class PlayState extends FlxState
 			if (_tutStateTracker == 1) {
 				//check to see if they click on gunbase 1 
 				if (InGameMenu.currItem == 0) {
-					buildGunBase();
+					buildGunBase(); 
 					_tutStateTracker+= 1; 
 				}
 			}
 
 			if (_tutStateTracker == 2) {
 				//check to see if they click on build 
+				if (inGameMenu.placingMode) {
 					//if so, create highlight square on path
+					canvas.drawRect(320, 380, 64, 64, FlxColor.RED, lineStyle, drawStyle);
+					canvas.flicker(0, 0.5); 
+					_tutStateTracker += 1; 
+				}
 			}
 
 			if (_tutStateTracker == 3) {
 				//check to see if they click on highlighted square
+				if (FlxG.mouse.x >= 319 && FlxG.mouse.x <= 383 && FlxG.mouse.y >= 379 && FlxG.mouse.y <= 443) {
+					//place gunbase on the square
+					canvas.kill();
+
+					_tutStateTracker += 1; 
+				}
+
 					//release slow wave of few kids
 			}
 
@@ -648,6 +674,15 @@ class PlayState extends FlxState
 			
 
 		}
+		//FIX MONEY ERRORS
+		//FIX DOUBLE APPEARANCES OF TEXT
+		//FIX SLOWNESS OF TEXT AND ADD SKIP BUTTON
+		//START WITH FIRST TUTORIAL STATEMENT
+		//BLACK OVERLAY BEHIND
+		//PROPER POSITIONING 
+		//FLASH SQUARE
+		//FLASH BUTTON THAT NEEDS TO BE CLICKED AND DISABLE EVERYTHING ELSE 
+			//PLAY REJECT SOUND IF CLICKED UNTIL THE RIGHT TIME 
 
 		//disable clicks until proper things clicked 
 		//adjust speed of things clicked 
