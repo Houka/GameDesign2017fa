@@ -82,13 +82,14 @@ class PlayState extends FlxState
 	//  tutorial specific variables
 	private var canvas = new FlxSprite();
 	private var _startEnemySpawn: Bool = false; 
+	private var overlay = new FlxSprite();
 
 	
-	var lineStyle:LineStyle = { color: FlxColor.BLACK, thickness: 1 };
-	var drawStyle:DrawStyle = { smoothing: true };
+	private var lineStyle:LineStyle = { color: FlxColor.BLACK, thickness: 1 };
+	private var drawStyle:DrawStyle = { smoothing: true };
 
 	private var _tutStateTracker:Int = 1; 
-	private var _tutText: FlxTypeText = new FlxTypeText(300, 100, 600, "", 20);
+	private var _tutText: FlxTypeText = new FlxTypeText(0, 200, FlxG.width, "", 30);
 
 	public function new(level:Level){
 		super();
@@ -168,10 +169,20 @@ class PlayState extends FlxState
 		killedWave();
 
 		if (_level.isTutorial) {
+			overlay.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK, true); 
+			overlay.alpha = 0.8; 
+			add(overlay);
+			//turn on and off overlay? or make it smaller according to what part you're talking about?
+
+			_tutText.alignment = "center";
 			add(_tutText);
-			_tutText.resetText("Welcome to permafrost. \nPlease click anywhere to continue.");
+			_tutText.resetText("Welcome to permafrost. \n \n \nPlease click anywhere to continue.");
 			_tutText.start();
 			isTutorial = true;
+
+
+			//TODO: Fix this so it doesn't need extra canvas variable
+			//not sure if this is useful or not, but red square built on this 
 			canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
 			add(canvas);
 		}
@@ -648,10 +659,11 @@ class PlayState extends FlxState
 			}
 
 			if (_tutStateTracker == 3) {
-				//check to see if they click on highlighted square
+				//check to see if they clicked on highlighted square
 				if (FlxG.mouse.x >= 319 && FlxG.mouse.x <= 383 && FlxG.mouse.y >= 379 && FlxG.mouse.y <= 443) {
-					//place gunbase on the square
+					//remove red square 
 					canvas.kill();
+					//place gunbase on the square
 					buildTower();
 					_tutStateTracker += 1; 
 				}
@@ -672,7 +684,6 @@ class PlayState extends FlxState
 			}
 
 
-		//don't know why text repeats twice before working properly 
 		if (FlxG.mouse.justReleased) {
 			_tutText.resetText(_tutTextList[_tutStateTracker]);
 			_tutText.start();
@@ -695,13 +706,12 @@ class PlayState extends FlxState
 
 	
 		}
+		//fix tutorial button 
+		//make sure store doesn't cover map
 		//FIX MONEY ERRORS
-		//FIX DOUBLE APPEARANCES OF TEXT
 		//FIX SLOWNESS OF TEXT AND ADD SKIP BUTTON
-		//START WITH FIRST TUTORIAL STATEMENT
 		//BLACK OVERLAY BEHIND
 		//PROPER POSITIONING 
-		//FLASH SQUARE
 		//FLASH BUTTON THAT NEEDS TO BE CLICKED AND DISABLE EVERYTHING ELSE 
 			//PLAY REJECT SOUND IF CLICKED UNTIL THE RIGHT TIME 
 
