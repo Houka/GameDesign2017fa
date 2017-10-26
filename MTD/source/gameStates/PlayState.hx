@@ -76,6 +76,9 @@ class PlayState extends FlxState
 	private var _possiblePaths:Array<Array<FlxPoint>>;
 	private var _speed:Int = 100; // the base _speed that each enemy starts with
 
+	private var _tutStateTracker:Int = 0; 
+	private var _tutText: FlxTypeText = new FlxTypeText(300, 100, 600, "", 20);
+
 	public function new(level:Level){
 		super();
 		_level = level;
@@ -152,6 +155,10 @@ class PlayState extends FlxState
 		// Call this to set up for first wave
 		
 		killedWave();
+
+		if (_level.isTutorial) {
+			add(_tutText);
+		}
 		
 		// This is a good place to put watch statements during development.
 		#if debug
@@ -593,13 +600,53 @@ class PlayState extends FlxState
 	}
 
 	private function tutorialUpdate(): Void { 
-		var text: FlxTypeText = new FlxTypeText(500, 100, 600, "Welcome to permafrost. \n Please click anywhere to continue.", 15);
-		add(text);
-		text.start();
+		var _tutTextList: Array<String> = ["Welcome to permafrost. \nPlease click anywhere to continue.", 
+											"Your job is to stop the greedy kids from getting to the North Pole. \n 
+											Start by building your first Snowman Defense Turret.", 
+											"Great! Now click build!", 
+											"Place your tower on the map. \nThis will start the first wave of pesky kids.", 
+											"Click on your tower to check its health and attack.", 
+											"Well done! We are going to need a stronger tower for wave 2. \n
+											We can add more snow to increase health.", 
+											"Now add a Snowman Turret.", 
+											"You can also give your Snowman Turret different ammo that will change its attack style.", 
+											"Each snowman turret in a tower can have an ammo type.", 
+											"And each tower can be up to 3 layers high.", 
+											"Now build your upgraded tower and good luck!"];
+
+		if (FlxG.mouse.justReleased) {
+			_tutText.resetText(_tutTextList[_tutStateTracker]);
+			_tutText.start();
+			_tutStateTracker+= 1; 
+
+			if (_tutStateTracker == 1) {
+				//check to see if they click on gunbase 1 
+			}
+
+			if (_tutStateTracker == 2) {
+				//check to see if they click on build 
+					//if so, create highlight square on path
+			}
+
+			if (_tutStateTracker == 3) {
+				//check to see if they click on highlighted square
+					//release slow wave of few kids
+			}
+
+			if (_tutStateTracker == 4) {
+				//
+			} 
+
+
+			
+
+		}
 
 		//different states for different text
 		//stored in list and iterate through depending on what click they're at
 		//click changes index in list and therefore text 
 		//need overlay 
+
+		//should track click state and sequence of actions 
 	}
 }
