@@ -5,6 +5,7 @@ import flixel.text.FlxText;
 import flixel.FlxSprite;
 import flixel.FlxG;
 import Constants;
+import Levels;
 import AssetPaths;
 
 class HUD extends FlxGroup{

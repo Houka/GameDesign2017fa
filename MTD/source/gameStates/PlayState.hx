@@ -18,6 +18,7 @@ import ui.HUD;
 import utils.Button;
 import gameObjects.*;
 import Constants;
+import Levels;
 import AssetPaths;
 import Type; 
 
@@ -25,22 +26,15 @@ class PlayState extends FlxState
 {
 	// Public variables
 	public var enemiesToKill:Int = 0;
-	public var enemiesToSpawn:Int = 0;
 	public var wave:Int = 0;
+	private var enemiesToSpawn:Array<Int> = [];
 	
 	// Game Object groups
 	public var collisionController:CollisionController;
-	public var bullets:FlxTypedGroup<Bullet>;
-	public var emitters:FlxTypedGroup<EnemyExplosion>;
-	public var enemies:FlxTypedGroup<Enemy>;
-	public var towerIndicators:FlxTypedGroup<FlxSprite>;
-	private var _towers:FlxTypedGroup<Tower>;
 	public static var gunBases:FlxTypedGroup<GunBase>; 
 	public static var towerBlocks:Array<TowerBlock>; 
 
 	// HUD/Menu Groups
-	private var _topGui:FlxGroup;
-	
 	private var inGameMenu:InGameMenu;
 	private var _gui:FlxGroup;
 	private var _sellMenu:FlxGroup;
@@ -48,8 +42,6 @@ class PlayState extends FlxState
 	
 	// Text
 	private var _centerText:FlxText;
-	private var _enemyText:FlxText;
-	private var _waveText:FlxText;
 
 	// Buttons
 	private var _nextWaveButton:Button;
@@ -85,14 +77,14 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		Constants.PS = this;
-		
+
 		// Constants.playMusic("bg_music");
 		
 		FlxG.timeScale = 1;
 		
 		// Create map
 		
-		_map = Constants.loadMap(_level);
+		_map = Levels.loadMap(_level);
 		_enemySpawnPosition = _level.start;
 		_goalPosition = _level.goal;
 		_possiblePaths = new Array<Array<FlxPoint>>();
@@ -101,13 +93,7 @@ class PlayState extends FlxState
 		// Add groups
 
 		collisionController = new CollisionController(_goalPosition);
-		bullets = collisionController.bullets;
-		emitters = collisionController.emitters;
-		enemies = collisionController.enemies;
-		_towers = collisionController.towers;
-		gunBases = collisionController.gunBases; 
-		towerIndicators = collisionController.towerIndicators;
-		
+		gunBases = collisionController.gunBases; 		
 		towerBlocks = new Array<TowerBlock>();
 		
 		// Set up bottom default GUI
@@ -122,11 +108,8 @@ class PlayState extends FlxState
 		// Set up HUD GUI
 
 		HUD.init(_level,loseGame,function() {});
-		_topGui = HUD.hud;
-		_enemyText = HUD.hud.enemyText;
-		_waveText = HUD.hud.waveText;
 		
-		// Set up miscellaneous items: center text, buildhelper, and the tower range image
+		// Set up miscellaneous items: center text
 		
 		_centerText = new FlxText( -200, FlxG.height / 2 - 20, FlxG.width, "", 16);
 		_centerText.alignment = CENTER;
@@ -135,26 +118,17 @@ class PlayState extends FlxState
 		_layerNum = 0;
 		_currTowerStartIndex = 0;
 		
-		#if flash
-		_centerText.blend = BlendMode.NORMAL;
-		#end
-		
 		// Add everything to the state
 		
 		add(_map);
 		collisionController.addToState(this);
 		add(inGameMenu);
-		add(_topGui);
+		add(HUD.hud);
 		add(_centerText);
 		
 		// Call this to set up for first wave
 		
 		killedWave();
-		
-		// This is a good place to put watch statements during development.
-		#if debug
-		//FlxG.watch.add( _sellMenu, "visible" );
-		#end
 	}
 	
 	/**
@@ -168,14 +142,14 @@ class PlayState extends FlxState
 		_waveCounter = 3 * FlxG.updateFramerate;
 		
 		_nextWaveButton.visible = true;
-		_enemyText.visible = false;
+		HUD.hud.enemyText.visible = false;
 	}
 	
 	override public function update(elapsed:Float):Void
 	{
-		// Update enemies left indicator
+		// Update collisionController.enemies left indicator
 		
-		_enemyText.text = "Enemies left: " + enemiesToKill;
+		HUD.hud.enemyText.text = "enemies left: " + enemiesToKill;
 		
 		// Check for key presses, which can substitute for button clicks.
 		
@@ -254,12 +228,15 @@ class PlayState extends FlxState
 		
 		// Controls wave spawning, enemy spawning, 
 		
-		if (enemiesToKill == 0 && _towers.length > 0)
+		if (enemiesToKill == 0 && collisionController.towers.length > 0)
 		{
 			_waveCounter -= Std.int(FlxG.timeScale);
 			_nextWaveButton.text = "[N]ext Wave in " + Math.ceil(_waveCounter / FlxG.updateFramerate);
 			
-			if (_waveCounter <= 0)
+		
+			if (wave >= _level.waves.length)
+				winGame();
+			else if (_waveCounter <= 0)
 			{
 				spawnWave();
 			}
@@ -268,7 +245,7 @@ class PlayState extends FlxState
 		{
 			_spawnCounter += Std.int(FlxG.timeScale);
 			
-			if (_spawnCounter > _spawnInterval * FlxG.updateFramerate && enemiesToSpawn > 0)
+			if (_spawnCounter > _spawnInterval * FlxG.updateFramerate && enemiesToSpawn.length > 0)
 			{
 				spawnEnemy();
 			}
@@ -278,15 +255,15 @@ class PlayState extends FlxState
 	} // End update
 
 	public function removeTower(tower:Tower):Void{
-		_towers.remove(tower, true);
+		collisionController.towers.remove(tower, true);
 		_map.setTile(Std.int(tower.x / Constants.TILE_SIZE), Std.int(tower.y / Constants.TILE_SIZE), 0, false);
 		
 		// Remove the indicator for this tower as well
-		for (indicator in towerIndicators)
+		for (indicator in collisionController.towerIndicators)
 		{
 			if (indicator.x ==  tower.getMidpoint().x - 1 && indicator.y ==  tower.getMidpoint().y - 1)
 			{
-				towerIndicators.remove(indicator, true);
+				collisionController.towerIndicators.remove(indicator, true);
 				indicator.visible = false;
 				indicator = null;
 			}
@@ -314,7 +291,7 @@ class PlayState extends FlxState
 			removeTower(InGameMenu.towerSelected);
 			
 			// If there are no towers, having the tutorial text and sell button is a bit superfluous
-			if (_towers.countLiving() == -1 && _towers.countDead() == -1)
+			if (collisionController.towers.countLiving() == -1 && collisionController.towers.countDead() == -1)
 			{
 				inGameMenu.soldLastTower();
 			}
@@ -390,7 +367,7 @@ class PlayState extends FlxState
 		var yPos:Float = (FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 12;
 		
 		// Can't place towers on other towers
-		for (tower in _towers)
+		for (tower in collisionController.towers)
 		{
 			if (tower.x == xPos && tower.y == yPos)
 			{
@@ -411,7 +388,7 @@ class PlayState extends FlxState
 		}
 		
 		var tower: Tower = new Tower(xPos, yPos, inGameMenu.towerPrice, towerBlocks);
-		_towers.add(tower);
+		collisionController.towers.add(tower);
 		var level = 0; 
 		for (t in towerBlocks.slice(_currTowerStartIndex)) {
 			var xpos = tower.x+tower.origin.x;
@@ -420,7 +397,7 @@ class PlayState extends FlxState
             t.setPosition(xpos,ypos);
 		}
 
-		// _map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
+		_map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
 		
 		inGameMenu.builtFirstTower();
 		
@@ -469,19 +446,19 @@ class PlayState extends FlxState
 	 * 
 	 * @param	End		Whether or not this is the end of the game. If true, message will say "Game Over! :("
 	 */
-	private function announceWave(End:Bool = false):Void
+	private function announceWave(End:Bool = false, ?gameOverText:String):Void
 	{
 		_centerText.x = -200;
 		_centerText.text = "Wave " + wave;
 		
 		if (End)
-			_centerText.text = "Game Over! :(";
+			_centerText.text = gameOverText;
 		
 		FlxTween.tween(_centerText, { x: 0 }, 2, { ease: FlxEase.expoOut, onComplete: hideText });
 		
-		_waveText.text = "Wave: " + wave;
-		_waveText.size = 16;
-		_waveText.visible = true;
+		HUD.hud.waveText.text = "Wave: " + wave;
+		HUD.hud.waveText.size = 16;
+		HUD.hud.waveText.visible = true;
 	}
 	
 	/**
@@ -494,35 +471,39 @@ class PlayState extends FlxState
 	
 	/**
 	 * Spawns the next wave. This increments the wave variable, displays the center text message,
-	 * sets the number of enemies to spawn and kill, hides the next wave button, and shows the
-	 * notification of the number of enemies.
+	 * sets the number of collisionController.enemies to spawn and kill, hides the next wave button, and shows the
+	 * notification of the number of collisionController.enemies.
 	 */
 	private function spawnWave():Void
 	{
 		if (_gameOver)
 			return;
 		
+		if (wave >= _level.waves.length)
+			return;
+		
+
 		wave++;
 		announceWave();
-		enemiesToKill = 5 + wave;
-		enemiesToSpawn = enemiesToKill;
+		enemiesToSpawn = _level.waves[wave-1].copy();
+		enemiesToKill = enemiesToSpawn.length;
 		
 		_nextWaveButton.visible = false;
 		
-		_enemyText.visible = true;
-		_enemyText.size = Constants.HUD_TEXT_SIZE;
+		HUD.hud.enemyText.visible = true;
+		HUD.hud.enemyText.size = Constants.HUD_TEXT_SIZE;
 	}
 	
 	/**
-	 * Spawns an enemy. Decrements the enemiesToSpawn variable, and recycles an enemy from enemies and then initiates
+	 * Spawns an enemy. Decrements the enemiesToSpawn variable, and recycles an enemy from collisionController.enemies and then initiates
 	 * it and gives it a path to follow.
 	 */
 	private function spawnEnemy():Void
 	{
-		enemiesToSpawn--;
+		var type = enemiesToSpawn.shift();
 		
-		var enemy = enemies.recycle(Enemy.new.bind(0, 0));
-		enemy.init(_enemySpawnPosition.x, _enemySpawnPosition.y - 12);
+		var enemy = collisionController.enemies.recycle(Enemy.new.bind(0, 0, 0));
+		enemy.init(_enemySpawnPosition.x, _enemySpawnPosition.y - 12, type);
 
 		//	try to get path to goal (considering towers). 
 		//  If there is no path then default to shortest path without considering towers
@@ -536,6 +517,24 @@ class PlayState extends FlxState
 		enemy.followPath(path, _speed + wave);
 		_spawnCounter = 0;
 	}
+
+	/**
+	 * Called when you win. Of course!
+	 */
+	private function winGame():Void
+	{
+		_gameOver = true;
+		
+		collisionController.kill();
+		inGameMenu.kill();
+		
+		announceWave(true,"You Win! :)");
+		
+		_towerButton.text = "[R]estart";
+		_towerButton.onDown.callback = resetCallback.bind(false);
+		
+		Constants.play("game_over");
+	}
 	
 	/**
 	 * Called when you lose. Of course!
@@ -547,7 +546,7 @@ class PlayState extends FlxState
 		collisionController.kill();
 		inGameMenu.kill();
 		
-		announceWave(true);
+		announceWave(true,"Game Over! :(");
 		
 		_towerButton.text = "[R]estart";
 		_towerButton.onDown.callback = resetCallback.bind(false);

@@ -43,7 +43,7 @@ class Tower extends FlxSprite
 		
 		_indicator = new FlxSprite(getMidpoint().x - 1, getMidpoint().y - 1);
 		_indicator.makeGraphic(2, 2);
-		Constants.PS.towerIndicators.add(_indicator);
+		Constants.PS.collisionController.towerIndicators.add(_indicator);
 		
 		_initialCost = Cost;
 		this.children = new Array<TowerBlock>();
@@ -122,7 +122,7 @@ class Tower extends FlxSprite
 		if (target == null)
 			return;
 		
-		var bullet = Constants.PS.bullets.recycle(Bullet.new);
+		var bullet = Constants.PS.collisionController.bullets.recycle(Bullet.new);
 		var midpoint = getMidpoint();
 		bullet.init(midpoint.x, midpoint.y, target, damage);
 		midpoint.put();
@@ -140,7 +140,7 @@ class Tower extends FlxSprite
 	private function getNearestEnemy():Enemy
 	{
 		var firstEnemy:Enemy = null;
-		var enemies:FlxTypedGroup<Enemy> = Constants.PS.enemies;
+		var enemies:FlxTypedGroup<Enemy> = Constants.PS.collisionController.enemies;
 		
 		for (enemy in enemies)
 		{
