@@ -19,7 +19,9 @@ import utils.Button;
 import gameObjects.*;
 import Constants;
 import AssetPaths;
-import Type; 
+import Type;
+import flixel.addons.text.FlxTypeText; 
+
 
 class PlayState extends FlxState
 {
@@ -201,81 +203,87 @@ class PlayState extends FlxState
 
 		collisionController.update(elapsed);
 
-		// Controls mouse clicks, which either build a tower or offer the option to upgrade a tower.
-		
-		if (FlxG.mouse.justReleased)
-		{
-			if (inGameMenu.removingMode) {
-				popMaterial(); 
-				inGameMenu.removingMode = false; 
-			}
+		if (!_level.isTutorial) {
 
-			else if (inGameMenu.placingMode) {
-				// inGameMenu.buildingMode = true; 
-				buildTower();
-				inGameMenu._towerRange.visible = true;
-
-			}
-
-			else if (inGameMenu.buyingMode) {
-				inGameMenu._towerRange.visible = false; 
-				if (InGameMenu.currItem < 3) {
-					buildGunBase();  
-					InGameMenu.currItem = -1; 
+			// Controls mouse clicks, which either build a tower or offer the option to upgrade a tower.
+			
+			if (FlxG.mouse.justReleased)
+			{
+				if (inGameMenu.removingMode) {
+					popMaterial(); 
+					inGameMenu.removingMode = false; 
 				}
-				else if (InGameMenu.currItem >= 3 && InGameMenu.currItem < 6) {
-					buildFoundation(InGameMenu.currItem);
-					InGameMenu.currItem = -1; 
-				}
-				inGameMenu.buyingMode = false; 
-			}
 
+				else if (inGameMenu.placingMode) {
+					// inGameMenu.buildingMode = true; 
+					buildTower();
+					inGameMenu._towerRange.visible = true;
+
+				}
+
+				else if (inGameMenu.buyingMode) {
+					inGameMenu._towerRange.visible = false; 
+					if (InGameMenu.currItem < 3) {
+						buildGunBase();  
+						InGameMenu.currItem = -1; 
+					}
+					else if (InGameMenu.currItem >= 3 && InGameMenu.currItem < 6) {
+						buildFoundation(InGameMenu.currItem);
+						InGameMenu.currItem = -1; 
+					}
+					inGameMenu.buyingMode = false; 
+				}
+
+				else
+				{
+					var selectedTower:Bool = false;
+					
+					// If the user clicked on a tower, they get the upgrade menu, or the sell menu
+					var clickedTower = collisionController.overlapsTower(Std.int(FlxG.mouse.x), Std.int(FlxG.mouse.y));
+					if (clickedTower != null){
+						InGameMenu.towerSelected = clickedTower;
+							
+						if (_sellMenu.visible || _sellConfirm.visible)
+							inGameMenu.toggleMenus(ConfirmSell);
+						else
+							inGameMenu.toggleMenus(Upgrade);
+						
+						selectedTower = true;
+					}
+					
+					// If the user didn't click on any towers, we go back to the general menu
+					
+					if (!selectedTower && FlxG.mouse.y < FlxG.height - 20)
+					{
+						inGameMenu.toggleMenus(General);
+					}
+				}
+			}
+			
+			// Controls wave spawning, enemy spawning, 
+			
+			if (enemiesToKill == 0 && _towers.length > 0)
+			{
+				_waveCounter -= Std.int(FlxG.timeScale);
+				_nextWaveButton.text = "[N]ext Wave in " + Math.ceil(_waveCounter / FlxG.updateFramerate);
+				
+				if (_waveCounter <= 0)
+				{
+					spawnWave();
+				}
+			}
 			else
 			{
-				var selectedTower:Bool = false;
+				_spawnCounter += Std.int(FlxG.timeScale);
 				
-				// If the user clicked on a tower, they get the upgrade menu, or the sell menu
-				var clickedTower = collisionController.overlapsTower(Std.int(FlxG.mouse.x), Std.int(FlxG.mouse.y));
-				if (clickedTower != null){
-					InGameMenu.towerSelected = clickedTower;
-						
-					if (_sellMenu.visible || _sellConfirm.visible)
-						inGameMenu.toggleMenus(ConfirmSell);
-					else
-						inGameMenu.toggleMenus(Upgrade);
-					
-					selectedTower = true;
-				}
-				
-				// If the user didn't click on any towers, we go back to the general menu
-				
-				if (!selectedTower && FlxG.mouse.y < FlxG.height - 20)
+				if (_spawnCounter > _spawnInterval * FlxG.updateFramerate && enemiesToSpawn > 0)
 				{
-					inGameMenu.toggleMenus(General);
+					spawnEnemy();
 				}
 			}
 		}
-		
-		// Controls wave spawning, enemy spawning, 
-		
-		if (enemiesToKill == 0 && _towers.length > 0)
-		{
-			_waveCounter -= Std.int(FlxG.timeScale);
-			_nextWaveButton.text = "[N]ext Wave in " + Math.ceil(_waveCounter / FlxG.updateFramerate);
-			
-			if (_waveCounter <= 0)
-			{
-				spawnWave();
-			}
-		}
-		else
-		{
-			_spawnCounter += Std.int(FlxG.timeScale);
-			
-			if (_spawnCounter > _spawnInterval * FlxG.updateFramerate && enemiesToSpawn > 0)
-			{
-				spawnEnemy();
-			}
+		else {
+			tutorialUpdate();
 		}
 		
 		super.update(elapsed);
@@ -582,5 +590,16 @@ class PlayState extends FlxState
 
 		_possiblePaths.push(path);
 		return path;
+	}
+
+	private function tutorialUpdate(): Void { 
+		var text: FlxTypeText = new FlxTypeText(500, 100, 600, "Welcome to permafrost. \n Please click anywhere to continue.", 15);
+		add(text);
+		text.start();
+
+		//different states for different text
+		//stored in list and iterate through depending on what click they're at
+		//click changes index in list and therefore text 
+		//need overlay 
 	}
 }

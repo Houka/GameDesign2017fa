@@ -19,6 +19,7 @@ typedef Level = {
 	var health: Int;			// how much health does homebase have
 	var money: Int; 			// starting money
 	var defaultTowerPrice: Int;
+	@:optional var isTutorial: Bool; 
 	//@:optional var buttonsAvail: List<Int>; 	// buttons available at each stage (indicated by index)
 }
 
@@ -52,6 +53,20 @@ class Constants{
 		health: 9,
 		money: 50,
 		defaultTowerPrice: 8
+	}
+
+	public static var tutorial:Level = {
+		map:"assets/maps/level1.csv",
+		mapWidth: 15,
+		mapHeight:11,
+		tilemap:"assets/tiles/tilemap.png",
+		start: toCameraCoordinates(5,0),
+		goal: toCameraCoordinates(7,9),
+		health: 9,
+		money: 1,
+		defaultTowerPrice: 1, 
+		isTutorial: true
+		//buttonsAvail: 0
 	}
 
 	public static var level1:Level = {
