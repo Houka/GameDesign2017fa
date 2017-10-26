@@ -617,10 +617,17 @@ class PlayState extends FlxState
 		if (FlxG.mouse.justReleased) {
 			_tutText.resetText(_tutTextList[_tutStateTracker]);
 			_tutText.start();
-			_tutStateTracker+= 1; 
+			
+			if (_tutStateTracker == 0) {
+				_tutStateTracker+= 1; 
+			}
 
 			if (_tutStateTracker == 1) {
 				//check to see if they click on gunbase 1 
+				if (InGameMenu.currItem == 0) {
+					buildGunBase();
+					_tutStateTracker+= 1; 
+				}
 			}
 
 			if (_tutStateTracker == 2) {
@@ -641,6 +648,9 @@ class PlayState extends FlxState
 			
 
 		}
+
+		//disable clicks until proper things clicked 
+		//adjust speed of things clicked 
 
 		//different states for different text
 		//stored in list and iterate through depending on what click they're at

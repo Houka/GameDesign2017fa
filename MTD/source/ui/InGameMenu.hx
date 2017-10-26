@@ -329,7 +329,6 @@ class InGameMenu extends FlxGroup{
 		if (towerPrice < HUD.money) {
 			buyingMode = true; 
 			currItem = ItemNum; 
-			trace("have enough money");
 			towerPrice += Price; 
 			matValuesList.push(Price); 
 		}
