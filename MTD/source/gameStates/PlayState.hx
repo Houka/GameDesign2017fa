@@ -632,8 +632,8 @@ class PlayState extends FlxState
 											"Great! Now click build!", 
 											"Place your tower on the map. \n\nClick on your tower to check \nits health and attack.", 
 											"Placing your tower will start \nthe first wave of pesky kids.", 
-											"Well done! We are going to need a stronger tower for wave 2. \n
-											We can add more snow to increase health.", 
+											"Well done! \n\nWe are going to need a \nstronger tower for wave 2. 
+											\n\nWe can add more snow \nto increase health.", 
 											"Now add a Snowman Turret.", 
 											"You can also give your Snowman Turret different ammo that will change its attack style.", 
 											"Each snowman turret in a tower can have an ammo type.", 
@@ -670,17 +670,24 @@ class PlayState extends FlxState
 			}
 
 			if (_tutStateTracker == 4) {
-				if (_towers.length == 1 && enemiesToSpawn == 1) {
-					trace("got here");
-					_startEnemySpawn = true; 
-				}
-				if (_startEnemySpawn) {
-					_tutStateTracker += 1; 
+				if (_towers.length == 0) {
+					_tutStateTracker += 1;
 				}
 			}
 
 			if (_tutStateTracker == 5) {
-				trace("wowie");
+				_tutText.resetText(_tutTextList[_tutStateTracker]);
+				_tutText.start();
+				_tutStateTracker += 1; 
+			}
+
+			if (_tutStateTracker == 6) {
+				overlay.y = 0; 
+				_tutText.y = 150; 
+			}
+
+			if (_tutStateTracker == 7) {
+				
 			}
 
 
@@ -720,8 +727,9 @@ class PlayState extends FlxState
 					spawnEnemy(); 
 				}
 			} 
-
 		}
+		//clicking off path breaks the tutorial for adding tower 
+		
 		//tween overlay as well as change size???
 		//fix tutorial button 
 		//make sure store doesn't cover map
