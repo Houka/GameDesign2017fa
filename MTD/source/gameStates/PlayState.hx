@@ -81,12 +81,13 @@ class PlayState extends FlxState
 
 	//  tutorial specific variables
 	private var canvas = new FlxSprite();
+	private var _startEnemySpawn: Bool = false; 
 
 	
 	var lineStyle:LineStyle = { color: FlxColor.BLACK, thickness: 1 };
 	var drawStyle:DrawStyle = { smoothing: true };
 
-	private var _tutStateTracker:Int = 0; 
+	private var _tutStateTracker:Int = 1; 
 	private var _tutText: FlxTypeText = new FlxTypeText(300, 100, 600, "", 20);
 
 	public function new(level:Level){
@@ -168,6 +169,8 @@ class PlayState extends FlxState
 
 		if (_level.isTutorial) {
 			add(_tutText);
+			_tutText.resetText("Welcome to permafrost. \nPlease click anywhere to continue.");
+			_tutText.start();
 			isTutorial = true;
 			canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
 			add(canvas);
@@ -616,8 +619,8 @@ class PlayState extends FlxState
 											"Your job is to stop the greedy kids from getting to the North Pole. \n 
 											Start by building your first Snowman Defense Turret.", 
 											"Great! Now click build!", 
-											"Place your tower on the map. \nThis will start the first wave of pesky kids.", 
-											"Click on your tower to check its health and attack.", 
+											"Place your tower on the map. \nClick on your tower to check its health and attack.", 
+											"Placing your tower will start the first wave of pesky kids.", 
 											"Well done! We are going to need a stronger tower for wave 2. \n
 											We can add more snow to increase health.", 
 											"Now add a Snowman Turret.", 
@@ -625,16 +628,6 @@ class PlayState extends FlxState
 											"Each snowman turret in a tower can have an ammo type.", 
 											"And each tower can be up to 3 layers high.", 
 											"Now build your upgraded tower and good luck!"];
-
-
-		//don't know why text repeats twice before working properly 
-		if (FlxG.mouse.justReleased) {
-			_tutText.resetText(_tutTextList[_tutStateTracker]);
-			_tutText.start();
-
-			if (_tutStateTracker == 0) {
-				_tutStateTracker+= 1; 
-			}
 
 			if (_tutStateTracker == 1) {
 				//check to see if they click on gunbase 1 
@@ -659,20 +652,48 @@ class PlayState extends FlxState
 				if (FlxG.mouse.x >= 319 && FlxG.mouse.x <= 383 && FlxG.mouse.y >= 379 && FlxG.mouse.y <= 443) {
 					//place gunbase on the square
 					canvas.kill();
-
+					buildTower();
 					_tutStateTracker += 1; 
 				}
-
-					//release slow wave of few kids
 			}
 
 			if (_tutStateTracker == 4) {
-				//
+				if (_towers.length == 1 && enemiesToSpawn == 1) {
+					trace("got here");
+					_startEnemySpawn = true; 
+				}
+				if (_startEnemySpawn) {
+					_tutStateTracker += 1; 
+				}
+			}
+
+			if (_tutStateTracker == 5) {
+				trace("wowie");
+			}
+
+
+		//don't know why text repeats twice before working properly 
+		if (FlxG.mouse.justReleased) {
+			_tutText.resetText(_tutTextList[_tutStateTracker]);
+			_tutText.start();
+
+			if (_tutStateTracker == 0) {
+				_tutStateTracker+= 1; 
+			}
+
+
+			if (_tutStateTracker == 4) {
+				//MAKE SURE TO ALSO SHOW HEALTH AND STATS 
+				if (_towers.length == 1) {
+					//release slow wave of few kids
+					enemiesToSpawn = 1; 
+					spawnEnemy(); 
+				}
 			} 
 
 
-			
 
+	
 		}
 		//FIX MONEY ERRORS
 		//FIX DOUBLE APPEARANCES OF TEXT
@@ -683,6 +704,9 @@ class PlayState extends FlxState
 		//FLASH SQUARE
 		//FLASH BUTTON THAT NEEDS TO BE CLICKED AND DISABLE EVERYTHING ELSE 
 			//PLAY REJECT SOUND IF CLICKED UNTIL THE RIGHT TIME 
+
+		//REMOVE MENU STUFF ON BOTTOM
+		//SELLING FUNCTIONALITY 
 
 		//disable clicks until proper things clicked 
 		//adjust speed of things clicked 
