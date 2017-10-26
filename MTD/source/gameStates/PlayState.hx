@@ -634,11 +634,12 @@ class PlayState extends FlxState
 											"Placing your tower will start \nthe first wave of pesky kids.", 
 											"Well done! \n\nWe are going to need a \nstronger tower for wave 2. 
 											\n\nWe can add more snow \nto increase health.", 
+											"", 
 											"Now add a Snowman Turret.", 
-											"You can also give your Snowman Turret different ammo that will change its attack style.", 
-											"Each snowman turret in a tower can have an ammo type.", 
-											"And each tower can be up to 3 layers high.", 
-											"Now build your upgraded tower and good luck!"];
+											"You can also give your \nSnowman Turret different ammo \nthat will change its \nattack style.", 
+											"Each snowman turret in a \ntower can have an ammo type.", 
+											"And each tower can be \nup to 3 layers high.", 
+											"Now build your upgraded tower \nand good luck!"];
 
 			if (_tutStateTracker == 1) {
 				//check to see if they click on gunbase 1 
@@ -684,10 +685,19 @@ class PlayState extends FlxState
 			if (_tutStateTracker == 6) {
 				overlay.y = 0; 
 				_tutText.y = 150; 
+				//check if they click on snow foundation
+				if (InGameMenu.currItem == 3) {
+					buildFoundation(InGameMenu.currItem); 
+					_tutStateTracker += 1; 
+				}
 			}
 
 			if (_tutStateTracker == 7) {
-				
+				//check if they click on the first gunbase
+				if (InGameMenu.currItem == 0) {
+					buildGunBase(); 
+					_tutStateTracker += 1; 
+				}
 			}
 
 
@@ -727,7 +737,15 @@ class PlayState extends FlxState
 					spawnEnemy(); 
 				}
 			} 
+
+			if (_tutStateTracker == 7) {
+				_tutText.y += 150;
+			}
 		}
+
+		//emphasis on money being spend and money added when enemies die? 
+
+
 		//clicking off path breaks the tutorial for adding tower 
 		
 		//tween overlay as well as change size???
