@@ -166,6 +166,7 @@ class PlayState extends FlxState
 			else
 				nextWaveCallback(true); 
 		}
+		if (FlxG.keys.anyJustPressed([P])) openSubState(new PauseState());
 
 		// collision controller updates
 
@@ -225,6 +226,11 @@ class PlayState extends FlxState
 				}
 			}
 		}
+
+		// win game
+
+		if (enemiesToKill == 0 && wave >= _level.waves.length && !_gameOver)
+			winGame();
 		
 		// Controls wave spawning, enemy spawning, 
 		
@@ -233,10 +239,7 @@ class PlayState extends FlxState
 			_waveCounter -= Std.int(FlxG.timeScale);
 			_nextWaveButton.text = "[N]ext Wave in " + Math.ceil(_waveCounter / FlxG.updateFramerate);
 			
-		
-			if (wave >= _level.waves.length)
-				winGame();
-			else if (_waveCounter <= 0)
+			if (_waveCounter <= 0)
 			{
 				spawnWave();
 			}
@@ -467,6 +470,10 @@ class PlayState extends FlxState
 	private function hideText(Tween:FlxTween):Void
 	{
 		FlxTween.tween(_centerText, { x: FlxG.width }, 2, { ease: FlxEase.expoIn });
+		if (_gameOver && wave >= _level.waves.length && enemiesToSpawn.length <= 0 && enemiesToKill <= 0 && HUD.health > 0)
+			openSubState(new WinState(_level));
+		else if (_gameOver)
+			openSubState(new LoseState(_level));
 	}
 	
 	/**
