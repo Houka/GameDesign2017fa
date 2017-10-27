@@ -362,7 +362,7 @@ class InGameMenu extends FlxGroup{
 			matValuesList.clear();	
 		}
     
-		if (Constants.PS.towerBlocks.length > 0 || PlayState.isTutorial) {
+		if (Constants.PS.towerBlocks.length > 0 && !PlayState.isTutorial) {
 			placingMode = !placingMode; 
 			//Remove the amt tower is worth from the player's money and reset towerPrice.
 			HUD.money -= towerPrice; 

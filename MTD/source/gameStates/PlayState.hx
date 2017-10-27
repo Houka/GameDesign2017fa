@@ -81,7 +81,7 @@ class PlayState extends FlxState
 	private var canvas = new FlxSprite();
 	private var _startEnemySpawn: Bool = false; 
 	private var overlay = new FlxSprite();
-	private var enemyReleased:Bool = false; 
+	private var enemyReleased:Int = 0; 
 	private var flashOutline = new FlxSprite(); 
 
 	// variables for tracking stats
@@ -728,7 +728,7 @@ class PlayState extends FlxState
 		}
 
 		if (_tutStateTracker == 4) {
-			if (collisionController.towers.length == 0) {
+			if (enemyReleased == 5) {
 				_tutStateTracker += 1;
 			}
 		}
@@ -793,12 +793,13 @@ class PlayState extends FlxState
 			if (_tutStateTracker == 4) {
 				overlay.y = 500; 
 				_tutText.y = 550;
+				enemiesToSpawn = [0, 0, 0, 0, 0]; 
 				//MAKE SURE TO ALSO SHOW HEALTH AND STATS 
-				if (collisionController.towers.length == 1 && !enemyReleased) {
+				while (enemiesToSpawn.length > 0) {
+				// if (collisionController.towers.length == 1 && !enemyReleased) {
 					//release single kid 
-					enemiesToSpawn = [0]; 
 					spawnEnemy(); 
-					enemyReleased = true;
+					enemyReleased += 1;
 				}
 			} 
 
