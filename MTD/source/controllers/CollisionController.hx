@@ -17,7 +17,6 @@ class CollisionController{
 	public var enemies:FlxTypedGroup<Enemy>;
 	public var towerIndicators:FlxTypedGroup<FlxSprite>;
 	public var towers:FlxTypedGroup<Tower>;
-	public var gunBases:FlxTypedGroup<GunBase>; 
 	public var towerBlocks:FlxTypedGroup<TowerBlock>; 
 
 	// Single game elements
@@ -31,7 +30,7 @@ class CollisionController{
 		enemies = new FlxTypedGroup<Enemy>();
 		towers = new FlxTypedGroup<Tower>();
 		towerIndicators = new FlxTypedGroup<FlxSprite>();
-		gunBases = new FlxTypedGroup<GunBase>(); 
+		towerBlocks = new FlxTypedGroup<TowerBlock>(); 
 		
 		goal = new FlxSprite(goalPosition.x, goalPosition.y, AssetPaths.homebase__png);
 	}
@@ -51,13 +50,13 @@ class CollisionController{
 	}
 
 	public function addToState(state:FlxState):Void{
-		state.add(bullets);
 		state.add(emitters);
 		state.add(enemies);
+		state.add(towerBlocks);	
 		state.add(towers);
+		state.add(bullets);
 		state.add(towerIndicators);
 		state.add(goal);	
-		state.add(gunBases);	
 	}
 	
 	/**
@@ -68,6 +67,7 @@ class CollisionController{
 
 		enemies.kill();
 		towerIndicators.kill();
+		towerBlocks.kill();
 		bullets.kill();
 		towers.kill();
 	}
@@ -75,10 +75,10 @@ class CollisionController{
 	/**
 	 * Called when a bullet hits an enemy. Damages the enemy, kills the bullet.
 	 */
-	public function hitEnemy(bullet:Bullet, enemy:FlxSprite):Void
+	public function hitEnemy(bullet:Bullet, enemy:Enemy):Void
 	{
 		enemy.hurt(bullet.damage);
-		bullet.kill();
+		bullet.hit(enemy);
 		
 		Constants.play("enemy_hit");
 	}
