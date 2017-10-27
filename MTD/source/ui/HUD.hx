@@ -3,6 +3,7 @@ package ui;
 import flixel.group.FlxGroup;
 import flixel.text.FlxText;
 import flixel.FlxSprite;
+import flixel.util.FlxColor;
 import flixel.FlxG;
 import Constants;
 import Levels;
@@ -30,11 +31,14 @@ class HUD extends FlxGroup{
 	public function new(health:Int, money:Int){
 		super();
 		moneyText = new FlxText(30, 30, FlxG.width - 4, "x" + money,Constants.HUD_TEXT_SIZE);
+		moneyText.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,1);
 		
 		waveText = new FlxText(10, 50, FlxG.width, "Wave",Constants.HUD_TEXT_SIZE);
+		waveText.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,1);
 		waveText.visible = false;
 		
 		enemyText = new FlxText(10, 70, FlxG.width, "Wave",Constants.HUD_TEXT_SIZE);
+		enemyText.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,1);
 		enemyText.visible = false;
 		
 		add(moneyText);

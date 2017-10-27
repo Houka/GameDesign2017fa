@@ -140,7 +140,7 @@ class InGameMenu extends FlxGroup{
 		store.loadGraphic(AssetPaths.store__png);
 
 		// add to overall menu
-		add(bg);
+		//add(bg);
 		add(store);
 		add(_towerRange);
 		add(_buildHelper);
@@ -164,13 +164,13 @@ class InGameMenu extends FlxGroup{
 
 		// Key press shortcuts for buttons
 
-		if (FlxG.keys.justReleased.T) buildTowerCallback(true); 
+		//if (FlxG.keys.justReleased.T) buildTowerCallback(true); 
 		if (FlxG.keys.justReleased.SPACE) speedButtonCallback(true); 
-		if (FlxG.keys.justReleased.S) sellButtonCallback(true);
-		if (FlxG.keys.justReleased.ESCAPE) toggleMenus(General); 
-		if (FlxG.keys.justReleased.ONE) upgradeRangeCallback(); 
-		if (FlxG.keys.justReleased.TWO) upgradeDamageCallback(); 
-		if (FlxG.keys.justReleased.THREE) upgradeFirerateCallback(); 
+		//if (FlxG.keys.justReleased.S) sellButtonCallback(true);
+		//if (FlxG.keys.justReleased.ESCAPE) toggleMenus(General); 
+		//if (FlxG.keys.justReleased.ONE) upgradeRangeCallback(); 
+		//if (FlxG.keys.justReleased.TWO) upgradeDamageCallback(); 
+		//if (FlxG.keys.justReleased.THREE) upgradeFirerateCallback(); 
 
 		// If needed, updates the grid highlight square buildHelper and the range indicator
 		
