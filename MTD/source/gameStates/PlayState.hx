@@ -32,6 +32,7 @@ class PlayState extends FlxState
 	public var enemiesToKill:Int = 0;
 	public var wave:Int = 0;
 	public static var isTutorial:Bool = false; 
+	public static var tutEnabledButtons: Array<Int> = [];
 	private var enemiesToSpawn:Array<Int> = [];
 	
 	// Game Object groups
@@ -76,7 +77,6 @@ class PlayState extends FlxState
 	private var _startEnemySpawn: Bool = false; 
 	private var overlay = new FlxSprite();
 	private var enemyReleased:Bool = false; 
-
 	
 	private var lineStyle:LineStyle = { color: FlxColor.BLACK, thickness: 1 };
 	private var drawStyle:DrawStyle = { smoothing: true };
@@ -160,6 +160,7 @@ class PlayState extends FlxState
 			_tutText.resetText("Welcome to permafrost. \n \n \nPlease click anywhere to continue.");
 			_tutText.start();
 			isTutorial = true;
+			tutEnabledButtons = [];
 
 
 			//TODO: Fix this so it doesn't need extra canvas variable
@@ -228,7 +229,6 @@ class PlayState extends FlxState
 			}
 
 			else if (inGameMenu.placingMode) {
-				// inGameMenu.buildingMode = true; 
 				buildTower();
 				inGameMenu._towerRange.visible = true;
 
@@ -653,64 +653,66 @@ class PlayState extends FlxState
 											"And each tower can be \nup to 3 layers high.", 
 											"Now build your upgraded tower \nand good luck!"];
 
-			if (_tutStateTracker == 1) {
-				//check to see if they click on gunbase 1 
-				if (InGameMenu.currItem == 0) {
-					buildGunBase(); 
-					_tutStateTracker+= 1; 
-				}
+		if (_tutStateTracker == 1) {
+			tutEnabledButtons.push(0);
+			//check to see if they click on gunbase 1 
+			if (InGameMenu.currItem == 0) {
+				buildGunBase(); 
+				_tutStateTracker+= 1; 
 			}
+		}
 
-			if (_tutStateTracker == 2) {
-				//check to see if they click on build 
-				if (inGameMenu.placingMode) {
-					//if so, create highlight square on path
-					canvas.drawRect(320, 380, 64, 64, FlxColor.RED, lineStyle, drawStyle);
-					canvas.flicker(0, 0.5); 
-					_tutStateTracker += 1; 
-				}
-			}
-
-			if (_tutStateTracker == 3) {
-				//check to see if they clicked on highlighted square
-				if (FlxG.mouse.x >= 319 && FlxG.mouse.x <= 383 && FlxG.mouse.y >= 379 && FlxG.mouse.y <= 443) {
-					//remove red square 
-					canvas.kill();
-					//place gunbase on the square
-					buildTower();
-					_tutStateTracker += 1; 
-				}
-			}
-
-			if (_tutStateTracker == 4) {
-				if (collisionController.towers.length == 0) {
-					_tutStateTracker += 1;
-				}
-			}
-
-			if (_tutStateTracker == 5) {
-				_tutText.resetText(_tutTextList[_tutStateTracker]);
-				_tutText.start();
+		if (_tutStateTracker == 2) {
+			//check to see if they click on build 
+			if (inGameMenu.placingMode) {
+				//if so, create highlight square on path
+				canvas.drawRect(320, 380, 64, 64, FlxColor.RED, lineStyle, drawStyle);
+				canvas.flicker(0, 0.5); 
 				_tutStateTracker += 1; 
 			}
+		}
 
-			if (_tutStateTracker == 6) {
-				overlay.y = 0; 
-				_tutText.y = 150; 
-				//check if they click on snow foundation
-				if (InGameMenu.currItem == 3) {
-					buildFoundation(InGameMenu.currItem); 
-					_tutStateTracker += 1; 
-				}
+		if (_tutStateTracker == 3) {
+			//check to see if they clicked on highlighted square
+			if (FlxG.mouse.x >= 319 && FlxG.mouse.x <= 383 && FlxG.mouse.y >= 379 && FlxG.mouse.y <= 443) {
+				//remove red square 
+				canvas.kill();
+				//place gunbase on the square
+				buildTower();
+				_tutStateTracker += 1; 
 			}
+		}
 
-			if (_tutStateTracker == 7) {
-				//check if they click on the first gunbase
-				if (InGameMenu.currItem == 0) {
-					buildGunBase(); 
-					_tutStateTracker += 1; 
-				}
+		if (_tutStateTracker == 4) {
+			if (collisionController.towers.length == 0) {
+				_tutStateTracker += 1;
 			}
+		}
+
+		if (_tutStateTracker == 5) {
+			_tutText.resetText(_tutTextList[_tutStateTracker]);
+			_tutText.start();
+			_tutStateTracker += 1; 
+		}
+
+		if (_tutStateTracker == 6) {
+			tutEnabledButtons.push(3);
+			overlay.y = 0; 
+			_tutText.y = 150; 
+			//check if they click on snow foundation
+			if (InGameMenu.currItem == 3) {
+				buildFoundation(InGameMenu.currItem); 
+				_tutStateTracker += 1; 
+			}
+		}
+
+		if (_tutStateTracker == 7) {
+			//check if they click on the first gunbase
+			if (InGameMenu.currItem == 0) {
+				buildGunBase(); 
+				_tutStateTracker += 1; 
+			}
+		}
 
 
 		if (FlxG.mouse.justReleased) {

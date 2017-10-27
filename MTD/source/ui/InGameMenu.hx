@@ -325,8 +325,19 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function createTowerCallback(Skip: Bool=false, ItemNum: Int, Price:Int): Void { 
+		if (PlayState.isTutorial) {
+			if (PlayState.tutEnabledButtons.length > 0) {
+				if (PlayState.tutEnabledButtons.indexOf(ItemNum) != -1) {
+					buyingMode = true; 
+					currItem = ItemNum; 
+					towerPrice += Price; 
+					matValuesList.push(Price); 
+				}
+			}
+		}
+
 		//If the player has enough money, keep track of the current price of the tower.
-		if (towerPrice < HUD.money || PlayState.isTutorial) {
+		else if (towerPrice < HUD.money && !PlayState.isTutorial) {
 			buyingMode = true; 
 			currItem = ItemNum; 
 			towerPrice += Price; 
@@ -338,7 +349,14 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function placeTowerCallback(Skip: Bool=false): Void {
-		if (PlayState.towerBlocks.length > 0 || PlayState.isTutorial) {
+		if (PlayState.isTutorial) {
+			placingMode = !placingMode; 
+			//Remove the amt tower is worth from the player's money and reset towerPrice.
+			HUD.money = 0; 
+			towerPrice = 0;
+			matValuesList.clear();	
+		}
+		if (PlayState.towerBlocks.length > 0 && !PlayState.isTutorial) {
 			placingMode = !placingMode; 
 			//Remove the amt tower is worth from the player's money and reset towerPrice.
 			HUD.money -= towerPrice; 
