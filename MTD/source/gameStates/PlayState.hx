@@ -682,7 +682,7 @@ class PlayState extends FlxState
 			}
 
 			if (_tutStateTracker == 4) {
-				if (_towers.length == 0) {
+				if (collisionController.towers.length == 0) {
 					_tutStateTracker += 1;
 				}
 			}
@@ -742,9 +742,9 @@ class PlayState extends FlxState
 				overlay.y += 900; 
 				_tutText.y += 450;
 				//MAKE SURE TO ALSO SHOW HEALTH AND STATS 
-				if (_towers.length == 1) {
+				if (collisionController.towers.length == 1) {
 					//release slow wave of few kids
-					enemiesToSpawn = 1; 
+					enemiesToSpawn = [0]; 
 					spawnEnemy(); 
 				}
 			} 
