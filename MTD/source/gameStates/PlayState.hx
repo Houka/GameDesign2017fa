@@ -111,7 +111,7 @@ class PlayState extends FlxState
 		
 		// Create map
 		
-		_map = Levels.loadMap(_level,true);
+		_map = Levels.loadMap(_level);
 		_enemySpawnPosition = _level.start;
 		_goalPosition = _level.goal;
 		_possiblePaths = new Array<Array<FlxPoint>>();
@@ -217,7 +217,7 @@ class PlayState extends FlxState
 		
 		// Check for key presses, which can substitute for button clicks.
 		
-		if (FlxG.keys.justReleased.Q)
+		if (FlxG.keys.justReleased.ESCAPE)
 		{
 			FlxG.sound.destroy(true);
 			FlxG.switchState(new MenuState());
@@ -683,17 +683,17 @@ class PlayState extends FlxState
 	}
 
 	private function tutorialUpdate(): Void { 
-		var _tutTextList: Array<String> = ["Welcome to permafrost. \nClick anywhere to continue.", 
+		var _tutTextList: Array<String> = ["Welcome to Permafrost. \nClick anywhere to continue.", 
 											"Your job is to stop the greedy \nkids from getting to the \nNorth Pole. 
 											\n\nStart by building your first \nSnowman Defense Turret.", 
 											"Great! Now click build!", 
 											"Place your tower on the map. \n\nClick on your tower to check \nits health and attack.", 
 											"Placing your tower will start \nthe first wave of pesky kids.", 
-											"Well done! \n\nWe are going to need a \nstronger tower for wave 2. 
-											\n\nWe can add more snow \nto increase health.", 
+											"Well done! \n\n\nWe are going to need a \nstronger tower for wave 2. 
+											\n\nAdd more snow \nto increase health.", 
 											"", 
 											"Now add a Snowman Turret.", 
-											"You can also give your \nSnowman Turret different ammo \nthat will change its \nattack style. 
+											"You can also give your \nSnowman Turret different \nammo that will change its \nattack style. 
 											\n\n\nEach snowman turret in a \ntower can have an ammo type.", 
 											"Now build your upgraded tower \nand good luck!"];
 
@@ -763,14 +763,27 @@ class PlayState extends FlxState
 			tutEnabledButtons.push(6);
 			if (InGameMenu.currItem == 6) {
 				Constants.PS.selectedAmmoType = {type:0, price:12};
+				enemyReleased = 0;
 				_tutStateTracker += 1;
 			}
 		}
 
 		if (_tutStateTracker == 9) {
-			if (inGameMenu.placingMode) {
-
+			if (enemyReleased == 10) {
+				winGame();
 			}
+			// if (inGameMenu.placingMode) {
+			// 	overlay.kill(); 
+			// 	_tutText.kill(); 
+			// 	enemiesToSpawn = [0, 0, 0, 1, 1]; 
+			// 	while (enemiesToSpawn.length > 0) {
+			// 	// if (collisionController.towers.length == 1 && !enemyReleased) {
+			// 		//release single kid 
+			// 		spawnEnemy(); 
+			// 		enemyReleased += 1;
+			// 	}
+			// 	// winGame(); 
+			// }
 		}
 
 
@@ -787,19 +800,21 @@ class PlayState extends FlxState
 				flashOutline.y = 150;
 				add(flashOutline);
 				flashOutline.flicker(0, 0.5);
-				overlay.x = -100; 
+				overlay.x = -165; 
 				overlay.y = 0;
-				overlay.setGraphicSize(FlxG.width-620, FlxG.height);
-				_tutText.x = -120;
+				overlay.setGraphicSize(FlxG.width-315, FlxG.height);
+				_tutText.x = -170;
 			}
 
 			if (_tutStateTracker == 2) {
 				flashOutline.kill();
+				_tutText.x = -180;
 				_tutText.y = 300;
 			}
 
 			if (_tutStateTracker == 3) {
-				_tutText.y = 150; 
+				_tutText.x = -160;
+				_tutText.y = 100; 
 				overlay.y = -350;
 				overlay.height = 50;
 			}
@@ -819,7 +834,25 @@ class PlayState extends FlxState
 			} 
 
 			if (_tutStateTracker == 7) {
+				enemyReleased = 0; 
 				_tutText.y = 300;
+			}
+
+			if (_tutStateTracker == 8) {
+				_tutText.y = 150;
+				_tutText.x = -220; 
+			}
+
+			if (_tutStateTracker == 9) {
+				overlay.kill(); 
+				_tutText.kill(); 
+				enemiesToSpawn = [0, 0, 0, 1, 1, 0, 0, 0, 1, 1]; 
+				while (enemiesToSpawn.length > 0) {
+				// if (collisionController.towers.length == 1 && !enemyReleased) {
+					//release single kid 
+					spawnEnemy(); 
+					enemyReleased += 1;
+				}
 			}
 		}
 	}
