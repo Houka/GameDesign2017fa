@@ -836,14 +836,22 @@ class PlayState extends FlxState
 			if (_tutStateTracker == 7) {
 				enemyReleased = 0; 
 				_tutText.y = 300;
+				flashOutline.revive(); 
+				flashOutline.x = FlxG.width - 260;
+				flashOutline.y = 150;
+				// add(flashOutline);
+				flashOutline.flicker(0, 0.5);
 			}
 
 			if (_tutStateTracker == 8) {
+				flashOutline.y = 310; 
 				_tutText.y = 150;
-				_tutText.x = -220; 
+				_tutText.x = -180; 
+
 			}
 
 			if (_tutStateTracker == 9) {
+				flashOutline.kill();
 				overlay.kill(); 
 				_tutText.kill(); 
 				enemiesToSpawn = [0, 0, 0, 1, 1, 0, 0, 0, 1, 1]; 
