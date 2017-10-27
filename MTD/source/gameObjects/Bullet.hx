@@ -3,6 +3,7 @@ package gameObjects;
 import flash.display.BlendMode;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.math.FlxAngle;
 import flixel.math.FlxVelocity;
 
 class Bullet extends FlxSprite 
@@ -23,11 +24,7 @@ class Bullet extends FlxSprite
 	public function new() 
 	{
 		super();
-		makeGraphic(3, 3);
-		
-		#if flash
-		blend = BlendMode.NORMAL;
-		#end
+		loadGraphic(AssetPaths.snowball__png, false, 16, 16);
 	}
 	
 	/**
@@ -43,6 +40,7 @@ class Bullet extends FlxSprite
 		reset(X, Y);
 		_target = Target;
 		damage = Damage;
+        angle = FlxAngle.asDegrees(FlxAngle.angleBetweenPoint(this, _target.getMidpoint())) - 90;
 	}
 	
 	override public function update(elapsed:Float):Void

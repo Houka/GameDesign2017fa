@@ -38,18 +38,22 @@ class Tower extends FlxSprite
 	public function new(X:Float, Y:Float, Cost:Int, materials:Array<TowerBlock>)
 	{
 		super(X, Y);
+		loadGraphic(AssetPaths.tower__png);
 
 		health = 0; 
-		
-		_indicator = new FlxSprite(getMidpoint().x - 1, getMidpoint().y - 1);
-		_indicator.makeGraphic(2, 2);
-		Constants.PS.collisionController.towerIndicators.add(_indicator);
 		
 		_initialCost = Cost;
 		this.children = new Array<TowerBlock>();
 		for (m in materials) {
 			addTowerBlock(m);
 		}
+		addTowerHealth(); 
+
+		_indicator = new FlxSprite(getMidpoint().x, getMidpoint().y);
+		_indicator.loadGraphic(AssetPaths.snowball__png, false, 16, 16);
+		_indicator.x -= _indicator.origin.x;
+		_indicator.y -= _indicator.origin.y;
+		Constants.PS.collisionController.towerIndicators.add(_indicator);
 	}
 	
 	/**
@@ -124,7 +128,7 @@ class Tower extends FlxSprite
 		
 		var bullet = Constants.PS.collisionController.bullets.recycle(Bullet.new);
 		var midpoint = getMidpoint();
-		bullet.init(midpoint.x, midpoint.y, target, damage);
+		bullet.init(midpoint.x - bullet.getMidpoint().x, midpoint.y- bullet.getMidpoint().y, target, damage);
 		midpoint.put();
 		
 		Constants.play("shoot");
@@ -192,7 +196,6 @@ class Tower extends FlxSprite
 	}
 
 	public function addTowerBlock(obj:TowerBlock):Bool{
-		addTowerHealth(); 
         if (!obj.inTower && children.length < Constants.MAX_HEIGHT){
             obj.inTower = true;
             children.push(obj);
