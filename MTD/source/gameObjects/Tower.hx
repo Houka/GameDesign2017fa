@@ -91,7 +91,7 @@ class Tower extends FlxSprite
 		alpha -= Damage;
 		
 		if (health <= 0){
-			Constants.PS.removeTower(this);
+			Constants.PS.removeTower(this, true);
 			kill();
 		}
 	}
@@ -207,5 +207,10 @@ class Tower extends FlxSprite
     			health += cast(i, Foundation).healthPoints; 
     		}
     	}
+    }
+
+    //Print out the list of materials for logging purposes only.
+    override public function toString(): String{
+    	return children.length+"";
     }
 }

@@ -14,8 +14,5 @@ class Main extends Sprite
 
         Logging.initialize(771, 2, false, true);
         Logging.recordPageLoad();
-        Logging.recordLevelStart(1.0);
-        Logging.recordEvent(1, "Hello world");
-        Logging.recordLevelEnd();
 	}
 }

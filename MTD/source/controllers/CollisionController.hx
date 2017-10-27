@@ -9,6 +9,8 @@ import flixel.FlxG;
 import gameObjects.*;
 import ui.HUD;
 import Constants;
+import Logging;
+import Levels; //logging hack; TODO: remove logging from collions and port it to playstate
 
 class CollisionController{
 	// Public groups
@@ -64,7 +66,7 @@ class CollisionController{
 	 * Called when trying to clean up after the game is done
 	 */
 	public function kill():Void{
-		towers.forEach(function(t) Constants.PS.removeTower(t));
+		towers.forEach(function(t) Constants.PS.removeTower(t, false));
 
 		enemies.kill();
 		towerIndicators.kill();
@@ -92,6 +94,9 @@ class CollisionController{
 		enemy.explode(false);
 		
 		Constants.play("hurt");
+
+		var logString = Date.now()+" Level:"+Levels.currentLevel+" HP:"+HUD.health;
+		Logging.recordEvent(cast(Constants.LogEvent.HP_CHANGE,UInt),logString);
 	}
 
 	/**
