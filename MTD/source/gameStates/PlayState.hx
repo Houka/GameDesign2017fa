@@ -264,7 +264,7 @@ class PlayState extends FlxState
 			else if (inGameMenu.buyingMode) {
 				inGameMenu._towerRange.visible = false; 
 				if (InGameMenu.currItem < 3) {
-					buildGunBase();  
+					buildGunBase(InGameMenu.currItem);  
 					InGameMenu.currItem = -1; 
 				}
 				else if (InGameMenu.currItem >= 3 && InGameMenu.currItem < 6) {
@@ -507,14 +507,15 @@ class PlayState extends FlxState
 	}
 
 	/** A function that adds a new gunbase and then iterates the number of layers in the tower. **/
-	private function buildGunBase(): Void { 
-		addMaterial(new GunBase(FlxG.width-180, 500-_layerNum*(Constants.HEIGHT_OFFSET+5))); 
+	private function buildGunBase(ItemNum: Int): Void { 
+		var gunAssets: Array<String> = [AssetPaths.snowman_head__png, AssetPaths.snowman_spray__png, AssetPaths.snowman_machine_gun__png];
+		addMaterial(new GunBase(FlxG.width-180, 500-_layerNum*(Constants.HEIGHT_OFFSET+5), gunAssets[ItemNum])); 
 		_layerNum++;
 	}
 
 	/** A function that adds a new foundation and then iterates the number of layers in the tower. **/
 	private function buildFoundation(ItemNum: Int): Void { 
-		var foundAssets: Array<String> = [AssetPaths.snowman_head__png, AssetPaths.snowman_ice__png, AssetPaths.snowman_coal__png];
+		var foundAssets: Array<String> = [AssetPaths.snow1__png, AssetPaths.snowman_ice__png, AssetPaths.snowman_coal__png];
 
 		addMaterial(new Foundation(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET, ItemNum, foundAssets[ItemNum - 3])); 
 		_layerNum++; 
@@ -707,7 +708,7 @@ class PlayState extends FlxState
 			tutEnabledButtons.push(0);
 			//check to see if they click on gunbase 1 
 			if (InGameMenu.currItem == 0) {
-				buildGunBase(); 
+				buildGunBase(InGameMenu.currItem); 
 				_tutStateTracker+= 1; 
 			}
 		}
@@ -760,7 +761,7 @@ class PlayState extends FlxState
 		if (_tutStateTracker == 7) {
 			//check if they click on the first gunbase
 			if (InGameMenu.currItem == 0) {
-				buildGunBase(); 
+				buildGunBase(InGameMenu.currItem); 
 				_tutStateTracker += 1; 
 			}
 		}

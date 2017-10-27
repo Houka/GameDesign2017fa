@@ -23,9 +23,9 @@ class GunBase extends TowerBlock
 	private var _shotCooldown: Int; 
 
 
-	public function new(X:Float, Y:Float) 
+	public function new(X:Float, Y:Float, Asset:String) 
 	{
-		super(X, Y, AssetPaths.gun1__png);
+		super(X, Y, Asset);
 		
 		#if flash
 		blend = BlendMode.NORMAL;
