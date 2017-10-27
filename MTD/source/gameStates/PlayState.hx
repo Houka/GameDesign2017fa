@@ -728,19 +728,19 @@ class PlayState extends FlxState
 			}
 
 			if (_tutStateTracker == 2) {
-				_tutText.y += 50;
+				_tutText.y = 300;
 			}
 
 			if (_tutStateTracker == 3) {
-				_tutText.y -= 200; 
-				overlay.y -= 400;
+				_tutText.y = 250; 
+				overlay.y = -400;
 				overlay.height = 50;
 			}
 
 
 			if (_tutStateTracker == 4) {
-				overlay.y += 900; 
-				_tutText.y += 450;
+				overlay.y = 500; 
+				_tutText.y = 550;
 				//MAKE SURE TO ALSO SHOW HEALTH AND STATS 
 				if (collisionController.towers.length == 1) {
 					//release slow wave of few kids
@@ -750,42 +750,9 @@ class PlayState extends FlxState
 			} 
 
 			if (_tutStateTracker == 7) {
-				_tutText.y += 150;
+				_tutText.y = 300;
 			}
 		}
-
-		//emphasis on money being spend and money added when enemies die? 
-
-
-		//clicking off path breaks the tutorial for adding tower 
-		
-		//tween overlay as well as change size???
-		//fix tutorial button 
-		//make sure store doesn't cover map
-		//FIX MONEY ERRORS
-		//FIX SLOWNESS OF TEXT AND ADD SKIP BUTTON
-		//BLACK OVERLAY BEHIND
-		//PROPER POSITIONING 
-		//FLASH BUTTON THAT NEEDS TO BE CLICKED AND DISABLE EVERYTHING ELSE 
-			//PLAY REJECT SOUND IF CLICKED UNTIL THE RIGHT TIME 
-
-		//REMOVE MENU STUFF ON BOTTOM
-		//SELLING FUNCTIONALITY 
-
-		//disable clicks until proper things clicked 
-		//adjust speed of things clicked 
-
-		//different states for different text
-		//stored in list and iterate through depending on what click they're at
-		//click changes index in list and therefore text 
-		//need overlay 
-		//click shouldn't restart --> should just essentially 'skip' to completed text
-
-		//should track click state and sequence of actions 
-
-		/** 1. Get positioning and overlay correct for everything before enemies
-		2. Disable other buttons
-		3. Work on states past the one you stopped at */
 	}
 
 	private function setOverlay():Void {
