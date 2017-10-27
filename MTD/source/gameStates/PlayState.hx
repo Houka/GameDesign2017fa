@@ -83,6 +83,7 @@ class PlayState extends FlxState
 	private var overlay = new FlxSprite();
 	private var enemyReleased:Int = 0; 
 	private var flashOutline = new FlxSprite(); 
+	private var secondSquare = new FlxSprite(); 
 
 	// variables for tracking stats
 	private var _towersKilled:Int = 0;
@@ -179,6 +180,8 @@ class PlayState extends FlxState
 			//TODO: Fix this so it doesn't need extra canvas variable
 			//not sure if this is useful or not, but red square built on this 
 			canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
+			add(canvas);
+			secondSquare.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
 			add(canvas);
 
 			flashOutline.loadGraphic(AssetPaths.tutorialBox__png, true, 50, 50);
@@ -695,7 +698,8 @@ class PlayState extends FlxState
 											"Now add a Snowman Turret.", 
 											"You can also give your \nSnowman Turret different \nammo that will change its \nattack style. 
 											\n\n\nEach snowman turret in a \ntower can have an ammo type.", 
-											"Now build your upgraded tower \nand good luck!"];
+											"Now build your upgraded tower \nand good luck!", 
+											"", "", "", ""];
 
 		if (_tutStateTracker == 1) {
 			tutEnabledButtons.push(0);
@@ -759,6 +763,7 @@ class PlayState extends FlxState
 			}
 		}
 
+		//Select ammo
 		if (_tutStateTracker == 8) {
 			tutEnabledButtons.push(6);
 			if (InGameMenu.currItem == 6) {
@@ -768,22 +773,34 @@ class PlayState extends FlxState
 			}
 		}
 
+		//Click build
 		if (_tutStateTracker == 9) {
-			if (enemyReleased == 10) {
-				winGame();
+			//check to see if they click on build 
+			if (inGameMenu.placingMode) {
+				canvas.revive();
+				_tutStateTracker += 1; 
 			}
-			// if (inGameMenu.placingMode) {
-			// 	overlay.kill(); 
-			// 	_tutText.kill(); 
-			// 	enemiesToSpawn = [0, 0, 0, 1, 1]; 
-			// 	while (enemiesToSpawn.length > 0) {
-			// 	// if (collisionController.towers.length == 1 && !enemyReleased) {
-			// 		//release single kid 
-			// 		spawnEnemy(); 
-			// 		enemyReleased += 1;
-			// 	}
-			// 	// winGame(); 
-			// }
+		}
+
+		//Check that tower is placed on path 
+		if (_tutStateTracker == 10) {
+			if (FlxG.mouse.x >= 319 && FlxG.mouse.x <= 383 && FlxG.mouse.y >= 379 && FlxG.mouse.y <= 443) {
+				//remove red square 
+				canvas.kill(); 
+				//place gunbase on the square
+				buildTower();
+				_tutStateTracker += 1; 
+			}
+		}
+
+		if (_tutStateTracker == 11) {
+			if (enemiesToKill == 0 && enemyReleased == 10) {
+				_tutStateTracker += 1; 
+			}
+		}
+
+		if (_tutStateTracker == 12) {
+			winGame(); 
 		}
 
 
@@ -841,6 +858,12 @@ class PlayState extends FlxState
 				flashOutline.y = 150;
 				// add(flashOutline);
 				flashOutline.flicker(0, 0.5);
+
+				for (tower in collisionController.towers)
+				{
+					removeTower(tower, false);
+			
+				}
 			}
 
 			if (_tutStateTracker == 8) {
@@ -852,15 +875,20 @@ class PlayState extends FlxState
 
 			if (_tutStateTracker == 9) {
 				flashOutline.kill();
-				overlay.kill(); 
-				_tutText.kill(); 
-				enemiesToSpawn = [0, 0, 0, 1, 1, 0, 0, 0, 1, 1]; 
-				while (enemiesToSpawn.length > 0) {
-				// if (collisionController.towers.length == 1 && !enemyReleased) {
-					//release single kid 
+				_tutText.x = -160;
+			}
+			if (_tutStateTracker == 10) {
+				overlay.kill();
+			}
+			if (_tutStateTracker == 11) {
+				enemiesToSpawn = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]; 
+				enemiesToKill = 10; 
+				//MAKE SURE TO ALSO SHOW HEALTH AND STATS 
+				while (enemiesToSpawn.length > 0 && enemiesToKill > 0) {
 					spawnEnemy(); 
 					enemyReleased += 1;
 				}
+
 			}
 		}
 	}
