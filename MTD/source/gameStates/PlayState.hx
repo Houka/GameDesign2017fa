@@ -234,7 +234,6 @@ class PlayState extends FlxState
 				// inGameMenu.buildingMode = true; 
 				buildTower();
 				inGameMenu._towerRange.visible = true;
-
 			}
 
 			else if (inGameMenu.buyingMode) {

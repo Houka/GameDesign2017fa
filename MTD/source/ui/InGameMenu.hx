@@ -144,10 +144,10 @@ class InGameMenu extends FlxGroup{
 		add(store);
 		add(_towerRange);
 		add(_buildHelper);
-		add(defaultMenu);
-		add(upgradeMenu);
-		add(sellMenu);
-		add(sellConfirmMenu);
+		//add(defaultMenu);
+		//add(upgradeMenu);
+		//add(sellMenu);
+		//add(sellConfirmMenu);
 		add(buildMenu);
 
 		createBuildButtons(); 
@@ -176,9 +176,13 @@ class InGameMenu extends FlxGroup{
 		
 		if (placingMode)
 		{
+			_buildHelper.visible = true;
 			_buildHelper.x = FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE);
 			_buildHelper.y = FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE);
 			updateRangeSprite(_buildHelper.getMidpoint(), 100);
+		}else{
+			_towerRange.visible = false;
+			_buildHelper.visible = false;
 		}
 	}
 	
@@ -202,6 +206,7 @@ class InGameMenu extends FlxGroup{
 				InGameMenu.towerSelected = null;
 				buildingMode = false;
 				_buildHelper.visible = false;
+				_towerRange.visible = false;
 			case Upgrade:
 				updateUpgradeLabels();
 				upgradeMenu.visible = true;
