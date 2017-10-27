@@ -6,6 +6,15 @@ import flixel.FlxG;
 import gameStates.PlayState;
 import AssetPaths;
 
+@:enum
+abstract LogEvent(Int){
+	var MOUSE_PRESS = 1;
+	var MOUSE_RELEASE = 2;
+	var HP_CHANGE = 3;
+	var WAVE_START = 4;
+	var TOWER_BUILD = 5;
+	var GAME_OVER = 6;
+}
 
 enum CursorType
 {

@@ -144,10 +144,10 @@ class InGameMenu extends FlxGroup{
 		add(store);
 		add(_towerRange);
 		add(_buildHelper);
-		add(defaultMenu);
-		add(upgradeMenu);
-		add(sellMenu);
-		add(sellConfirmMenu);
+		//add(defaultMenu);
+		//add(upgradeMenu);
+		//add(sellMenu);
+		//add(sellConfirmMenu);
 		add(buildMenu);
 
 		createBuildButtons(); 
@@ -176,9 +176,13 @@ class InGameMenu extends FlxGroup{
 		
 		if (placingMode)
 		{
+			_buildHelper.visible = true;
 			_buildHelper.x = FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE);
 			_buildHelper.y = FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE);
 			updateRangeSprite(_buildHelper.getMidpoint(), 100);
+		}else{
+			_towerRange.visible = false;
+			_buildHelper.visible = false;
 		}
 	}
 	
@@ -202,6 +206,7 @@ class InGameMenu extends FlxGroup{
 				InGameMenu.towerSelected = null;
 				buildingMode = false;
 				_buildHelper.visible = false;
+				_towerRange.visible = false;
 			case Upgrade:
 				updateUpgradeLabels();
 				upgradeMenu.visible = true;
@@ -356,7 +361,8 @@ class InGameMenu extends FlxGroup{
 			towerPrice = 0;
 			matValuesList.clear();	
 		}
-		if (PlayState.towerBlocks.length > 0 && !PlayState.isTutorial) {
+    
+		if (Constants.PS.towerBlocks.length > 0 || PlayState.isTutorial) {
 			placingMode = !placingMode; 
 			//Remove the amt tower is worth from the player's money and reset towerPrice.
 			HUD.money -= towerPrice; 
@@ -498,10 +504,7 @@ class InGameMenu extends FlxGroup{
 			{name: "Gun 3 \n 3", price: 3}, 
 			{name: "Snow \n 1", price: 1}, 
 			{name: "Ice \n 2", price: 2}, 
-			{name: "Metal \n 3", price: 3}, 
-			{name: "Ammo 1 \n 1", price: 1}, 
-			{name: "Ammo 2 \n 2", price: 2}, 
-			{name: "Ammo 3 \n 3", price: 3}
+			{name: "Metal \n 3", price: 3}
 		]; 
 
 		var gap = 10; 
@@ -524,5 +527,33 @@ class InGameMenu extends FlxGroup{
 			}
 		}
 
+		// add ammo buttons
+		height = 67;
+		col++;
+		var ammo1:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", addAmmoCallback.bind(false, 1, 12));
+		ammo1.loadGraphic(AssetPaths.PiercingAmmoButton__png, true, width, height); 
+		col++;
+		var ammo2:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", addAmmoCallback.bind(false, 2, 18));
+		ammo2.loadGraphic(AssetPaths.ExplodeAmmoButton__png, true, width, height); 
+		col++;
+		var ammo3:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", addAmmoCallback.bind(false, 3, 24));
+		ammo3.loadGraphic(AssetPaths.FreezeAmmoButton__png, true, width, height); 
+
+		add(ammo1);
+		add(ammo2);
+		add(ammo3);
 	}
+
+	private function addAmmoCallback(Skip: Bool=false, Type:Int, Price:Int): Void { 
+		buyingMode = false; 
+		//If the player has enough money, keep track of the current price of the tower.
+		if (towerPrice+Price-Constants.PS.selectedAmmoType.price < HUD.money) {
+			towerPrice = towerPrice - Constants.PS.selectedAmmoType.price + Price; 
+			Constants.PS.selectedAmmoType = {type:Type, price:Price};
+		}
+		else { 
+			Constants.play("deny");
+		}
+	}
+
 }
