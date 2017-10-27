@@ -28,14 +28,8 @@ class EnemyExplosion extends FlxEmitter
 		for (i in 0...SIZE)
 		{
 			var p = new FlxParticle();
-			
-			var color = FlxColor.BLACK;
-			#if flash
-			if (FlxG.random.bool())
-				color = FlxColor.WHITE;
-			#end
 
-			p.makeGraphic(5, 5, FlxColor.BLACK);
+			p.loadGraphic(AssetPaths.explosion_particle__png, false, 5,5);
 			add(p);
 		}
 		

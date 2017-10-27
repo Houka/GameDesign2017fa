@@ -37,8 +37,12 @@ class PlayState extends FlxState
 	
 	// Game Object groups
 	public var collisionController:CollisionController;
-	public static var gunBases:FlxTypedGroup<GunBase>; 
-	public static var towerBlocks:Array<TowerBlock>; 
+
+	// Tower building objects
+	public var towerBlocks:Array<TowerBlock>; 
+	//public var _selectedAmmo:Ammo;
+	private var _towerBlocks:FlxTypedGroup<TowerBlock>; 
+	private var _currTowerStartIndex: Int; 
 
 	// HUD/Menu Groups
 	private var inGameMenu:InGameMenu;
@@ -56,7 +60,6 @@ class PlayState extends FlxState
 	// Other objects
 	private var _map:FlxTilemap;
 	private var _layerNum:Int; 
-	private var _currTowerStartIndex: Int; 
 	
 	// Private variables
 	private var _gameOver:Bool = false;
@@ -71,6 +74,7 @@ class PlayState extends FlxState
 	private var _level:Level;
 	private var _possiblePaths:Array<Array<FlxPoint>>;
 	private var _speed:Int = 100; // the base _speed that each enemy starts with
+	public var selectedAmmoType = {type:0, price:0};
 
 	//  tutorial specific variables
 	private var canvas = new FlxSprite();
@@ -113,7 +117,7 @@ class PlayState extends FlxState
 		// Add groups
 
 		collisionController = new CollisionController(_goalPosition);
-		gunBases = collisionController.gunBases; 		
+		_towerBlocks = collisionController.towerBlocks;
 		towerBlocks = new Array<TowerBlock>();
 		
 		// Set up bottom default GUI
@@ -141,8 +145,8 @@ class PlayState extends FlxState
 		// Add everything to the state
 		
 		add(_map);
-		collisionController.addToState(this);
 		add(inGameMenu);
+		collisionController.addToState(this);
 		add(HUD.hud);
 		add(_centerText);
 
@@ -246,7 +250,6 @@ class PlayState extends FlxState
 				// inGameMenu.buildingMode = true; 
 				buildTower();
 				inGameMenu._towerRange.visible = true;
-
 			}
 
 			else if (inGameMenu.buyingMode) {
@@ -334,7 +337,7 @@ class PlayState extends FlxState
 		// Remove the indicator for this tower as well
 		for (indicator in collisionController.towerIndicators)
 		{
-			if (indicator.x ==  tower.getMidpoint().x - 1 && indicator.y ==  tower.getMidpoint().y - 1)
+			if (indicator.getMidpoint().x ==  tower.getMidpoint().x && indicator.getMidpoint().y ==  tower.getMidpoint().y)
 			{
 				collisionController.towerIndicators.remove(indicator, true);
 				indicator.visible = false;
@@ -343,7 +346,7 @@ class PlayState extends FlxState
 		}
 
 		for (c in tower.children) {
-			remove(c);
+			_towerBlocks.remove(c);
 		}
 		// Remove the radius sprite as well and reset the menu if the selected tower was just destroyed
 		if (InGameMenu.towerSelected  != null && InGameMenu.towerSelected == tower)
@@ -439,8 +442,8 @@ class PlayState extends FlxState
 		}
 		
 		// Snap to grid
-		var xPos:Float = (FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 18;
-		var yPos:Float = (FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 18;
+		var xPos:Float = (FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE));
+		var yPos:Float = (FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE));
 		
 		// Can't place towers on other towers
 		for (tower in collisionController.towers)
@@ -463,12 +466,12 @@ class PlayState extends FlxState
 			return;
 		}
 		
-		var tower: Tower = new Tower(xPos, yPos, inGameMenu.towerPrice, towerBlocks);
+		var tower: Tower = new Tower(xPos, yPos, inGameMenu.towerPrice, towerBlocks, selectedAmmoType.type);
 		collisionController.towers.add(tower);
 		var level = 0; 
 		for (t in towerBlocks.slice(_currTowerStartIndex)) {
-			var xpos = tower.x+tower.origin.x;
-            var ypos = tower.y+tower.origin.y-level*Constants.HEIGHT_OFFSET;
+			var xpos = tower.getMidpoint().x - t.origin.x;
+            var ypos = tower.getMidpoint().y-level*Constants.HEIGHT_OFFSET - t.origin.y;
             level++;
             t.setPosition(xpos,ypos);
 		}
@@ -509,13 +512,13 @@ class PlayState extends FlxState
 	/** A function that adds a gunBase or foundation to the towerBlocks list. **/
 	private function addMaterial(obj:TowerBlock):Void{
         towerBlocks.push(obj);
-        add(obj);
+        _towerBlocks.add(obj);
     }
 
     private function popMaterial():TowerBlock {
     	var obj = towerBlocks.pop(); 
     	if (obj != null) {
-    		remove(obj);
+    		_towerBlocks.remove(obj);
     	}
     	return obj; 
     }

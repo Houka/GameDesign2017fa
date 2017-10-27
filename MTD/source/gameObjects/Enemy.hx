@@ -14,6 +14,9 @@ class Enemy extends FlxSprite
 	// animation vars
 	private static inline var _framerate:Int = 5;
 
+	// status effects
+	public var frozen:Bool = false;
+
 	public var maxHealth:Float = 1.0;
 	public var attackBase:Float = 0.1;
 	public var attackRange:Int = Constants.TILE_SIZE;
@@ -26,6 +29,8 @@ class Enemy extends FlxSprite
 
 	// movement vars
 	private var _prevFacing:Int;
+	private var _frozenCounter:Int = 0;
+	private var _frozenInterval:Int = 2;
 
 	// attacking vars
 	private var _targetTower:Tower;
@@ -50,6 +55,7 @@ class Enemy extends FlxSprite
 	{
 		reset(X, Y);
 		setType(Type);
+		frozen = false;
 		
 		if (Constants.PS != null)
 			health = Math.floor(Constants.PS.wave / 3) + 1;
@@ -74,6 +80,10 @@ class Enemy extends FlxSprite
 
 		animation.play("idle");
 		_prevFacing = facing;
+
+		// reset counters
+		_attackCounter = 0;
+		_frozenCounter = 0;
 	}
 	
 	/**
@@ -82,6 +92,27 @@ class Enemy extends FlxSprite
 	override public function update(elapsed:Float):Void
 	{
 		alpha = health / maxHealth; 
+
+		if (frozen){
+			color = 0xaa4444ff;
+			animation.play("idle");
+
+			_frozenCounter += Std.int(FlxG.timeScale);
+			if (_frozenCounter > (_frozenInterval * FlxG.updateFramerate)){
+				frozen = false;
+				_frozenCounter = 0;
+
+				if (path != null){
+					path.speed = _savedSpeed;
+					_savedSpeed = 0;
+				}
+			}
+
+			super.update(elapsed);
+			return;
+		}
+		else
+			color = 0xffffffff;
 
 		// what to do during attacking state
 
@@ -96,11 +127,7 @@ class Enemy extends FlxSprite
 		 	// stop attacking a dead tower and go back to path
 			if (_targetTower!=null && !_targetTower.alive){
 				// resume path
-		 		path = new FlxPath().start(_savedPath, _savedSpeed, 0, true);
-				path.onComplete = _savedOnComplete;
-				_savedPath = null;
-				_savedSpeed = 0;
-				_savedOnComplete = null;
+				resumePath();
 
 				// stop attacking
 		 		isAttacking = false;
@@ -198,6 +225,24 @@ class Enemy extends FlxSprite
 		_savedPath.insert(0, getMidpoint());
 		path.cancel();
 		path = null;
+	}
+
+	public function resumePath():Void{
+ 		path = new FlxPath().start(_savedPath, _savedSpeed, 0, true);
+		path.onComplete = _savedOnComplete;
+		_savedPath = null;
+		_savedSpeed = 0;
+		_savedOnComplete = null;
+	}
+
+	public function freeze():Void{
+		if (!frozen){
+			frozen = true;
+			if (path!= null){
+				_savedSpeed = path.speed;
+				path.speed *= 0.5;
+			}
+		}
 	}
 
 	/**

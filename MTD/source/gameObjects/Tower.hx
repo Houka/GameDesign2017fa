@@ -31,25 +31,37 @@ class Tower extends FlxSprite
 
 	public var children:Array<TowerBlock>; 
 
+	private var _ammoType:Int;
+	private var _hasGunBase:Bool = false;
+
 	
 	/**
 	 * Create a new tower at X and Y with default range, fire rate, and damage; create this tower's indicator.
 	 */
-	public function new(X:Float, Y:Float, Cost:Int, materials:Array<TowerBlock>)
+	public function new(X:Float, Y:Float, Cost:Int, materials:Array<TowerBlock>, ammoType:Int)
 	{
 		super(X, Y);
+		loadGraphic(AssetPaths.tower__png);
 
 		health = 0; 
 		
-		_indicator = new FlxSprite(getMidpoint().x - 1, getMidpoint().y - 1);
-		_indicator.makeGraphic(2, 2);
-		Constants.PS.collisionController.towerIndicators.add(_indicator);
-		
 		_initialCost = Cost;
 		this.children = new Array<TowerBlock>();
+
+		_hasGunBase = false;
 		for (m in materials) {
 			addTowerBlock(m);
+			if (Std.is(m, GunBase))
+				_hasGunBase = true;
 		}
+		addTowerHealth(); 
+
+		_indicator = new Bullet();
+		_indicator.x = getMidpoint().x - _indicator.origin.x;
+		_indicator.y = getMidpoint().y - _indicator.origin.y;
+		Constants.PS.collisionController.towerIndicators.add(_indicator);
+
+		_ammoType = ammoType;
 	}
 	
 	/**
@@ -121,10 +133,12 @@ class Tower extends FlxSprite
 		var target:Enemy = getNearestEnemy();
 		if (target == null)
 			return;
+		if (!_hasGunBase)
+			return;
 		
 		var bullet = Constants.PS.collisionController.bullets.recycle(Bullet.new);
 		var midpoint = getMidpoint();
-		bullet.init(midpoint.x, midpoint.y, target, damage);
+		bullet.init(midpoint.x - bullet.origin.x, midpoint.y- bullet.origin.y, target, damage, _ammoType);
 		midpoint.put();
 		
 		Constants.play("shoot");
@@ -192,7 +206,6 @@ class Tower extends FlxSprite
 	}
 
 	public function addTowerBlock(obj:TowerBlock):Bool{
-		addTowerHealth(); 
         if (!obj.inTower && children.length < Constants.MAX_HEIGHT){
             obj.inTower = true;
             children.push(obj);
