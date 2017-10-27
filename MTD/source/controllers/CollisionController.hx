@@ -67,6 +67,7 @@ class CollisionController{
 
 		enemies.kill();
 		towerIndicators.kill();
+		towerBlocks.kill();
 		bullets.kill();
 		towers.kill();
 	}

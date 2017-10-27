@@ -12,7 +12,7 @@ class Tower extends FlxSprite
 	private static inline var COST_INCREASE:Float = 1.5;
 	private static inline var BASE_PRICE:Int = 10;
 
-	public var range:Int = 100;
+	public var range:Int = 200;
 	public var fireRate:Float = 1;
 	public var damage:Int = 1;
 	
@@ -49,10 +49,9 @@ class Tower extends FlxSprite
 		}
 		addTowerHealth(); 
 
-		_indicator = new FlxSprite(getMidpoint().x, getMidpoint().y);
-		_indicator.loadGraphic(AssetPaths.snowball__png, false, 16, 16);
-		_indicator.x -= _indicator.origin.x;
-		_indicator.y -= _indicator.origin.y;
+		_indicator = new Bullet();
+		_indicator.x = getMidpoint().x - _indicator.origin.x;
+		_indicator.y = getMidpoint().y - _indicator.origin.y;
 		Constants.PS.collisionController.towerIndicators.add(_indicator);
 	}
 	
@@ -128,7 +127,7 @@ class Tower extends FlxSprite
 		
 		var bullet = Constants.PS.collisionController.bullets.recycle(Bullet.new);
 		var midpoint = getMidpoint();
-		bullet.init(midpoint.x - bullet.getMidpoint().x, midpoint.y- bullet.getMidpoint().y, target, damage);
+		bullet.init(midpoint.x - bullet.origin.x, midpoint.y- bullet.origin.y, target, damage);
 		midpoint.put();
 		
 		Constants.play("shoot");

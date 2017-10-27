@@ -270,7 +270,7 @@ class PlayState extends FlxState
 		}
 
 		for (c in tower.children) {
-			remove(c);
+			_towerBlocks.remove(c);
 		}
 		// Remove the radius sprite as well and reset the menu if the selected tower was just destroyed
 		if (InGameMenu.towerSelected  != null && InGameMenu.towerSelected == tower)
