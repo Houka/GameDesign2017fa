@@ -15,7 +15,7 @@ class Enemy extends FlxSprite
 	private static inline var _framerate:Int = 5;
 
 	public var maxHealth:Float = 1.0;
-	public var attackBase:Float = 0.5;
+	public var attackBase:Float = 0.1;
 	public var attackRange:Int = Constants.TILE_SIZE;
 	public var isAttacking:Bool = false;
 
@@ -36,20 +36,20 @@ class Enemy extends FlxSprite
 	/**
 	 * Create a new enemy. Used in the menu and playstate.
 	 */
-	override public function new(X:Float = 0, Y:Float = 0) 
+	override public function new(X:Float = 0, Y:Float = 0, Type:Int = 0)
 	{
 		super(X, Y);
-		loadGraphic(AssetPaths.boy_spritesheet_64x64__png, true, 64, 64);
 		health = maxHealth;
-		init(X,Y);
+		init(X,Y,Type);
 	}
 	
 	/**
 	 * Reset this enemy at X,Y and reset their health. Used for object pooling in the PlayState.
 	 */
-	public function init(X:Float, Y:Float)
+	public function init(X:Float, Y:Float,Type:Int)
 	{
 		reset(X, Y);
+		setType(Type);
 		
 		if (Constants.PS != null)
 			health = Math.floor(Constants.PS.wave / 3) + 1;
@@ -62,6 +62,7 @@ class Enemy extends FlxSprite
 		_savedPath = null;
 		_savedSpeed = 0;
 		_savedOnComplete = null;
+		angle = 0;
 
 		// add animations
 		animation.add("idle",[0],_framerate, false);
@@ -153,10 +154,10 @@ class Enemy extends FlxSprite
 	 */
 	public function explode(GainMoney:Bool):Void
 	{
-		FlxG.sound.play("enemykill");
+		Constants.play("enemy_kill");
 		
-		var emitter = Constants.PS.emitters.recycle(EnemyExplosion.new);
-		emitter.startAtPosition(x, y);
+		var emitter = Constants.PS.collisionController.emitters.recycle(EnemyExplosion.new);
+		emitter.startAtPosition(getMidpoint().x, getMidpoint().y);
 		
 		Constants.PS.enemiesToKill--;
 		
@@ -211,6 +212,20 @@ class Enemy extends FlxSprite
 	 		_targetTower = tower;
 
 	 		pausePath();
+	 	}
+	 }
+
+	 /**
+	  * Sets the type of this enemy
+	  */
+	 public function setType(type:Int):Void{
+	 	switch(type){
+	 		case 0:
+				loadGraphic(AssetPaths.enemy1_spritesheet_64x64__png, true, 64, 64);
+	 		case 1:
+				loadGraphic(AssetPaths.enemy2_spritesheet_64x64__png, true, 64, 64);
+			default:
+				trace("No such enemy type: "+ type);
 	 	}
 	 }
 
