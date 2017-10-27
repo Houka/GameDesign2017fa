@@ -735,8 +735,8 @@ class PlayState extends FlxState
 			}
 
 			if (_tutStateTracker == 3) {
-				_tutText.y = 250; 
-				overlay.y = -400;
+				_tutText.y = 150; 
+				overlay.y = -350;
 				overlay.height = 50;
 			}
 
