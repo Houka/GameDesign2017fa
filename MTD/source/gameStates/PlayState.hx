@@ -514,7 +514,9 @@ class PlayState extends FlxState
 
 	/** A function that adds a new foundation and then iterates the number of layers in the tower. **/
 	private function buildFoundation(ItemNum: Int): Void { 
-		addMaterial(new Foundation(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET, ItemNum)); 
+		var foundAssets: Array<String> = [AssetPaths.snowman_head__png, AssetPaths.snowman_ice__png, AssetPaths.snowman_coal__png];
+
+		addMaterial(new Foundation(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET, ItemNum, foundAssets[ItemNum - 3])); 
 		_layerNum++; 
 	}
 

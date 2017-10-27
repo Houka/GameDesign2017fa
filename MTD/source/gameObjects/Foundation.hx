@@ -17,9 +17,9 @@ class Foundation extends TowerBlock
 {
 	public var healthPoints:Int; 
 
-	public function new(X:Float, Y:Float, HealthPoints:Int) 
+	public function new(X:Float, Y:Float, HealthPoints:Int, Asset: String) 
 	{
-		super(X, Y, AssetPaths.snow1__png);
+		super(X, Y, Asset);
 		this.healthPoints = HealthPoints; 
 
 		#if flash
