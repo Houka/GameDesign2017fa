@@ -162,6 +162,7 @@ class PlayState extends FlxState
 
 
 		if (_level.isTutorial) {
+			HUD.money = 50;
 			overlay.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK, true); 
 			overlay.alpha = 0.8; 
 			add(overlay);
@@ -692,9 +693,8 @@ class PlayState extends FlxState
 											\n\nWe can add more snow \nto increase health.", 
 											"", 
 											"Now add a Snowman Turret.", 
-											"You can also give your \nSnowman Turret different ammo \nthat will change its \nattack style.", 
-											"Each snowman turret in a \ntower can have an ammo type.", 
-											"And each tower can be \nup to 3 layers high.", 
+											"You can also give your \nSnowman Turret different ammo \nthat will change its \nattack style. 
+											\n\n\nEach snowman turret in a \ntower can have an ammo type.", 
 											"Now build your upgraded tower \nand good luck!"];
 
 		if (_tutStateTracker == 1) {
@@ -734,6 +734,7 @@ class PlayState extends FlxState
 		}
 
 		if (_tutStateTracker == 5) {
+			HUD.money = 50; 
 			_tutText.resetText(_tutTextList[_tutStateTracker]);
 			_tutText.start();
 			_tutStateTracker += 1; 
@@ -755,6 +756,20 @@ class PlayState extends FlxState
 			if (InGameMenu.currItem == 0) {
 				buildGunBase(); 
 				_tutStateTracker += 1; 
+			}
+		}
+
+		if (_tutStateTracker == 8) {
+			tutEnabledButtons.push(6);
+			if (InGameMenu.currItem == 6) {
+				Constants.PS.selectedAmmoType = {type:0, price:12};
+				_tutStateTracker += 1;
+			}
+		}
+
+		if (_tutStateTracker == 9) {
+			if (inGameMenu.placingMode) {
+
 			}
 		}
 

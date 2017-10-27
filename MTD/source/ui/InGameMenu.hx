@@ -530,7 +530,7 @@ class InGameMenu extends FlxGroup{
 		// add ammo buttons
 		height = 67;
 		col++;
-		var ammo1:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", addAmmoCallback.bind(false, 1, 12));
+		var ammo1:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", addAmmoCallback.bind(false, 1, 10));
 		ammo1.loadGraphic(AssetPaths.PiercingAmmoButton__png, true, width, height); 
 		col++;
 		var ammo2:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", addAmmoCallback.bind(false, 2, 18));
@@ -550,6 +550,7 @@ class InGameMenu extends FlxGroup{
 		if (towerPrice+Price-Constants.PS.selectedAmmoType.price < HUD.money) {
 			towerPrice = towerPrice - Constants.PS.selectedAmmoType.price + Price; 
 			Constants.PS.selectedAmmoType = {type:Type, price:Price};
+			currItem = Type + 5; 
 		}
 		else { 
 			Constants.play("deny");
