@@ -24,7 +24,7 @@ class Tower extends FlxSprite
 	public var fireRatePrice:Int = BASE_PRICE;
 	public var damagePrice:Int = BASE_PRICE;
 	
-	private var _shootInterval:Int = 2;
+	private var _shootInterval:Int = 1;
 	private var _shootCounter:Int = 0;
 	private var _initialCost:Int = 0;
 	private var _indicator:FlxSprite;
