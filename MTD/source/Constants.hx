@@ -35,10 +35,6 @@ enum CursorType
 */
 class Constants{
 	// Constants vars
-	public static var TILE_SIZE:Int = 64;
-	public static var HUD_TEXT_SIZE:Int = 14;
-	public static var PS:PlayState;
-
 	static public inline var MAX_HEIGHT:Int = 5;
 	static public inline var HEIGHT_OFFSET:Float = 25; //the y-distance between layers
 
@@ -190,30 +186,13 @@ class Constants{
 		defaultTowerPrice: 8
 	}
 
+	static public inline var HEIGHT_OFFSET:Float = 15; //the y-distance between layers
+	static public inline var TILE_SIZE:Int = 64;
+	static public inline var HUD_TEXT_SIZE:Int = 14;
+
+	public static var PS:PlayState;
+	
 	// Constant functions
-	public static function loadMap(lvl:Level, ?IsAuto:Bool = false):FlxTilemap{
-		var map = new FlxTilemap();
-		if (IsAuto)
-			map.loadMapFromCSV(lvl.map, lvl.tilemap, TILE_SIZE, TILE_SIZE, AUTO);
-		else
-			map.loadMapFromCSV(lvl.map, lvl.tilemap, TILE_SIZE, TILE_SIZE);
-		return map;
-	}
-
-	public static function toMapCoordinates(x:Float, y:Float):FlxPoint{
-		return FlxPoint.get(Std.int(x/TILE_SIZE), Std.int(y/TILE_SIZE));
-	}
-
-
-	/*	Returns the screen coordinates with respect to the camera
-	*	x = the column position in map coordinates
-	*	y = the row position in map coordinates
-	*	where the first column and row is index 0
-	*/
-	public static function toCameraCoordinates(x:Int, y:Int):FlxPoint{
-		return FlxPoint.get(x*TILE_SIZE, y*TILE_SIZE);
-	}
-
 	public static function toggleCursors(Type:CursorType):Void{
 		switch(Type){
 			case Normal:
