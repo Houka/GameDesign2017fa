@@ -20,13 +20,18 @@ import gameObjects.*;
 import Constants;
 import Levels;
 import AssetPaths;
-import Type; 
+import Type;
+import flixel.addons.text.FlxTypeText; 
+import flixel.math.FlxRect; 
+using flixel.util.FlxSpriteUtil;
+
 
 class PlayState extends FlxState
 {
 	// Public variables
 	public var enemiesToKill:Int = 0;
 	public var wave:Int = 0;
+	public static var isTutorial:Bool = false; 
 	private var enemiesToSpawn:Array<Int> = [];
 	
 	// Game Object groups
@@ -69,6 +74,18 @@ class PlayState extends FlxState
 	private var _possiblePaths:Array<Array<FlxPoint>>;
 	private var _speed:Int = 100; // the base _speed that each enemy starts with
 	public var selectedAmmoType = {type:0, price:0};
+
+	//  tutorial specific variables
+	private var canvas = new FlxSprite();
+	private var _startEnemySpawn: Bool = false; 
+	private var overlay = new FlxSprite();
+
+	
+	private var lineStyle:LineStyle = { color: FlxColor.BLACK, thickness: 1 };
+	private var drawStyle:DrawStyle = { smoothing: true };
+
+	private var _tutStateTracker:Int = 1; 
+	private var _tutText: FlxTypeText = new FlxTypeText(0, 250, FlxG.width, "", 30);
 
 	public function new(level:Level){
 		super();
@@ -133,6 +150,31 @@ class PlayState extends FlxState
 		// Call this to set up for first wave
 		
 		killedWave();
+
+
+		if (_level.isTutorial) {
+			overlay.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK, true); 
+			overlay.alpha = 0.8; 
+			add(overlay);
+			//turn on and off overlay? or make it smaller according to what part you're talking about?
+
+			_tutText.alignment = "center";
+			add(_tutText);
+			_tutText.resetText("Welcome to permafrost. \n \n \nPlease click anywhere to continue.");
+			_tutText.start();
+			isTutorial = true;
+
+
+			//TODO: Fix this so it doesn't need extra canvas variable
+			//not sure if this is useful or not, but red square built on this 
+			canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
+			add(canvas);
+		}
+		
+		// This is a good place to put watch statements during development.
+		#if debug
+		//FlxG.watch.add( _sellMenu, "visible" );
+		#end
 	}
 	
 	/**
@@ -151,6 +193,11 @@ class PlayState extends FlxState
 	
 	override public function update(elapsed:Float):Void
 	{
+		// Update enemies left indicator
+		// var clickedTower = collisionController.overlapsTower(Std.int(FlxG.mouse.x), Std.int(FlxG.mouse.y));
+		// if (clickedTower != null ) {
+		// 	trace(clickedTower.children);
+		// }
 		// Update collisionController.enemies left indicator
 		
 		HUD.hud.enemyText.text = "enemies left: " + enemiesToKill;
@@ -170,13 +217,12 @@ class PlayState extends FlxState
 			else
 				nextWaveCallback(true); 
 		}
+		if (FlxG.keys.anyJustPressed([P])) openSubState(new PauseState());
 
 		// collision controller updates
 
 		collisionController.update(elapsed);
-
-		// Controls mouse clicks, which either build a tower or offer the option to upgrade a tower.
-		
+	if (!_level.isTutorial) {
 		if (FlxG.mouse.justReleased)
 		{
 			if (inGameMenu.removingMode) {
@@ -229,6 +275,11 @@ class PlayState extends FlxState
 				}
 			}
 		}
+
+		// win game
+
+		if (enemiesToKill == 0 && wave >= _level.waves.length && !_gameOver)
+			winGame();
 		
 		// Controls wave spawning, enemy spawning, 
 		
@@ -237,10 +288,7 @@ class PlayState extends FlxState
 			_waveCounter -= Std.int(FlxG.timeScale);
 			_nextWaveButton.text = "[N]ext Wave in " + Math.ceil(_waveCounter / FlxG.updateFramerate);
 			
-		
-			if (wave >= _level.waves.length)
-				winGame();
-			else if (_waveCounter <= 0)
+			if (_waveCounter <= 0)
 			{
 				spawnWave();
 			}
@@ -254,6 +302,11 @@ class PlayState extends FlxState
 				spawnEnemy();
 			}
 		}
+  }
+    
+    else {
+      tutorialUpdate(); 
+    }
 		
 		super.update(elapsed);
 	} // End update
@@ -420,7 +473,7 @@ class PlayState extends FlxState
 
 	/** A function that adds a new gunbase and then iterates the number of layers in the tower. **/
 	private function buildGunBase(): Void { 
-		addMaterial(new GunBase(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET)); 
+		addMaterial(new GunBase(FlxG.width-180, 500-_layerNum*(Constants.HEIGHT_OFFSET+5))); 
 		_layerNum++;
 	}
 
@@ -471,6 +524,10 @@ class PlayState extends FlxState
 	private function hideText(Tween:FlxTween):Void
 	{
 		FlxTween.tween(_centerText, { x: FlxG.width }, 2, { ease: FlxEase.expoIn });
+		if (_gameOver && wave >= _level.waves.length && enemiesToSpawn.length <= 0 && enemiesToKill <= 0 && HUD.health > 0)
+			openSubState(new WinState(_level));
+		else if (_gameOver)
+			openSubState(new LoseState(_level));
 	}
 	
 	/**
@@ -581,5 +638,161 @@ class PlayState extends FlxState
 
 		_possiblePaths.push(path);
 		return path;
+	}
+
+	private function tutorialUpdate(): Void { 
+		var _tutTextList: Array<String> = ["Welcome to permafrost. \nClick anywhere to continue.", 
+											"Your job is to stop the greedy \nkids from getting to the \nNorth Pole. 
+											\n\nStart by building your first \nSnowman Defense Turret.", 
+											"Great! Now click build!", 
+											"Place your tower on the map. \n\nClick on your tower to check \nits health and attack.", 
+											"Placing your tower will start \nthe first wave of pesky kids.", 
+											"Well done! \n\nWe are going to need a \nstronger tower for wave 2. 
+											\n\nWe can add more snow \nto increase health.", 
+											"", 
+											"Now add a Snowman Turret.", 
+											"You can also give your \nSnowman Turret different ammo \nthat will change its \nattack style.", 
+											"Each snowman turret in a \ntower can have an ammo type.", 
+											"And each tower can be \nup to 3 layers high.", 
+											"Now build your upgraded tower \nand good luck!"];
+
+			if (_tutStateTracker == 1) {
+				//check to see if they click on gunbase 1 
+				if (InGameMenu.currItem == 0) {
+					buildGunBase(); 
+					_tutStateTracker+= 1; 
+				}
+			}
+
+			if (_tutStateTracker == 2) {
+				//check to see if they click on build 
+				if (inGameMenu.placingMode) {
+					//if so, create highlight square on path
+					canvas.drawRect(320, 380, 64, 64, FlxColor.RED, lineStyle, drawStyle);
+					canvas.flicker(0, 0.5); 
+					_tutStateTracker += 1; 
+				}
+			}
+
+			if (_tutStateTracker == 3) {
+				//check to see if they clicked on highlighted square
+				if (FlxG.mouse.x >= 319 && FlxG.mouse.x <= 383 && FlxG.mouse.y >= 379 && FlxG.mouse.y <= 443) {
+					//remove red square 
+					canvas.kill();
+					//place gunbase on the square
+					buildTower();
+					_tutStateTracker += 1; 
+				}
+			}
+
+			if (_tutStateTracker == 4) {
+				if (collisionController.towers.length == 0) {
+					_tutStateTracker += 1;
+				}
+			}
+
+			if (_tutStateTracker == 5) {
+				_tutText.resetText(_tutTextList[_tutStateTracker]);
+				_tutText.start();
+				_tutStateTracker += 1; 
+			}
+
+			if (_tutStateTracker == 6) {
+				overlay.y = 0; 
+				_tutText.y = 150; 
+				//check if they click on snow foundation
+				if (InGameMenu.currItem == 3) {
+					buildFoundation(InGameMenu.currItem); 
+					_tutStateTracker += 1; 
+				}
+			}
+
+			if (_tutStateTracker == 7) {
+				//check if they click on the first gunbase
+				if (InGameMenu.currItem == 0) {
+					buildGunBase(); 
+					_tutStateTracker += 1; 
+				}
+			}
+
+
+		if (FlxG.mouse.justReleased) {
+			_tutText.resetText(_tutTextList[_tutStateTracker]);
+			_tutText.start();
+
+			if (_tutStateTracker == 0) {
+				_tutStateTracker+= 1; 
+			}
+
+			if (_tutStateTracker == 1) {
+				overlay.x = -100; 
+				overlay.y = 0;
+				overlay.setGraphicSize(FlxG.width-620, FlxG.height);
+				_tutText.x = -120;
+			}
+
+			if (_tutStateTracker == 2) {
+				_tutText.y += 50;
+			}
+
+			if (_tutStateTracker == 3) {
+				_tutText.y -= 200; 
+				overlay.y -= 400;
+				overlay.height = 50;
+			}
+
+
+			if (_tutStateTracker == 4) {
+				overlay.y += 900; 
+				_tutText.y += 450;
+				//MAKE SURE TO ALSO SHOW HEALTH AND STATS 
+				if (collisionController.towers.length == 1) {
+					//release slow wave of few kids
+					enemiesToSpawn = [0]; 
+					spawnEnemy(); 
+				}
+			} 
+
+			if (_tutStateTracker == 7) {
+				_tutText.y += 150;
+			}
+		}
+
+		//emphasis on money being spend and money added when enemies die? 
+
+
+		//clicking off path breaks the tutorial for adding tower 
+		
+		//tween overlay as well as change size???
+		//fix tutorial button 
+		//make sure store doesn't cover map
+		//FIX MONEY ERRORS
+		//FIX SLOWNESS OF TEXT AND ADD SKIP BUTTON
+		//BLACK OVERLAY BEHIND
+		//PROPER POSITIONING 
+		//FLASH BUTTON THAT NEEDS TO BE CLICKED AND DISABLE EVERYTHING ELSE 
+			//PLAY REJECT SOUND IF CLICKED UNTIL THE RIGHT TIME 
+
+		//REMOVE MENU STUFF ON BOTTOM
+		//SELLING FUNCTIONALITY 
+
+		//disable clicks until proper things clicked 
+		//adjust speed of things clicked 
+
+		//different states for different text
+		//stored in list and iterate through depending on what click they're at
+		//click changes index in list and therefore text 
+		//need overlay 
+		//click shouldn't restart --> should just essentially 'skip' to completed text
+
+		//should track click state and sequence of actions 
+
+		/** 1. Get positioning and overlay correct for everything before enemies
+		2. Disable other buttons
+		3. Work on states past the one you stopped at */
+	}
+
+	private function setOverlay():Void {
+		overlay.setGraphicSize(FlxG.width-600, FlxG.height);
 	}
 }

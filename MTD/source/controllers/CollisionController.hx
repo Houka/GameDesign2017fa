@@ -75,10 +75,10 @@ class CollisionController{
 	/**
 	 * Called when a bullet hits an enemy. Damages the enemy, kills the bullet.
 	 */
-	public function hitEnemy(bullet:Bullet, enemy:FlxSprite):Void
+	public function hitEnemy(bullet:Bullet, enemy:Enemy):Void
 	{
 		enemy.hurt(bullet.damage);
-		bullet.hurt(enemy);
+		bullet.hit(enemy);
 		
 		Constants.play("enemy_hit");
 	}

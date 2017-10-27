@@ -67,7 +67,7 @@ class Bullet extends FlxSprite
 		}
 	}
 
-	public function hurt(e:Enemy):Void{
+	public function hit(e:Enemy):Void{
 		switch (type) {
 			case 0:
 				super.kill();

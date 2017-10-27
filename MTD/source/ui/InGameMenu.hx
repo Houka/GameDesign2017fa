@@ -325,10 +325,10 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function createTowerCallback(Skip: Bool=false, ItemNum: Int, Price:Int): Void { 
-		buyingMode = true; 
-		currItem = ItemNum; 
 		//If the player has enough money, keep track of the current price of the tower.
-		if (towerPrice+Price < HUD.money) {
+		if (towerPrice+Price < HUD.money || PlayState.isTutorial) {
+			buyingMode = true; 
+			currItem = ItemNum; 
 			towerPrice += Price; 
 			matValuesList.push(Price); 
 		}
@@ -338,7 +338,7 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function placeTowerCallback(Skip: Bool=false): Void {
-		if (Constants.PS.towerBlocks.length > 0) {
+		if (Constants.PS.towerBlocks.length > 0 || PlayState.isTutorial) {
 			placingMode = !placingMode; 
 			//Remove the amt tower is worth from the player's money and reset towerPrice.
 			HUD.money -= towerPrice; 
@@ -505,13 +505,13 @@ class InGameMenu extends FlxGroup{
 
 		// add ammo buttons
 		col++;
-		var ammo1:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "Ammo 1", addAmmoCallback.bind(false, 1, 12));
+		var ammo1:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "Ammo 1", addAmmoCallback.bind(false, 1, 1));
 		ammo1.loadGraphic(AssetPaths.button__png, true, width, height); 
 		col++;
-		var ammo2:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "Ammo 2", addAmmoCallback.bind(false, 2, 18));
+		var ammo2:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "Ammo 2", addAmmoCallback.bind(false, 2, 2));
 		ammo2.loadGraphic(AssetPaths.button__png, true, width, height); 
 		col++;
-		var ammo3:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "Ammo 3", addAmmoCallback.bind(false, 3, 24));
+		var ammo3:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "Ammo 3", addAmmoCallback.bind(false, 3, 3));
 		ammo3.loadGraphic(AssetPaths.button__png, true, width, height); 
 
 		add(ammo1);

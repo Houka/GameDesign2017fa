@@ -6,9 +6,7 @@ import flixel.FlxG;
 import gameStates.PlayState;
 import AssetPaths;
 
-/*
-*	typedefs used across several files
-*/
+
 enum CursorType
 {
 	Normal;
@@ -22,7 +20,7 @@ enum CursorType
 class Constants{
 	// Constants vars
 	static public inline var MAX_HEIGHT:Int = 5;
-	static public inline var HEIGHT_OFFSET:Float = 15; //the y-distance between layers
+	static public inline var HEIGHT_OFFSET:Float = 25; //the y-distance between layers
 	static public inline var TILE_SIZE:Int = 64;
 	static public inline var HUD_TEXT_SIZE:Int = 14;
 
