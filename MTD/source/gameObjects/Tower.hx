@@ -32,6 +32,7 @@ class Tower extends FlxSprite
 	public var children:Array<TowerBlock>; 
 
 	private var _ammoType:Int;
+	private var _hasGunBase:Bool = false;
 
 	
 	/**
@@ -46,8 +47,12 @@ class Tower extends FlxSprite
 		
 		_initialCost = Cost;
 		this.children = new Array<TowerBlock>();
+
+		_hasGunBase = false;
 		for (m in materials) {
 			addTowerBlock(m);
+			if (Std.is(m, GunBase))
+				_hasGunBase = true;
 		}
 		addTowerHealth(); 
 
@@ -127,6 +132,8 @@ class Tower extends FlxSprite
 	{
 		var target:Enemy = getNearestEnemy();
 		if (target == null)
+			return;
+		if (!_hasGunBase)
 			return;
 		
 		var bullet = Constants.PS.collisionController.bullets.recycle(Bullet.new);
