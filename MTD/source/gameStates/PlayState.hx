@@ -18,26 +18,28 @@ import ui.HUD;
 import utils.Button;
 import gameObjects.*;
 import Constants;
+import Levels;
 import AssetPaths;
+import Type;
+import flixel.addons.text.FlxTypeText; 
+import flixel.math.FlxRect; 
+using flixel.util.FlxSpriteUtil;
+
 
 class PlayState extends FlxState
 {
 	// Public variables
 	public var enemiesToKill:Int = 0;
-	public var enemiesToSpawn:Int = 0;
 	public var wave:Int = 0;
+	public static var isTutorial:Bool = false; 
+	private var enemiesToSpawn:Array<Int> = [];
 	
 	// Game Object groups
 	public var collisionController:CollisionController;
-	public var bullets:FlxTypedGroup<Bullet>;
-	public var emitters:FlxTypedGroup<EnemyExplosion>;
-	public var enemies:FlxTypedGroup<Enemy>;
-	public var towerIndicators:FlxTypedGroup<FlxSprite>;
-	private var _towers:FlxTypedGroup<Tower>;
+	public static var gunBases:FlxTypedGroup<GunBase>; 
+	public static var towerBlocks:Array<TowerBlock>; 
 
 	// HUD/Menu Groups
-	private var _topGui:FlxGroup;
-	
 	private var inGameMenu:InGameMenu;
 	private var _gui:FlxGroup;
 	private var _sellMenu:FlxGroup;
@@ -45,8 +47,6 @@ class PlayState extends FlxState
 	
 	// Text
 	private var _centerText:FlxText;
-	private var _enemyText:FlxText;
-	private var _waveText:FlxText;
 
 	// Buttons
 	private var _nextWaveButton:Button;
@@ -54,6 +54,8 @@ class PlayState extends FlxState
 	
 	// Other objects
 	private var _map:FlxTilemap;
+	private var _layerNum:Int; 
+	private var _currTowerStartIndex: Int; 
 	
 	// Private variables
 	private var _gameOver:Bool = false;
@@ -66,8 +68,20 @@ class PlayState extends FlxState
 
 	// level specific variables
 	private var _level:Level;
-	private var _defaultPath:Array<FlxPoint>;
-	private var speed:Int = 100; // the base speed that each enemy starts with
+	private var _possiblePaths:Array<Array<FlxPoint>>;
+	private var _speed:Int = 100; // the base _speed that each enemy starts with
+
+	//  tutorial specific variables
+	private var canvas = new FlxSprite();
+	private var _startEnemySpawn: Bool = false; 
+	private var overlay = new FlxSprite();
+
+	
+	private var lineStyle:LineStyle = { color: FlxColor.BLACK, thickness: 1 };
+	private var drawStyle:DrawStyle = { smoothing: true };
+
+	private var _tutStateTracker:Int = 1; 
+	private var _tutText: FlxTypeText = new FlxTypeText(0, 250, FlxG.width, "", 30);
 
 	public function new(level:Level){
 		super();
@@ -80,26 +94,24 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		Constants.PS = this;
-		
-		Constants.playMusic("bg_music");
+
+		// Constants.playMusic("bg_music");
 		
 		FlxG.timeScale = 1;
 		
 		// Create map
 		
-		_map = Constants.loadMap(_level);
+		_map = Levels.loadMap(_level);
 		_enemySpawnPosition = _level.start;
 		_goalPosition = _level.goal;
-		_defaultPath = _map.findPath(_enemySpawnPosition, _goalPosition.copyTo());
+		_possiblePaths = new Array<Array<FlxPoint>>();
+		addPath(_map.findPath(_enemySpawnPosition, _goalPosition.copyTo()));
 		
 		// Add groups
 
 		collisionController = new CollisionController(_goalPosition);
-		bullets = collisionController.bullets;
-		emitters = collisionController.emitters;
-		enemies = collisionController.enemies;
-		_towers = collisionController.towers;
-		towerIndicators = collisionController.towerIndicators;
+		gunBases = collisionController.gunBases; 		
+		towerBlocks = new Array<TowerBlock>();
 		
 		// Set up bottom default GUI
 		
@@ -113,31 +125,47 @@ class PlayState extends FlxState
 		// Set up HUD GUI
 
 		HUD.init(_level,loseGame,function() {});
-		_topGui = HUD.hud;
-		_enemyText = HUD.hud.enemyText;
-		_waveText = HUD.hud.waveText;
 		
-		// Set up miscellaneous items: center text, buildhelper, and the tower range image
+		// Set up miscellaneous items: center text
 		
 		_centerText = new FlxText( -200, FlxG.height / 2 - 20, FlxG.width, "", 16);
 		_centerText.alignment = CENTER;
 		_centerText.borderStyle = SHADOW;
-		
-		#if flash
-		_centerText.blend = BlendMode.INVERT;
-		#end
+
+		_layerNum = 0;
+		_currTowerStartIndex = 0;
 		
 		// Add everything to the state
 		
 		add(_map);
 		collisionController.addToState(this);
 		add(inGameMenu);
-		add(_topGui);
+		add(HUD.hud);
 		add(_centerText);
 		
 		// Call this to set up for first wave
 		
 		killedWave();
+
+
+		if (_level.isTutorial) {
+			overlay.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK, true); 
+			overlay.alpha = 0.8; 
+			add(overlay);
+			//turn on and off overlay? or make it smaller according to what part you're talking about?
+
+			_tutText.alignment = "center";
+			add(_tutText);
+			_tutText.resetText("Welcome to permafrost. \n \n \nPlease click anywhere to continue.");
+			_tutText.start();
+			isTutorial = true;
+
+
+			//TODO: Fix this so it doesn't need extra canvas variable
+			//not sure if this is useful or not, but red square built on this 
+			canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
+			add(canvas);
+		}
 		
 		// This is a good place to put watch statements during development.
 		#if debug
@@ -156,14 +184,19 @@ class PlayState extends FlxState
 		_waveCounter = 3 * FlxG.updateFramerate;
 		
 		_nextWaveButton.visible = true;
-		_enemyText.visible = false;
+		HUD.hud.enemyText.visible = false;
 	}
 	
 	override public function update(elapsed:Float):Void
 	{
 		// Update enemies left indicator
+		// var clickedTower = collisionController.overlapsTower(Std.int(FlxG.mouse.x), Std.int(FlxG.mouse.y));
+		// if (clickedTower != null ) {
+		// 	trace(clickedTower.children);
+		// }
+		// Update collisionController.enemies left indicator
 		
-		_enemyText.text = "Enemies left: " + enemiesToKill;
+		HUD.hud.enemyText.text = "enemies left: " + enemiesToKill;
 		
 		// Check for key presses, which can substitute for button clicks.
 		
@@ -180,19 +213,39 @@ class PlayState extends FlxState
 			else
 				nextWaveCallback(true); 
 		}
+		if (FlxG.keys.anyJustPressed([P])) openSubState(new PauseState());
 
 		// collision controller updates
 
 		collisionController.update(elapsed);
-
-		// Controls mouse clicks, which either build a tower or offer the option to upgrade a tower.
-		
+	if (!_level.isTutorial) {
 		if (FlxG.mouse.justReleased)
 		{
-			if (inGameMenu.buildingMode)
-			{
-				buildTower();
+			if (inGameMenu.removingMode) {
+				popMaterial(); 
+				inGameMenu.removingMode = false; 
 			}
+
+			else if (inGameMenu.placingMode) {
+				// inGameMenu.buildingMode = true; 
+				buildTower();
+				inGameMenu._towerRange.visible = true;
+
+			}
+
+			else if (inGameMenu.buyingMode) {
+				inGameMenu._towerRange.visible = false; 
+				if (InGameMenu.currItem < 3) {
+					buildGunBase();  
+					InGameMenu.currItem = -1; 
+				}
+				else if (InGameMenu.currItem >= 3 && InGameMenu.currItem < 6) {
+					buildFoundation(InGameMenu.currItem);
+					InGameMenu.currItem = -1; 
+				}
+				inGameMenu.buyingMode != inGameMenu.buyingMode; 
+			}
+
 			else
 			{
 				var selectedTower:Bool = false;
@@ -218,10 +271,15 @@ class PlayState extends FlxState
 				}
 			}
 		}
+
+		// win game
+
+		if (enemiesToKill == 0 && wave >= _level.waves.length && !_gameOver)
+			winGame();
 		
 		// Controls wave spawning, enemy spawning, 
 		
-		if (enemiesToKill == 0 && _towers.length > 0)
+		if (enemiesToKill == 0 && collisionController.towers.length > 0)
 		{
 			_waveCounter -= Std.int(FlxG.timeScale);
 			_nextWaveButton.text = "[N]ext Wave in " + Math.ceil(_waveCounter / FlxG.updateFramerate);
@@ -235,29 +293,41 @@ class PlayState extends FlxState
 		{
 			_spawnCounter += Std.int(FlxG.timeScale);
 			
-			if (_spawnCounter > _spawnInterval * FlxG.updateFramerate && enemiesToSpawn > 0)
+			if (_spawnCounter > _spawnInterval * FlxG.updateFramerate && enemiesToSpawn.length > 0)
 			{
 				spawnEnemy();
 			}
 		}
+  }
+    
+    else {
+      tutorialUpdate(); 
+    }
 		
 		super.update(elapsed);
 	} // End update
 
 	public function removeTower(tower:Tower):Void{
-		_towers.remove(tower, true);
+		collisionController.towers.remove(tower, true);
 		_map.setTile(Std.int(tower.x / Constants.TILE_SIZE), Std.int(tower.y / Constants.TILE_SIZE), 0, false);
 		
 		// Remove the indicator for this tower as well
-		for (indicator in towerIndicators)
+		for (indicator in collisionController.towerIndicators)
 		{
 			if (indicator.x ==  tower.getMidpoint().x - 1 && indicator.y ==  tower.getMidpoint().y - 1)
 			{
-				towerIndicators.remove(indicator, true);
+				collisionController.towerIndicators.remove(indicator, true);
 				indicator.visible = false;
 				indicator = null;
 			}
 		}
+
+		for (c in tower.children) {
+			remove(c);
+		}
+		// Remove the radius sprite as well and reset the menu if the selected tower was just destroyed
+		if (InGameMenu.towerSelected  != null && InGameMenu.towerSelected == tower)
+			inGameMenu.toggleMenus(General);
 	}
 	
 	private function sellConfirmCallback(Sure:Bool):Void
@@ -274,7 +344,7 @@ class PlayState extends FlxState
 			removeTower(InGameMenu.towerSelected);
 			
 			// If there are no towers, having the tutorial text and sell button is a bit superfluous
-			if (_towers.countLiving() == -1 && _towers.countDead() == -1)
+			if (collisionController.towers.countLiving() == -1 && collisionController.towers.countDead() == -1)
 			{
 				inGameMenu.soldLastTower();
 			}
@@ -346,11 +416,11 @@ class PlayState extends FlxState
 		}
 		
 		// Snap to grid
-		var xPos:Float = FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE);
-		var yPos:Float = FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE);
+		var xPos:Float = (FlxG.mouse.x - (FlxG.mouse.x % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 18;
+		var yPos:Float = (FlxG.mouse.y - (FlxG.mouse.y % Constants.TILE_SIZE)) + Constants.TILE_SIZE/2 - 18;
 		
 		// Can't place towers on other towers
-		for (tower in _towers)
+		for (tower in collisionController.towers)
 		{
 			if (tower.x == xPos && tower.y == yPos)
 			{
@@ -370,7 +440,15 @@ class PlayState extends FlxState
 			return;
 		}
 		
-		_towers.add(new Tower(xPos, yPos, inGameMenu.towerPrice));
+		var tower: Tower = new Tower(xPos, yPos, inGameMenu.towerPrice, towerBlocks);
+		collisionController.towers.add(tower);
+		var level = 0; 
+		for (t in towerBlocks.slice(_currTowerStartIndex)) {
+			var xpos = tower.x+tower.origin.x;
+            var ypos = tower.y+tower.origin.y-level*Constants.HEIGHT_OFFSET;
+            level++;
+            t.setPosition(xpos,ypos);
+		}
 
 		_map.setTile(Std.int(xPos / Constants.TILE_SIZE), Std.int(yPos / Constants.TILE_SIZE), 1, false);
 		
@@ -382,26 +460,58 @@ class PlayState extends FlxState
 		inGameMenu.towerPrice += Std.int(inGameMenu.towerPrice * 0.3);
 		_towerButton.text = "Buy [T]ower ($" + inGameMenu.towerPrice + ")";
 		inGameMenu.toggleMenus(General);
+
+		//Reset everything for next building iteration
+		inGameMenu.placingMode = false;
+		_layerNum = 0; 
+		_currTowerStartIndex = towerBlocks.length; 
 	}
+
+	/** A function that adds a new gunbase and then iterates the number of layers in the tower. **/
+	private function buildGunBase(): Void { 
+		addMaterial(new GunBase(FlxG.width-180, 500-_layerNum*(Constants.HEIGHT_OFFSET+5))); 
+		_layerNum++;
+	}
+
+	/** A function that adds a new foundation and then iterates the number of layers in the tower. **/
+	private function buildFoundation(ItemNum: Int): Void { 
+		addMaterial(new Foundation(FlxG.width-180, 500-_layerNum*Constants.HEIGHT_OFFSET, ItemNum)); 
+		_layerNum++; 
+	}
+
+	/** A function that adds a gunBase or foundation to the towerBlocks list. **/
+	private function addMaterial(obj:TowerBlock):Void{
+        towerBlocks.push(obj);
+        add(obj);
+    }
+
+    private function popMaterial():TowerBlock {
+    	var obj = towerBlocks.pop(); 
+    	if (obj != null) {
+    		remove(obj);
+    	}
+    	return obj; 
+    }
+
 	
 	/**
 	 * Used to display either the wave number or Game Over message via the animated fly-in, fly-out text.
 	 * 
 	 * @param	End		Whether or not this is the end of the game. If true, message will say "Game Over! :("
 	 */
-	private function announceWave(End:Bool = false):Void
+	private function announceWave(End:Bool = false, ?gameOverText:String):Void
 	{
 		_centerText.x = -200;
 		_centerText.text = "Wave " + wave;
 		
 		if (End)
-			_centerText.text = "Game Over! :(";
+			_centerText.text = gameOverText;
 		
 		FlxTween.tween(_centerText, { x: 0 }, 2, { ease: FlxEase.expoOut, onComplete: hideText });
 		
-		_waveText.text = "Wave: " + wave;
-		_waveText.size = 16;
-		_waveText.visible = true;
+		HUD.hud.waveText.text = "Wave: " + wave;
+		HUD.hud.waveText.size = 16;
+		HUD.hud.waveText.visible = true;
 	}
 	
 	/**
@@ -410,39 +520,47 @@ class PlayState extends FlxState
 	private function hideText(Tween:FlxTween):Void
 	{
 		FlxTween.tween(_centerText, { x: FlxG.width }, 2, { ease: FlxEase.expoIn });
+		if (_gameOver && wave >= _level.waves.length && enemiesToSpawn.length <= 0 && enemiesToKill <= 0 && HUD.health > 0)
+			openSubState(new WinState(_level));
+		else if (_gameOver)
+			openSubState(new LoseState(_level));
 	}
 	
 	/**
 	 * Spawns the next wave. This increments the wave variable, displays the center text message,
-	 * sets the number of enemies to spawn and kill, hides the next wave button, and shows the
-	 * notification of the number of enemies.
+	 * sets the number of collisionController.enemies to spawn and kill, hides the next wave button, and shows the
+	 * notification of the number of collisionController.enemies.
 	 */
 	private function spawnWave():Void
 	{
 		if (_gameOver)
 			return;
 		
+		if (wave >= _level.waves.length)
+			return;
+		
+
 		wave++;
 		announceWave();
-		enemiesToKill = 5 + wave;
-		enemiesToSpawn = enemiesToKill;
+		enemiesToSpawn = _level.waves[wave-1].copy();
+		enemiesToKill = enemiesToSpawn.length;
 		
 		_nextWaveButton.visible = false;
 		
-		_enemyText.visible = true;
-		_enemyText.size = Constants.HUD_TEXT_SIZE;
+		HUD.hud.enemyText.visible = true;
+		HUD.hud.enemyText.size = Constants.HUD_TEXT_SIZE;
 	}
 	
 	/**
-	 * Spawns an enemy. Decrements the enemiesToSpawn variable, and recycles an enemy from enemies and then initiates
+	 * Spawns an enemy. Decrements the enemiesToSpawn variable, and recycles an enemy from collisionController.enemies and then initiates
 	 * it and gives it a path to follow.
 	 */
 	private function spawnEnemy():Void
 	{
-		enemiesToSpawn--;
+		var type = enemiesToSpawn.shift();
 		
-		var enemy = enemies.recycle(Enemy.new.bind(0, 0));
-		enemy.init(_enemySpawnPosition.x, _enemySpawnPosition.y - 12);
+		var enemy = collisionController.enemies.recycle(Enemy.new.bind(0, 0, 0));
+		enemy.init(_enemySpawnPosition.x, _enemySpawnPosition.y - 12, type);
 
 		//	try to get path to goal (considering towers). 
 		//  If there is no path then default to shortest path without considering towers
@@ -450,14 +568,29 @@ class PlayState extends FlxState
 		var path = _map.findPath(_enemySpawnPosition, _goalPosition.copyTo());
 		if (path == null){
 			// copy the default path in
-			path = [];
-			for (i in _defaultPath){
-				path.push(i.copyTo());
-			}
+			path = getPath(0);
 		}
 
-		enemy.followPath(path, speed + wave);
+		enemy.followPath(path, _speed + wave);
 		_spawnCounter = 0;
+	}
+
+	/**
+	 * Called when you win. Of course!
+	 */
+	private function winGame():Void
+	{
+		_gameOver = true;
+		
+		collisionController.kill();
+		inGameMenu.kill();
+		
+		announceWave(true,"You Win! :)");
+		
+		_towerButton.text = "[R]estart";
+		_towerButton.onDown.callback = resetCallback.bind(false);
+		
+		Constants.play("game_over");
 	}
 	
 	/**
@@ -470,11 +603,192 @@ class PlayState extends FlxState
 		collisionController.kill();
 		inGameMenu.kill();
 		
-		announceWave(true);
+		announceWave(true,"Game Over! :(");
 		
 		_towerButton.text = "[R]estart";
 		_towerButton.onDown.callback = resetCallback.bind(false);
 		
 		Constants.play("game_over");
+	}
+
+	private function getPath(index:Int):Array<FlxPoint>{
+		var path:Array<FlxPoint>;
+		var tempPoint:FlxPoint;
+		path = [];
+		for (i in _possiblePaths[index]){
+			tempPoint = new FlxPoint(i.x,i.y);
+			path.push(tempPoint);
+		}
+
+		return path;
+	}
+
+	private function addPath(Value:Array<FlxPoint>):Array<FlxPoint>{
+		var path = new Array<FlxPoint>();
+
+		var tempPoint:FlxPoint;
+		for (i in Value){
+			tempPoint = new FlxPoint(i.x,i.y);
+			path.push(tempPoint);
+		}
+
+		_possiblePaths.push(path);
+		return path;
+	}
+
+	private function tutorialUpdate(): Void { 
+		var _tutTextList: Array<String> = ["Welcome to permafrost. \nClick anywhere to continue.", 
+											"Your job is to stop the greedy \nkids from getting to the \nNorth Pole. 
+											\n\nStart by building your first \nSnowman Defense Turret.", 
+											"Great! Now click build!", 
+											"Place your tower on the map. \n\nClick on your tower to check \nits health and attack.", 
+											"Placing your tower will start \nthe first wave of pesky kids.", 
+											"Well done! \n\nWe are going to need a \nstronger tower for wave 2. 
+											\n\nWe can add more snow \nto increase health.", 
+											"", 
+											"Now add a Snowman Turret.", 
+											"You can also give your \nSnowman Turret different ammo \nthat will change its \nattack style.", 
+											"Each snowman turret in a \ntower can have an ammo type.", 
+											"And each tower can be \nup to 3 layers high.", 
+											"Now build your upgraded tower \nand good luck!"];
+
+			if (_tutStateTracker == 1) {
+				//check to see if they click on gunbase 1 
+				if (InGameMenu.currItem == 0) {
+					buildGunBase(); 
+					_tutStateTracker+= 1; 
+				}
+			}
+
+			if (_tutStateTracker == 2) {
+				//check to see if they click on build 
+				if (inGameMenu.placingMode) {
+					//if so, create highlight square on path
+					canvas.drawRect(320, 380, 64, 64, FlxColor.RED, lineStyle, drawStyle);
+					canvas.flicker(0, 0.5); 
+					_tutStateTracker += 1; 
+				}
+			}
+
+			if (_tutStateTracker == 3) {
+				//check to see if they clicked on highlighted square
+				if (FlxG.mouse.x >= 319 && FlxG.mouse.x <= 383 && FlxG.mouse.y >= 379 && FlxG.mouse.y <= 443) {
+					//remove red square 
+					canvas.kill();
+					//place gunbase on the square
+					buildTower();
+					_tutStateTracker += 1; 
+				}
+			}
+
+			if (_tutStateTracker == 4) {
+				if (collisionController.towers.length == 0) {
+					_tutStateTracker += 1;
+				}
+			}
+
+			if (_tutStateTracker == 5) {
+				_tutText.resetText(_tutTextList[_tutStateTracker]);
+				_tutText.start();
+				_tutStateTracker += 1; 
+			}
+
+			if (_tutStateTracker == 6) {
+				overlay.y = 0; 
+				_tutText.y = 150; 
+				//check if they click on snow foundation
+				if (InGameMenu.currItem == 3) {
+					buildFoundation(InGameMenu.currItem); 
+					_tutStateTracker += 1; 
+				}
+			}
+
+			if (_tutStateTracker == 7) {
+				//check if they click on the first gunbase
+				if (InGameMenu.currItem == 0) {
+					buildGunBase(); 
+					_tutStateTracker += 1; 
+				}
+			}
+
+
+		if (FlxG.mouse.justReleased) {
+			_tutText.resetText(_tutTextList[_tutStateTracker]);
+			_tutText.start();
+
+			if (_tutStateTracker == 0) {
+				_tutStateTracker+= 1; 
+			}
+
+			if (_tutStateTracker == 1) {
+				overlay.x = -100; 
+				overlay.y = 0;
+				overlay.setGraphicSize(FlxG.width-620, FlxG.height);
+				_tutText.x = -120;
+			}
+
+			if (_tutStateTracker == 2) {
+				_tutText.y += 50;
+			}
+
+			if (_tutStateTracker == 3) {
+				_tutText.y -= 200; 
+				overlay.y -= 400;
+				overlay.height = 50;
+			}
+
+
+			if (_tutStateTracker == 4) {
+				overlay.y += 900; 
+				_tutText.y += 450;
+				//MAKE SURE TO ALSO SHOW HEALTH AND STATS 
+				if (collisionController.towers.length == 1) {
+					//release slow wave of few kids
+					enemiesToSpawn = [0]; 
+					spawnEnemy(); 
+				}
+			} 
+
+			if (_tutStateTracker == 7) {
+				_tutText.y += 150;
+			}
+		}
+
+		//emphasis on money being spend and money added when enemies die? 
+
+
+		//clicking off path breaks the tutorial for adding tower 
+		
+		//tween overlay as well as change size???
+		//fix tutorial button 
+		//make sure store doesn't cover map
+		//FIX MONEY ERRORS
+		//FIX SLOWNESS OF TEXT AND ADD SKIP BUTTON
+		//BLACK OVERLAY BEHIND
+		//PROPER POSITIONING 
+		//FLASH BUTTON THAT NEEDS TO BE CLICKED AND DISABLE EVERYTHING ELSE 
+			//PLAY REJECT SOUND IF CLICKED UNTIL THE RIGHT TIME 
+
+		//REMOVE MENU STUFF ON BOTTOM
+		//SELLING FUNCTIONALITY 
+
+		//disable clicks until proper things clicked 
+		//adjust speed of things clicked 
+
+		//different states for different text
+		//stored in list and iterate through depending on what click they're at
+		//click changes index in list and therefore text 
+		//need overlay 
+		//click shouldn't restart --> should just essentially 'skip' to completed text
+
+		//should track click state and sequence of actions 
+
+		/** 1. Get positioning and overlay correct for everything before enemies
+		2. Disable other buttons
+		3. Work on states past the one you stopped at */
+	}
+
+	private function setOverlay():Void {
+		overlay.setGraphicSize(FlxG.width-600, FlxG.height);
 	}
 }

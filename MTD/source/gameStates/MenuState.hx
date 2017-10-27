@@ -14,6 +14,7 @@ import openfl.Lib;
 import gameObjects.Enemy;
 import utils.Button;
 import Constants;
+import Levels;
 
 class MenuState extends FlxState
 {
@@ -39,8 +40,8 @@ class MenuState extends FlxState
 		FlxG.timeScale = 1;
 		
 		// Load a map from CSV data; note that the tile graphic does not need to be a file; in this case, it's BitmapData.
-		_level = Constants.demo;
-		_map = Constants.loadMap(_level, true);
+		_level = Levels.demo;
+		_map = Levels.loadMap(_level, true);
 		_startPosition  = _level.start;
 		_endPosition = _level.goal;
 
@@ -64,11 +65,12 @@ class MenuState extends FlxState
 		
 		// Level select buttons
 		var buttonSize = 20;
-		var levelNames = ["Level 1", "Level 2"];
-		var levels = [Constants.level1, Constants.level2];
+		// var levelNames = ["Tutorial", "Level 1", "Level 2", "Level3", "Level4", "Level5", "Level6", "Level7", "Level8", "Level9", "Level10"];
+		// var levels = [Constants.tutorial, Constants.level1, Constants.level2, Constants.level3, Constants.level4, Constants.level5, Constants.level6, 
+		// 				Constants.level7, Constants.level8, Constants.level9, Constants.level10];
 		var levelButtons = [];
-		for (i in 0...levelNames.length){
-			var levelButton = new Button(0, 0, levelNames[i], startGame.bind(levels[i]),100);
+		for (i in 0...Levels.levels.length){
+			var levelButton = new Button(0, 0, Levels.levels[i].name, startGame.bind(Levels.levels[i].level),100);
 			levelButton.label.size = buttonSize;
 			levelButton.screenCenter();
 			levelButton.y += i*25 - 75;

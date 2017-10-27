@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup;
 import AssetPaths;
 import Constants;
+import gameObjects.TowerBlock; 
 
 class Tower extends FlxSprite
 {
@@ -23,23 +24,32 @@ class Tower extends FlxSprite
 	public var fireRatePrice:Int = BASE_PRICE;
 	public var damagePrice:Int = BASE_PRICE;
 	
-	private var _shootInterval:Int = 2;
+	private var _shootInterval:Int = 1;
 	private var _shootCounter:Int = 0;
 	private var _initialCost:Int = 0;
 	private var _indicator:FlxSprite;
+
+	public var children:Array<TowerBlock>; 
+
 	
 	/**
 	 * Create a new tower at X and Y with default range, fire rate, and damage; create this tower's indicator.
 	 */
-	public function new(X:Float, Y:Float, Cost:Int)
+	public function new(X:Float, Y:Float, Cost:Int, materials:Array<TowerBlock>)
 	{
-		super(X, Y, AssetPaths.tower__png);
+		super(X, Y);
+
+		health = 0; 
 		
 		_indicator = new FlxSprite(getMidpoint().x - 1, getMidpoint().y - 1);
 		_indicator.makeGraphic(2, 2);
-		Constants.PS.towerIndicators.add(_indicator);
+		Constants.PS.collisionController.towerIndicators.add(_indicator);
 		
 		_initialCost = Cost;
+		this.children = new Array<TowerBlock>();
+		for (m in materials) {
+			addTowerBlock(m);
+		}
 	}
 	
 	/**
@@ -81,8 +91,8 @@ class Tower extends FlxSprite
 		alpha -= Damage;
 		
 		if (health <= 0){
-			kill();
 			Constants.PS.removeTower(this);
+			kill();
 		}
 	}
 	
@@ -112,7 +122,7 @@ class Tower extends FlxSprite
 		if (target == null)
 			return;
 		
-		var bullet = Constants.PS.bullets.recycle(Bullet.new);
+		var bullet = Constants.PS.collisionController.bullets.recycle(Bullet.new);
 		var midpoint = getMidpoint();
 		bullet.init(midpoint.x, midpoint.y, target, damage);
 		midpoint.put();
@@ -130,7 +140,7 @@ class Tower extends FlxSprite
 	private function getNearestEnemy():Enemy
 	{
 		var firstEnemy:Enemy = null;
-		var enemies:FlxTypedGroup<Enemy> = Constants.PS.enemies;
+		var enemies:FlxTypedGroup<Enemy> = Constants.PS.collisionController.enemies;
 		
 		for (enemy in enemies)
 		{
@@ -158,7 +168,7 @@ class Tower extends FlxSprite
 		rangeLevel++;
 		rangePrice = Std.int(rangePrice * COST_INCREASE);
 	}
-	
+
 	/**
 	 * Upgrading damage increases the damage value passed to bullets, and later enemies, by 1.
 	 * Also updates the damageLevel and damagePrice (1.5 x LEVEL) values for display and player money impact.
@@ -180,4 +190,22 @@ class Tower extends FlxSprite
 		fireRateLevel++;
 		fireRatePrice = Std.int(fireRatePrice * COST_INCREASE);
 	}
+
+	public function addTowerBlock(obj:TowerBlock):Bool{
+		addTowerHealth(); 
+        if (!obj.inTower && children.length < Constants.MAX_HEIGHT){
+            obj.inTower = true;
+            children.push(obj);
+            return true;
+        }
+        return false;
+    }
+
+    private function addTowerHealth(): Void { 
+    	for (i in this.children) {
+    		if (Std.is(i, Foundation)) {
+    			health += cast(i, Foundation).healthPoints; 
+    		}
+    	}
+    }
 }

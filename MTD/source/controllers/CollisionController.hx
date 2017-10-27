@@ -17,6 +17,8 @@ class CollisionController{
 	public var enemies:FlxTypedGroup<Enemy>;
 	public var towerIndicators:FlxTypedGroup<FlxSprite>;
 	public var towers:FlxTypedGroup<Tower>;
+	public var gunBases:FlxTypedGroup<GunBase>; 
+	public var towerBlocks:FlxTypedGroup<TowerBlock>; 
 
 	// Single game elements
 	public var goal:FlxSprite;
@@ -29,6 +31,7 @@ class CollisionController{
 		enemies = new FlxTypedGroup<Enemy>();
 		towers = new FlxTypedGroup<Tower>();
 		towerIndicators = new FlxTypedGroup<FlxSprite>();
+		gunBases = new FlxTypedGroup<GunBase>(); 
 		
 		goal = new FlxSprite(goalPosition.x, goalPosition.y, AssetPaths.homebase__png);
 	}
@@ -53,18 +56,20 @@ class CollisionController{
 		state.add(enemies);
 		state.add(towers);
 		state.add(towerIndicators);
-		state.add(goal);		
+		state.add(goal);	
+		state.add(gunBases);	
 	}
 	
 	/**
 	 * Called when trying to clean up after the game is done
 	 */
 	public function kill():Void{
+		towers.forEach(function(t) Constants.PS.removeTower(t));
+
 		enemies.kill();
 		towerIndicators.kill();
-		towers.kill();
 		bullets.kill();
-		// emitters.kill();
+		towers.kill();
 	}
 	
 	/**
@@ -75,7 +80,7 @@ class CollisionController{
 		enemy.hurt(bullet.damage);
 		bullet.kill();
 		
-		Constants.play("assets/sounds/enemy_hit.mp3");
+		Constants.play("enemy_hit");
 	}
 
 	/**
@@ -86,7 +91,7 @@ class CollisionController{
 		HUD.health--;
 		enemy.explode(false);
 		
-		Constants.play("assets/sounds/hurt.mp3");
+		Constants.play("hurt");
 	}
 
 	/**
@@ -104,11 +109,6 @@ class CollisionController{
 		// return if there are no towers within range
 		if (nearest == null)
 			return;
-
-		// pause its path if it has one
-		if (enemy.path != null){
-			enemy.pausePath();
-		}
 
 		enemy.attack(nearest);
 	}
