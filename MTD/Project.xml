@@ -38,6 +38,12 @@
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
 
+	<!--Embed js libraries in index.html-->
+	<dependency name="./Logging.min.js" if="html5"/>
+	<dependency name="./jquery-2.1.4.min.js" if="html5"/>
+	<template path="source/Logging.min.js" rename="./Logging.min.js" if="html5"/>
+	<template path="source/jquery-2.1.4.min.js" rename="./jquery-2.1.4.min.js" if="html5"/>
+
 	<!--In case you want to use the ui package-->
 	<!--<haxelib name="flixel-ui" />-->
 
@@ -75,10 +81,6 @@
 
 	<!--Enable this for Nape release builds for a serious peformance improvement-->
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
-
-	<!--Enable logging for analytics-->
-	<haxedef name="network-sandbox" />
-	<haxeflag name="-swf-lib" value="Logging.swc" />
 
 	-lib random
 

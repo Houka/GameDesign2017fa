@@ -19,6 +19,7 @@ import utils.Button;
 import gameObjects.*;
 import Constants;
 import Levels;
+import Logging;
 import AssetPaths;
 import Type;
 import flixel.addons.text.FlxTypeText; 
@@ -76,6 +77,8 @@ class PlayState extends FlxState
 	private var _startEnemySpawn: Bool = false; 
 	private var overlay = new FlxSprite();
 
+	// variables for tracking stats
+	private var _towersKilled:Int = 0;
 	
 	private var lineStyle:LineStyle = { color: FlxColor.BLACK, thickness: 1 };
 	private var drawStyle:DrawStyle = { smoothing: true };
@@ -142,7 +145,10 @@ class PlayState extends FlxState
 		add(inGameMenu);
 		add(HUD.hud);
 		add(_centerText);
-		
+
+		// Log that a new level has started
+		Logging.recordLevelStart(cast(Levels.currentLevel,Float));
+
 		// Call this to set up for first wave
 		
 		killedWave();
@@ -214,6 +220,16 @@ class PlayState extends FlxState
 				nextWaveCallback(true); 
 		}
 		if (FlxG.keys.anyJustPressed([P])) openSubState(new PauseState());
+
+		// Mouse updates, right just for logging
+		if(FlxG.mouse.justReleased && !_gameOver){
+			var logString = Date.now()+" Level:"+Levels.currentLevel+" x:"+FlxG.mouse.x+" y:"+FlxG.mouse.y;
+			Logging.recordEvent(cast(Constants.LogEvent.MOUSE_RELEASE,UInt), logString);
+		}
+		if(FlxG.mouse.justPressed && !_gameOver){
+			var logString = Date.now()+" Level:"+Levels.currentLevel+" x:"+FlxG.mouse.x+" y:"+FlxG.mouse.y;
+			Logging.recordEvent(cast(Constants.LogEvent.MOUSE_PRESS,UInt), logString);
+		}
 
 		// collision controller updates
 
@@ -307,7 +323,11 @@ class PlayState extends FlxState
 		super.update(elapsed);
 	} // End update
 
-	public function removeTower(tower:Tower):Void{
+	public function removeTower(tower:Tower, killedByEnemy:Bool):Void{
+		if(killedByEnemy){
+			_towersKilled++;
+		}
+
 		collisionController.towers.remove(tower, true);
 		_map.setTile(Std.int(tower.x / Constants.TILE_SIZE), Std.int(tower.y / Constants.TILE_SIZE), 0, false);
 		
@@ -341,7 +361,7 @@ class PlayState extends FlxState
 		{
 			InGameMenu.towerSelected.visible = false;
 
-			removeTower(InGameMenu.towerSelected);
+			removeTower(InGameMenu.towerSelected, false);
 			
 			// If there are no towers, having the tutorial text and sell button is a bit superfluous
 			if (collisionController.towers.countLiving() == -1 && collisionController.towers.countDead() == -1)
@@ -400,6 +420,9 @@ class PlayState extends FlxState
 	 */
 	private function buildTower():Void
 	{
+		if(_gameOver){
+			return;
+		}
 		// Can't place towers on GUI
 		if (FlxG.mouse.y > FlxG.height - 16)
 		{
@@ -465,6 +488,10 @@ class PlayState extends FlxState
 		inGameMenu.placingMode = false;
 		_layerNum = 0; 
 		_currTowerStartIndex = towerBlocks.length; 
+
+		//Log tower built
+		var logString = Date.now()+" Level:"+Levels.currentLevel+" x:"+xPos+" y:"+yPos+" Materials:"+tower.toString();
+		Logging.recordEvent(cast(Constants.LogEvent.TOWER_BUILD,UInt), logString);
 	}
 
 	/** A function that adds a new gunbase and then iterates the number of layers in the tower. **/
@@ -538,7 +565,6 @@ class PlayState extends FlxState
 		
 		if (wave >= _level.waves.length)
 			return;
-		
 
 		wave++;
 		announceWave();
@@ -549,6 +575,10 @@ class PlayState extends FlxState
 		
 		HUD.hud.enemyText.visible = true;
 		HUD.hud.enemyText.size = Constants.HUD_TEXT_SIZE;
+
+		var logString = Date.now()+" Level:"+Levels.currentLevel+" Money:"+HUD.money+
+			" Wave:"+wave+" Towers Killed:"+_towersKilled;
+		Logging.recordEvent(cast(Constants.LogEvent.WAVE_START, UInt), logString);
 	}
 	
 	/**
@@ -580,6 +610,8 @@ class PlayState extends FlxState
 	 */
 	private function winGame():Void
 	{
+		Logging.recordLevelEnd();
+
 		_gameOver = true;
 		
 		collisionController.kill();
@@ -598,6 +630,11 @@ class PlayState extends FlxState
 	 */
 	private function loseGame():Void
 	{
+		//Log Game Over
+		var logString = "Wave num:"+wave+" Level:"+Levels.currentLevel;
+		Logging.recordEvent(cast(Constants.LogEvent.GAME_OVER, UInt), logString);
+		Logging.recordLevelEnd();
+
 		_gameOver = true;
 		
 		collisionController.kill();
