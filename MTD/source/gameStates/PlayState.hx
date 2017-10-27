@@ -77,6 +77,7 @@ class PlayState extends FlxState
 	private var _startEnemySpawn: Bool = false; 
 	private var overlay = new FlxSprite();
 	private var enemyReleased:Bool = false; 
+	private var flashOutline = new FlxSprite(); 
 	
 	private var lineStyle:LineStyle = { color: FlxColor.BLACK, thickness: 1 };
 	private var drawStyle:DrawStyle = { smoothing: true };
@@ -167,6 +168,8 @@ class PlayState extends FlxState
 			//not sure if this is useful or not, but red square built on this 
 			canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
 			add(canvas);
+
+			flashOutline.loadGraphic(AssetPaths.tutorialBox__png, true, 50, 50);
 		}
 		
 		// This is a good place to put watch statements during development.
@@ -724,6 +727,10 @@ class PlayState extends FlxState
 			}
 
 			if (_tutStateTracker == 1) {
+				flashOutline.x = FlxG.width - 260;
+				flashOutline.y = 150;
+				add(flashOutline);
+				flashOutline.flicker(0, 0.5);
 				overlay.x = -100; 
 				overlay.y = 0;
 				overlay.setGraphicSize(FlxG.width-620, FlxG.height);
@@ -731,6 +738,7 @@ class PlayState extends FlxState
 			}
 
 			if (_tutStateTracker == 2) {
+				flashOutline.kill();
 				_tutText.y = 300;
 			}
 
