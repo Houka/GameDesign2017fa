@@ -504,15 +504,16 @@ class InGameMenu extends FlxGroup{
 		}
 
 		// add ammo buttons
+		height = 67;
 		col++;
-		var ammo1:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "Ammo 1", addAmmoCallback.bind(false, 1, 1));
-		ammo1.loadGraphic(AssetPaths.button__png, true, width, height); 
+		var ammo1:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", addAmmoCallback.bind(false, 1, 12));
+		ammo1.loadGraphic(AssetPaths.PiercingAmmoButton__png, true, width, height); 
 		col++;
-		var ammo2:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "Ammo 2", addAmmoCallback.bind(false, 2, 2));
-		ammo2.loadGraphic(AssetPaths.button__png, true, width, height); 
+		var ammo2:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", addAmmoCallback.bind(false, 2, 18));
+		ammo2.loadGraphic(AssetPaths.ExplodeAmmoButton__png, true, width, height); 
 		col++;
-		var ammo3:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "Ammo 3", addAmmoCallback.bind(false, 3, 3));
-		ammo3.loadGraphic(AssetPaths.button__png, true, width, height); 
+		var ammo3:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", addAmmoCallback.bind(false, 3, 24));
+		ammo3.loadGraphic(AssetPaths.FreezeAmmoButton__png, true, width, height); 
 
 		add(ammo1);
 		add(ammo2);
