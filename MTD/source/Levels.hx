@@ -73,7 +73,16 @@ class Levels{
 		{level:level2, name:"Level 2"}
 	];
 
+	public static var currentLevel:Int = -1;
+
 	public static function loadMap(lvl:Level, ?IsAuto:Bool = false):FlxTilemap{
+		// set current level
+		for (i in 0...levels.length){
+			if (lvl == levels[i].level)
+				currentLevel = i;
+		}
+
+		// load current level's map
 		var map = new FlxTilemap();
 		if (IsAuto)
 			map.loadMapFromCSV(lvl.map, lvl.tilemap, TILE_SIZE, TILE_SIZE, AUTO);
