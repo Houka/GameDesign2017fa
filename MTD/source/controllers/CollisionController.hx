@@ -78,7 +78,7 @@ class CollisionController{
 	public function hitEnemy(bullet:Bullet, enemy:FlxSprite):Void
 	{
 		enemy.hurt(bullet.damage);
-		bullet.kill();
+		bullet.hurt(enemy);
 		
 		Constants.play("enemy_hit");
 	}

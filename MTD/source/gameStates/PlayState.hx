@@ -31,8 +31,12 @@ class PlayState extends FlxState
 	
 	// Game Object groups
 	public var collisionController:CollisionController;
-	public static var towerBlocks:Array<TowerBlock>; 
-	private static var _towerBlocks:FlxTypedGroup<TowerBlock>; 
+
+	// Tower building objects
+	public var towerBlocks:Array<TowerBlock>; 
+	//public var _selectedAmmo:Ammo;
+	private var _towerBlocks:FlxTypedGroup<TowerBlock>; 
+	private var _currTowerStartIndex: Int; 
 
 	// HUD/Menu Groups
 	private var inGameMenu:InGameMenu;
@@ -50,7 +54,6 @@ class PlayState extends FlxState
 	// Other objects
 	private var _map:FlxTilemap;
 	private var _layerNum:Int; 
-	private var _currTowerStartIndex: Int; 
 	
 	// Private variables
 	private var _gameOver:Bool = false;
@@ -65,6 +68,7 @@ class PlayState extends FlxState
 	private var _level:Level;
 	private var _possiblePaths:Array<Array<FlxPoint>>;
 	private var _speed:Int = 100; // the base _speed that each enemy starts with
+	public var selectedAmmoType = {type:0, price:0};
 
 	public function new(level:Level){
 		super();
@@ -261,7 +265,7 @@ class PlayState extends FlxState
 		// Remove the indicator for this tower as well
 		for (indicator in collisionController.towerIndicators)
 		{
-			if (indicator.x ==  tower.getMidpoint().x - 1 && indicator.y ==  tower.getMidpoint().y - 1)
+			if (indicator.getMidpoint().x ==  tower.getMidpoint().x && indicator.getMidpoint().y ==  tower.getMidpoint().y)
 			{
 				collisionController.towerIndicators.remove(indicator, true);
 				indicator.visible = false;
@@ -387,7 +391,7 @@ class PlayState extends FlxState
 			return;
 		}
 		
-		var tower: Tower = new Tower(xPos, yPos, inGameMenu.towerPrice, towerBlocks);
+		var tower: Tower = new Tower(xPos, yPos, inGameMenu.towerPrice, towerBlocks, selectedAmmoType.type);
 		collisionController.towers.add(tower);
 		var level = 0; 
 		for (t in towerBlocks.slice(_currTowerStartIndex)) {

@@ -31,11 +31,13 @@ class Tower extends FlxSprite
 
 	public var children:Array<TowerBlock>; 
 
+	private var _ammoType:Int;
+
 	
 	/**
 	 * Create a new tower at X and Y with default range, fire rate, and damage; create this tower's indicator.
 	 */
-	public function new(X:Float, Y:Float, Cost:Int, materials:Array<TowerBlock>)
+	public function new(X:Float, Y:Float, Cost:Int, materials:Array<TowerBlock>, ammoType:Int)
 	{
 		super(X, Y);
 		loadGraphic(AssetPaths.tower__png);
@@ -53,6 +55,8 @@ class Tower extends FlxSprite
 		_indicator.x = getMidpoint().x - _indicator.origin.x;
 		_indicator.y = getMidpoint().y - _indicator.origin.y;
 		Constants.PS.collisionController.towerIndicators.add(_indicator);
+
+		_ammoType = ammoType;
 	}
 	
 	/**
@@ -127,7 +131,7 @@ class Tower extends FlxSprite
 		
 		var bullet = Constants.PS.collisionController.bullets.recycle(Bullet.new);
 		var midpoint = getMidpoint();
-		bullet.init(midpoint.x - bullet.origin.x, midpoint.y- bullet.origin.y, target, damage);
+		bullet.init(midpoint.x - bullet.origin.x, midpoint.y- bullet.origin.y, target, damage, _ammoType);
 		midpoint.put();
 		
 		Constants.play("shoot");
