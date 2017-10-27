@@ -33,6 +33,7 @@ class PlayState extends FlxState
 	public var enemiesToKill:Int = 0;
 	public var wave:Int = 0;
 	public static var isTutorial:Bool = false; 
+	public static var tutEnabledButtons: Array<Int> = [];
 	private var enemiesToSpawn:Array<Int> = [];
 	
 	// Game Object groups
@@ -80,6 +81,8 @@ class PlayState extends FlxState
 	private var canvas = new FlxSprite();
 	private var _startEnemySpawn: Bool = false; 
 	private var overlay = new FlxSprite();
+	private var enemyReleased:Int = 0; 
+	private var flashOutline = new FlxSprite(); 
 
 	// variables for tracking stats
 	private var _towersKilled:Int = 0;
@@ -159,6 +162,7 @@ class PlayState extends FlxState
 
 
 		if (_level.isTutorial) {
+			HUD.money = 50;
 			overlay.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK, true); 
 			overlay.alpha = 0.8; 
 			add(overlay);
@@ -169,12 +173,15 @@ class PlayState extends FlxState
 			_tutText.resetText("Welcome to permafrost. \n \n \nPlease click anywhere to continue.");
 			_tutText.start();
 			isTutorial = true;
+			tutEnabledButtons = [];
 
 
 			//TODO: Fix this so it doesn't need extra canvas variable
 			//not sure if this is useful or not, but red square built on this 
 			canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT, true);
 			add(canvas);
+
+			flashOutline.loadGraphic(AssetPaths.tutorialBox__png, true, 50, 50);
 		}
 		
 		// This is a good place to put watch statements during development.
@@ -247,7 +254,6 @@ class PlayState extends FlxState
 			}
 
 			else if (inGameMenu.placingMode) {
-				// inGameMenu.buildingMode = true; 
 				buildTower();
 				inGameMenu._towerRange.visible = true;
 			}
@@ -687,69 +693,85 @@ class PlayState extends FlxState
 											\n\nWe can add more snow \nto increase health.", 
 											"", 
 											"Now add a Snowman Turret.", 
-											"You can also give your \nSnowman Turret different ammo \nthat will change its \nattack style.", 
-											"Each snowman turret in a \ntower can have an ammo type.", 
-											"And each tower can be \nup to 3 layers high.", 
+											"You can also give your \nSnowman Turret different ammo \nthat will change its \nattack style. 
+											\n\n\nEach snowman turret in a \ntower can have an ammo type.", 
 											"Now build your upgraded tower \nand good luck!"];
 
-			if (_tutStateTracker == 1) {
-				//check to see if they click on gunbase 1 
-				if (InGameMenu.currItem == 0) {
-					buildGunBase(); 
-					_tutStateTracker+= 1; 
-				}
+		if (_tutStateTracker == 1) {
+			tutEnabledButtons.push(0);
+			//check to see if they click on gunbase 1 
+			if (InGameMenu.currItem == 0) {
+				buildGunBase(); 
+				_tutStateTracker+= 1; 
 			}
+		}
 
-			if (_tutStateTracker == 2) {
-				//check to see if they click on build 
-				if (inGameMenu.placingMode) {
-					//if so, create highlight square on path
-					canvas.drawRect(320, 380, 64, 64, FlxColor.RED, lineStyle, drawStyle);
-					canvas.flicker(0, 0.5); 
-					_tutStateTracker += 1; 
-				}
-			}
-
-			if (_tutStateTracker == 3) {
-				//check to see if they clicked on highlighted square
-				if (FlxG.mouse.x >= 319 && FlxG.mouse.x <= 383 && FlxG.mouse.y >= 379 && FlxG.mouse.y <= 443) {
-					//remove red square 
-					canvas.kill();
-					//place gunbase on the square
-					buildTower();
-					_tutStateTracker += 1; 
-				}
-			}
-
-			if (_tutStateTracker == 4) {
-				if (collisionController.towers.length == 0) {
-					_tutStateTracker += 1;
-				}
-			}
-
-			if (_tutStateTracker == 5) {
-				_tutText.resetText(_tutTextList[_tutStateTracker]);
-				_tutText.start();
+		if (_tutStateTracker == 2) {
+			//check to see if they click on build 
+			if (inGameMenu.placingMode) {
+				//if so, create highlight square on path
+				canvas.drawRect(320, 380, 64, 64, FlxColor.RED, lineStyle, drawStyle);
+				canvas.flicker(0, 0.5); 
 				_tutStateTracker += 1; 
 			}
+		}
 
-			if (_tutStateTracker == 6) {
-				overlay.y = 0; 
-				_tutText.y = 150; 
-				//check if they click on snow foundation
-				if (InGameMenu.currItem == 3) {
-					buildFoundation(InGameMenu.currItem); 
-					_tutStateTracker += 1; 
-				}
+		if (_tutStateTracker == 3) {
+			//check to see if they clicked on highlighted square
+			if (FlxG.mouse.x >= 319 && FlxG.mouse.x <= 383 && FlxG.mouse.y >= 379 && FlxG.mouse.y <= 443) {
+				//remove red square 
+				canvas.kill();
+				//place gunbase on the square
+				buildTower();
+				_tutStateTracker += 1; 
 			}
+		}
 
-			if (_tutStateTracker == 7) {
-				//check if they click on the first gunbase
-				if (InGameMenu.currItem == 0) {
-					buildGunBase(); 
-					_tutStateTracker += 1; 
-				}
+		if (_tutStateTracker == 4) {
+			if (enemyReleased == 5) {
+				_tutStateTracker += 1;
 			}
+		}
+
+		if (_tutStateTracker == 5) {
+			HUD.money = 50; 
+			_tutText.resetText(_tutTextList[_tutStateTracker]);
+			_tutText.start();
+			_tutStateTracker += 1; 
+		}
+
+		if (_tutStateTracker == 6) {
+			tutEnabledButtons.push(3);
+			overlay.y = 0; 
+			_tutText.y = 150; 
+			//check if they click on snow foundation
+			if (InGameMenu.currItem == 3) {
+				buildFoundation(InGameMenu.currItem); 
+				_tutStateTracker += 1; 
+			}
+		}
+
+		if (_tutStateTracker == 7) {
+			//check if they click on the first gunbase
+			if (InGameMenu.currItem == 0) {
+				buildGunBase(); 
+				_tutStateTracker += 1; 
+			}
+		}
+
+		if (_tutStateTracker == 8) {
+			tutEnabledButtons.push(6);
+			if (InGameMenu.currItem == 6) {
+				Constants.PS.selectedAmmoType = {type:0, price:12};
+				_tutStateTracker += 1;
+			}
+		}
+
+		if (_tutStateTracker == 9) {
+			if (inGameMenu.placingMode) {
+
+			}
+		}
 
 
 		if (FlxG.mouse.justReleased) {
@@ -761,6 +783,10 @@ class PlayState extends FlxState
 			}
 
 			if (_tutStateTracker == 1) {
+				flashOutline.x = FlxG.width - 260;
+				flashOutline.y = 150;
+				add(flashOutline);
+				flashOutline.flicker(0, 0.5);
 				overlay.x = -100; 
 				overlay.y = 0;
 				overlay.setGraphicSize(FlxG.width-620, FlxG.height);
@@ -768,64 +794,34 @@ class PlayState extends FlxState
 			}
 
 			if (_tutStateTracker == 2) {
-				_tutText.y += 50;
+				flashOutline.kill();
+				_tutText.y = 300;
 			}
 
 			if (_tutStateTracker == 3) {
-				_tutText.y -= 200; 
-				overlay.y -= 400;
+				_tutText.y = 150; 
+				overlay.y = -350;
 				overlay.height = 50;
 			}
 
 
 			if (_tutStateTracker == 4) {
-				overlay.y += 900; 
-				_tutText.y += 450;
+				overlay.y = 500; 
+				_tutText.y = 550;
+				enemiesToSpawn = [0, 0, 0, 0, 0]; 
 				//MAKE SURE TO ALSO SHOW HEALTH AND STATS 
-				if (collisionController.towers.length == 1) {
-					//release slow wave of few kids
-					enemiesToSpawn = [0]; 
+				while (enemiesToSpawn.length > 0) {
+				// if (collisionController.towers.length == 1 && !enemyReleased) {
+					//release single kid 
 					spawnEnemy(); 
+					enemyReleased += 1;
 				}
 			} 
 
 			if (_tutStateTracker == 7) {
-				_tutText.y += 150;
+				_tutText.y = 300;
 			}
 		}
-
-		//emphasis on money being spend and money added when enemies die? 
-
-
-		//clicking off path breaks the tutorial for adding tower 
-		
-		//tween overlay as well as change size???
-		//fix tutorial button 
-		//make sure store doesn't cover map
-		//FIX MONEY ERRORS
-		//FIX SLOWNESS OF TEXT AND ADD SKIP BUTTON
-		//BLACK OVERLAY BEHIND
-		//PROPER POSITIONING 
-		//FLASH BUTTON THAT NEEDS TO BE CLICKED AND DISABLE EVERYTHING ELSE 
-			//PLAY REJECT SOUND IF CLICKED UNTIL THE RIGHT TIME 
-
-		//REMOVE MENU STUFF ON BOTTOM
-		//SELLING FUNCTIONALITY 
-
-		//disable clicks until proper things clicked 
-		//adjust speed of things clicked 
-
-		//different states for different text
-		//stored in list and iterate through depending on what click they're at
-		//click changes index in list and therefore text 
-		//need overlay 
-		//click shouldn't restart --> should just essentially 'skip' to completed text
-
-		//should track click state and sequence of actions 
-
-		/** 1. Get positioning and overlay correct for everything before enemies
-		2. Disable other buttons
-		3. Work on states past the one you stopped at */
 	}
 
 	private function setOverlay():Void {

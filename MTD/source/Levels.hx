@@ -44,7 +44,7 @@ class Levels{
 		start: toCameraCoordinates(5,0),
 		goal: toCameraCoordinates(7,9),
 		health: 9,
-		money: 1,
+		money: 50,
 		defaultTowerPrice: 1, 
 		isTutorial: true, 
 		waves:[]

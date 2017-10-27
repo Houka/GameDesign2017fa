@@ -65,9 +65,6 @@ class MenuState extends FlxState
 		
 		// Level select buttons
 		var buttonSize = 20;
-		// var levelNames = ["Tutorial", "Level 1", "Level 2", "Level3", "Level4", "Level5", "Level6", "Level7", "Level8", "Level9", "Level10"];
-		// var levels = [Constants.tutorial, Constants.level1, Constants.level2, Constants.level3, Constants.level4, Constants.level5, Constants.level6, 
-		// 				Constants.level7, Constants.level8, Constants.level9, Constants.level10];
 		var levelButtons = [];
 		for (i in 0...Levels.levels.length){
 			var levelButton = new Button(0, 0, Levels.levels[i].name, startGame.bind(Levels.levels[i].level),100);
