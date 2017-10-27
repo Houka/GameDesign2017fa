@@ -36,7 +36,7 @@ class MenuState extends FlxState
 		Constants.toggleCursors(CursorType.Normal);
 
 		// camera and framerate settings
-		FlxG.cameras.bgColor = FlxColor.WHITE;
+		FlxG.cameras.bgColor = FlxColor.fromInt(0xff85bbff);
 		FlxG.timeScale = 1;
 		
 		// Load a map from CSV data; note that the tile graphic does not need to be a file; in this case, it's BitmapData.
@@ -52,13 +52,14 @@ class MenuState extends FlxState
 		menuBG.alpha = 0.85;
 
 		// Game title
-		var headline = new FlxText(SELECTION_MENU_OFFSET_X, FlxG.height/2 - menuBG.origin.y, FlxG.width, "MTD", 75);
+		var headline = new FlxSprite(0,0, AssetPaths.logo__png);
+		headline.setPosition(FlxG.width/2 - headline.origin.x + SELECTION_MENU_OFFSET_X, FlxG.height/2 - menuBG.height/2);
 		headline.scrollFactor.x = headline.scrollFactor.y = 0;
-		headline.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,5);
-		headline.alignment = CENTER;
+		headline.alpha = 0.85;
+		
 		
 		// Credits
-		var credits = new FlxText(SELECTION_MENU_OFFSET_X, FlxG.height/2 + menuBG.origin.y - 10, FlxG.width, "Sun Bear Studios", 14);
+		var credits = new FlxText(SELECTION_MENU_OFFSET_X, FlxG.height/2 + menuBG.origin.y + 5, FlxG.width, "Sun Bear Studios", 14);
 		credits.scrollFactor.x = credits.scrollFactor.y = 0;
 		credits.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,1);
 		credits.alignment = CENTER;
@@ -67,10 +68,10 @@ class MenuState extends FlxState
 		var buttonSize = 20;
 		var levelButtons = [];
 		for (i in 0...Levels.levels.length){
-			var levelButton = new Button(0, 0, Levels.levels[i].name, startGame.bind(Levels.levels[i].level),100);
+			var levelButton = new Button(0, 0, Levels.levels[i].name, startGame.bind(Levels.levels[i].level),150);
 			levelButton.label.size = buttonSize;
 			levelButton.screenCenter();
-			levelButton.y += i*25 - 75;
+			levelButton.y += i*(levelButton.height+2) - menuBG.height/2 + headline.height;
 			levelButton.x += SELECTION_MENU_OFFSET_X;
 			levelButtons.push(levelButton);
 		}

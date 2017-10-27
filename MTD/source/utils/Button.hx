@@ -22,11 +22,11 @@ class Button extends FlxButton
 			width = Width;
 		else
 			width = Label.length * 7;
-		height = 20;
+		height = 30;
 		label.alpha = 1;
 		set_status(status);
 		
-		makeGraphic(Std.int(width), Std.int(height), 0);
+		makeGraphic(Std.int(width), Std.int(height), 0x3385bbff);
 	}
 	
 	/**

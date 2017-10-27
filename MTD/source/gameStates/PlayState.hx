@@ -111,7 +111,7 @@ class PlayState extends FlxState
 		
 		// Create map
 		
-		_map = Levels.loadMap(_level);
+		_map = Levels.loadMap(_level,true);
 		_enemySpawnPosition = _level.start;
 		_goalPosition = _level.goal;
 		_possiblePaths = new Array<Array<FlxPoint>>();
@@ -217,7 +217,7 @@ class PlayState extends FlxState
 		
 		// Check for key presses, which can substitute for button clicks.
 		
-		if (FlxG.keys.justReleased.ESCAPE)
+		if (FlxG.keys.justReleased.Q)
 		{
 			FlxG.sound.destroy(true);
 			FlxG.switchState(new MenuState());

@@ -19,7 +19,7 @@ class Foundation extends TowerBlock
 
 	public function new(X:Float, Y:Float, HealthPoints:Int) 
 	{
-		super(X, Y, AssetPaths.tower_base__png);
+		super(X, Y, AssetPaths.snow1__png);
 		this.healthPoints = HealthPoints; 
 
 		#if flash
