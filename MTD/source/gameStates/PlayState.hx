@@ -75,6 +75,7 @@ class PlayState extends FlxState
 	private var canvas = new FlxSprite();
 	private var _startEnemySpawn: Bool = false; 
 	private var overlay = new FlxSprite();
+	private var enemyReleased:Bool = false; 
 
 	
 	private var lineStyle:LineStyle = { color: FlxColor.BLACK, thickness: 1 };
@@ -742,10 +743,11 @@ class PlayState extends FlxState
 				overlay.y = 500; 
 				_tutText.y = 550;
 				//MAKE SURE TO ALSO SHOW HEALTH AND STATS 
-				if (collisionController.towers.length == 1) {
-					//release slow wave of few kids
+				if (collisionController.towers.length == 1 && !enemyReleased) {
+					//release single kid 
 					enemiesToSpawn = [0]; 
 					spawnEnemy(); 
+					enemyReleased = true;
 				}
 			} 
 
