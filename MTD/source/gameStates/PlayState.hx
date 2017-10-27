@@ -814,7 +814,7 @@ class PlayState extends FlxState
 
 			if (_tutStateTracker == 1) {
 				flashOutline.x = FlxG.width - 260;
-				flashOutline.y = 150;
+				flashOutline.y = 155;
 				add(flashOutline);
 				flashOutline.flicker(0, 0.5);
 				overlay.x = -165; 

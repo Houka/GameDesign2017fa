@@ -501,26 +501,26 @@ class InGameMenu extends FlxGroup{
 	/** A function that creates the buttons in the store. */
 	private function createBuildButtons():Void { 
 		var buttons = [
-			{name: "Gun 1 \n 1", price: 1}, 
-			{name: "Gun 2 \n 2", price: 2}, 
-			{name: "Gun 3 \n 3", price: 3}, 
-			{name: "Snow \n 1", price: 1}, 
-			{name: "Ice \n 2", price: 2}, 
-			{name: "Metal \n 3", price: 3}
+			{name: "", price: 1, path: AssetPaths.SnowyGunBase__png}, 
+			{name: "", price: 2, path: AssetPaths.SpatterGunBase__png}, 
+			{name: "", price: 3, path: AssetPaths.SpeedyGunBase__png}, 
+			{name: "", price: 1, path: AssetPaths.SnowBase__png}, 
+			{name: "", price: 2, path: AssetPaths.IceBase__png}, 
+			{name: "", price: 3, path: AssetPaths.CoalBase__png}
 		]; 
 
 		var gap = 10; 
 		var width = 50; 
-		var height = 50; 
+		var height = 67; 
 		var x = FlxG.width-260;
-		var y = 150;
+		var y = 145;
 		var row = 0; 
 		var col = -1; 
 
 		for (i in 0...buttons.length) {
 			col++; 
 			var btn:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), buttons[i].name,createTowerCallback.bind(false, i, buttons[i].price));
-			btn.loadGraphic(AssetPaths.button__png, true, width, height); 
+			btn.loadGraphic(buttons[i].path, true, width, height); 
 			add(btn);
 
 			if ((i+1)%3 == 0) {
