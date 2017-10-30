@@ -332,6 +332,12 @@ class InGameMenu extends FlxGroup{
 	}
 
 	private function createTowerCallback(Skip: Bool=false, ItemNum: Int, Price:Int): Void { 
+		// can't build any taller
+		if (matValuesList.length>=Constants.MAX_HEIGHT){
+			Constants.play("deny");
+			return;
+		}
+
 		if (PlayState.isTutorial) {
 			if (PlayState.tutEnabledButtons.length > 0) {
 				if (PlayState.tutEnabledButtons.indexOf(ItemNum) != -1) {
@@ -344,7 +350,7 @@ class InGameMenu extends FlxGroup{
 		}
 
 		//If the player has enough money, keep track of the current price of the tower.
-		else if (towerPrice < HUD.money && !PlayState.isTutorial) {
+		else if ((towerPrice+Price) <= HUD.money && !PlayState.isTutorial) {
 			buyingMode = true; 
 			currItem = ItemNum; 
 			towerPrice += Price; 
@@ -501,12 +507,12 @@ class InGameMenu extends FlxGroup{
 	/** A function that creates the buttons in the store. */
 	private function createBuildButtons():Void { 
 		var buttons = [
-			{name: "", price: 1, path: AssetPaths.SnowyGunBase__png}, 
-			{name: "", price: 2, path: AssetPaths.SpatterGunBase__png}, 
-			{name: "", price: 3, path: AssetPaths.SpeedyGunBase__png}, 
-			{name: "", price: 1, path: AssetPaths.SnowBase__png}, 
-			{name: "", price: 2, path: AssetPaths.IceBase__png}, 
-			{name: "", price: 3, path: AssetPaths.CoalBase__png}
+			{name: "", price: 14, path: AssetPaths.SnowyGunBase__png}, 
+			{name: "", price: 25, path: AssetPaths.SpatterGunBase__png}, 
+			{name: "", price: 50, path: AssetPaths.SpeedyGunBase__png}, 
+			{name: "", price: 8, path: AssetPaths.SnowBase__png}, 
+			{name: "", price: 16, path: AssetPaths.IceBase__png}, 
+			{name: "", price: 32, path: AssetPaths.CoalBase__png}
 		]; 
 
 		var gap = 10; 
@@ -532,7 +538,7 @@ class InGameMenu extends FlxGroup{
 		// add ammo buttons
 		height = 67;
 		col++;
-		var ammo1:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", addAmmoCallback.bind(false, 1, 10));
+		var ammo1:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", addAmmoCallback.bind(false, 1, 12));
 		ammo1.loadGraphic(AssetPaths.PiercingAmmoButton__png, true, width, height); 
 		col++;
 		var ammo2:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", addAmmoCallback.bind(false, 2, 18));
