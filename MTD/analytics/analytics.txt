@@ -1,0 +1,18 @@
+event-driven logging:
+mouse press pos (x,y,time) = 0
+mouse release pos (x,y,time) = 1
+
+health change (hp, time) = 2
+
+wave start(currency, wave num, towers destroyed, time) = 3
+
+tower build(position (x,y), materials, time) = 4
+game over (wave num, level num) = 5
+
+3 js scripts
+fetch_data.js
+parse player quests.js
+    bucketize players by id.
+    look into the get_csv.php
+parse player actions.js
+index.html -> d3
