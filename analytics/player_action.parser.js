@@ -1,6 +1,6 @@
-module.exports.parseAct = function(data, actType){
+var parseAct = function(data, actType){
     var help = "Parse player actions from data.json, and output a JSON of just those actions.\n"+
-        "Usage:\n\tnode parse_action.js <version> <action type 1-6>\n"+
+        "Input:\n\tdata:raw JSON data; actType:int 1-6\n"+
         "Actions:\n"+
         "\t1: Mouse Press\n"+
         "\t2: Mouse Release\n"+
