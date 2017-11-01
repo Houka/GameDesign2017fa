@@ -1,4 +1,4 @@
-var parseAct = function(data, actType){
+function parseAct(data, actType){
     var help = "Parse player actions from data.json, and output a JSON of just those actions.\n"+
         "Input:\n\tdata:raw JSON data; actType:int 1-6\n"+
         "Actions:\n"+
@@ -60,4 +60,4 @@ var parseAct = function(data, actType){
     }
 
     return output;
-});
+}
