@@ -1,0 +1,52 @@
+<html> 
+	<head>
+		<style>
+			svg {border: 1px solid black;}
+		</style>
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<script src="http://d3js.org/topojson.v1.min.js"></script>
+		<script src="heatmap.js"></script>
+		<script src="burnout.js"></script>
+		<script src="histogram.js"></script>
+	</head>
+
+	<p> D3 </p> 
+
+	<svg id = "svg1" height= "200" width = "200"> </svg>
+	<svg id = "svg2" height= "200" width = "200"> </svg>
+	<svg id = "svg3" height= "200" width = "200"> </svg>
+	<svg id = "svg4" height= "200" width = "200"> </svg>
+
+	<script> 
+		var heatmap = d3.select("#svg1"); 
+		var height = heatmap.attr("height"); 
+		var width = heatmap.attr("width");
+
+		var burnout = d3.select("#svg2"); 
+		var height = burnout.attr("height"); 
+		var width = burnout.attr("width");
+
+		var histogram = d3.select("#svg3"); 
+		var height = histogram.attr("height"); 
+		var width = histogram.attr("width");
+
+		d3.json("data.v4.json", function(data) {
+			var player_quests = data.player_quests; 
+			var player_actions = data.player_actions;
+
+
+			create_heatmap(player_quests, heatmap);
+			create_burnout(player_quests, burnout);
+			create_histogram(player_quests, histogram);
+
+		});
+
+
+
+	
+	</script> 
+
+
+
+</html> 
+
