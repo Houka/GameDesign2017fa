@@ -2,6 +2,9 @@
 	<head>
 		<style>
 			svg {border: 1px solid black;}
+			.axis path {fill: none; stroke: black; shape-rendering: none;}
+			.axis line {stroke: black;}
+			.axis text {font-size: 10pt;}
 		</style>
 		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 		<script src="http://d3js.org/topojson.v1.min.js"></script>
@@ -14,7 +17,7 @@
 	<p> D3 </p> 
 
 	<svg id = "svg1" height= "200" width = "200"> </svg>
-	<svg id = "svg2" height= "200" width = "200"> </svg>
+	<svg id = "svg2" height= "500" width = "500"> </svg>
 	<svg id = "svg3" height= "200" width = "200"> </svg>
 	<svg id = "svg4" height= "200" width = "200"> </svg>
 
@@ -41,9 +44,12 @@
 			var game_over = parseAct(data, 6);
 
 			create_heatmap(mouse_press, mouse_release, tower_create, heatmap);
-			create_burnout(player_quests, burnout);
+			create_burnout(game_over, burnout);
 			create_histogram(player_quests, histogram);
 
+		});
+
+		d3.csv("data.csv", function(data) {
 		});
 
 
