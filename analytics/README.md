@@ -10,19 +10,19 @@ fetch_data.json will return the json data in `data.v<version>.json`
   
 Event-driven Logging:  
 ---------------------  
-mouse press pos (x,y,time) = 0  
-mouse release pos (x,y,time) = 1  
-health change (hp, time) = 2  
-wave start(currency, wave num, towers destroyed, time) = 3  
-tower build(position (x,y), materials, time) = 4  
-game over (wave num, level num) = 5  
+mouse press pos (x,y,time) = 1  
+mouse release pos (x,y,time) = 2  
+health change (hp, time) = 3  
+wave start(currency, wave num, towers destroyed, time) = 4  
+tower build(position (x,y), materials, time) = 5  
+game over (wave num, level num) = 6  
 
 Structure:
 ----------
 3 js scripts:  
 *   fetch_data.js
-*   parse player quests.js
-        1.  bucketize players by id.
-        2.  look into the get_csv.php
+*   parse player quests.js  
+        1.  bucketize players by id.  
+        2.  look into the get_csv.php  
 *   parse player actions.js
 *   index.html -> d3
