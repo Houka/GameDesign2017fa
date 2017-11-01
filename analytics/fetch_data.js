@@ -25,7 +25,7 @@ var req = http.get(getUrl, function(res){
         output = JSON.stringify(jsonData, null, 2);
         fs.writeFile("data.v"+version+".json", output, function(e){
             if(e){
-                console.log(err);
+                console.log(e);
             }
         });
     });
