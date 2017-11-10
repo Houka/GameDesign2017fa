@@ -51,7 +51,7 @@ class LevelData{
 		}
 		return levels[currentLevel];
 	}
-	public static function getNextLevel():Null<Level>{
+	public static function gotoNextLevel():Null<Level>{
 		currentLevel ++;
 		return getCurrentLevel();
 	}
@@ -605,7 +605,7 @@ class Bullet extends FlxSprite{
 		// get rid of off screen bullet or a too transparent bullet
 		if (!isOnScreen(FlxG.camera) || alpha <= 0.1) 
 		{
-			kill();
+			super.kill();
 		}
 		
 		alpha -= 0.02;
@@ -1142,7 +1142,7 @@ class WinState extends FlxSubState
 		if (FlxG.keys.anyJustPressed([R]))
 			FlxG.switchState(new GameState());
 		if (FlxG.keys.anyJustPressed([N])){
-			if (LevelData.getNextLevel() == null)
+			if (LevelData.gotoNextLevel() == null)
 				FlxG.switchState(new MenuState());
 			FlxG.switchState(new GameState());
 		}
