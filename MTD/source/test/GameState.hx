@@ -27,6 +27,7 @@ typedef Level = {
 	var tilemap:String;
 	var startHealth:Int;
 	var waves:Array<Array<Int>>;
+	var buttonTypes:Array<Int>;
 }
 
 class LevelData{
@@ -34,10 +35,11 @@ class LevelData{
 		mapFilepath:"assets/maps/test.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
-		waves:[[0,0,0]]
+		waves:[[0,0,0]],
 		// waves:[[0,0,0,0,0],
 		// 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 		// 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+		buttonTypes:[0,1,3,6]//[0,1,3,4,5,6,7,8]
 	}
 
 	public static var levels = [level1];
@@ -821,60 +823,82 @@ class BuildState extends FlxSubState
 		var y = 145;
 		var row = 0; 
 		var col = -1;
+		var buttons = LevelData.getCurrentLevel().buttonTypes;
 
 		// row of gun buttons
-		col++;
-		var gun:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(0));
-		gun.loadGraphic(AssetPaths.SnowyGunBase__png, true, width, height); 
-		gui.add(gun);
+		var gun:FlxButton;
+		if (buttons.indexOf(0) != -1){
+			col++;
+			gun = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(0));
+			gun.loadGraphic(AssetPaths.SnowyGunBase__png, true, width, height); 
+			gui.add(gun);
+		}
 
-		col++;
-		gun = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(1));
-		gun.loadGraphic(AssetPaths.SpatterGunBase__png, true, width, height); 
-		gui.add(gun);
+		if (buttons.indexOf(1) != -1){
+			col++;
+			gun = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(1));
+			gun.loadGraphic(AssetPaths.SpatterGunBase__png, true, width, height); 
+			gui.add(gun);
+		}
 		
-		col++;
-		gun = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(2));
-		gun.loadGraphic(AssetPaths.SpeedyGunBase__png, true, width, height); 
-		gui.add(gun);
+		if (buttons.indexOf(2) != -1){
+			col++;
+			gun = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(2));
+			gun.loadGraphic(AssetPaths.SpeedyGunBase__png, true, width, height); 
+			gui.add(gun);
+		}
 
 		row++;
 		col = -1;
 
 		// row of foundation buttons
-		col++;
-		var foundation:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", foundationCallback.bind(3));
-		foundation.loadGraphic(AssetPaths.SnowBase__png, true, width, height); 
-		gui.add(foundation);
+		var foundation:FlxButton;
+		if (buttons.indexOf(3) != -1){
+			col++;
+			foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", foundationCallback.bind(3));
+			foundation.loadGraphic(AssetPaths.SnowBase__png, true, width, height); 
+			gui.add(foundation);
+		}
 
-		col++;
-		foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", foundationCallback.bind(4));
-		foundation.loadGraphic(AssetPaths.IceBase__png, true, width, height); 
-		gui.add(foundation);
+		if (buttons.indexOf(4) != -1){
+			col++;
+			foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", foundationCallback.bind(4));
+			foundation.loadGraphic(AssetPaths.IceBase__png, true, width, height); 
+			gui.add(foundation);
+		}
 		
-		col++;
-		foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", foundationCallback.bind(5));
-		foundation.loadGraphic(AssetPaths.CoalBase__png, true, width, height); 
-		gui.add(foundation);
+		if (buttons.indexOf(5) != -1){
+			col++;
+			foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", foundationCallback.bind(5));
+			foundation.loadGraphic(AssetPaths.CoalBase__png, true, width, height); 
+			gui.add(foundation);
+		}
 
 		row++;
 		col = -1;
 
 		// row of ammo buttons
-		col++;
-		var ammo:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(6));
-		ammo.loadGraphic(AssetPaths.PiercingAmmoButton__png, true, width, height); 
-		gui.add(ammo);
+		var ammo:FlxButton;
+		if (buttons.indexOf(6) != -1){
+			col++;
+			ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(6));
+			ammo.loadGraphic(AssetPaths.PiercingAmmoButton__png, true, width, height); 
+			gui.add(ammo);
+		}
 
-		col++;
-		ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(7));
-		ammo.loadGraphic(AssetPaths.ExplodeAmmoButton__png, true, width, height); 
-		gui.add(ammo);
+		if (buttons.indexOf(7) != -1){
+			col++;
+			ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(7));
+			ammo.loadGraphic(AssetPaths.ExplodeAmmoButton__png, true, width, height); 
+			gui.add(ammo);
+		}
 		
-		col++;
-		ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(8));
-		ammo.loadGraphic(AssetPaths.FreezeAmmoButton__png, true, width, height); 
-		gui.add(ammo);
+		if (buttons.indexOf(8) != -1){
+			col++;
+			ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(8));
+			ammo.loadGraphic(AssetPaths.FreezeAmmoButton__png, true, width, height); 
+			gui.add(ammo);
+		}
 
 		// sprite to display the selected ammo
 		ammoSprite = new FlxSprite(Std.int(storePosition.x)+100,460,AssetPaths.snowball__png);
