@@ -111,6 +111,14 @@ class Util{
 	public static function toCameraCoordinates(x:Int, y:Int):FlxPoint{
 		return FlxPoint.get(x*TILE_SIZE, y*TILE_SIZE);
 	}
+
+	public static function copy2DArray(array:Array<Array<Int>>):Array<Array<Int>>{
+		var copy = new Array<Array<Int>>();
+		for (i in array){
+			copy.push(i.copy());
+		}
+		return copy;
+	}
 }
 
 class GameObjectFactory{
@@ -152,6 +160,7 @@ class GameObjectFactory{
 	public static function addBullet(bullets:FlxTypedGroup<Bullet>, X:Int, Y:Int, GunType:Int, Type:Int){
 		var bullet = bullets.recycle(Bullet);
 		var attack = 1; 
+		trace(GunType+" " +Type);
 		switch (GunType) {
 			case 0:
 				// horizontal only
@@ -245,7 +254,7 @@ class CollisionController{
 		collisionDetected = false;
 
 		// bullet interaction
-		FlxG.overlap(originalMap,bullets, function(m,b) b.kill());
+		FlxG.collide(originalMap,bullets,function(m,b) b.kill());
 
 		// enemy interactions
 		FlxG.overlap(enemies, homebase, hitEnemyHomebase);
@@ -296,23 +305,18 @@ class CollisionController{
 			homebase.hurt(1);
 			e.kill();
 		}
-
-		trace("hitEnemyHomebase");
 	}
 	private function hitEnemyBullet(e:Enemy, b:Bullet){
 		if (e.alive){
 			e.hurt(b.attackPt);
 			b.kill();
 		}
-		trace("hitEnemyBullet");
 	}
 	private function hitAllyEnemy(a:Ally,e:Enemy){
 		if (e.alive && a.alive){
 			e.kill();
 			a.kill();
 		}
-
-		trace("hitAllyEnemy");
 	}
 	private function hitAllyTower(a:Ally,t:Tower){
 		if (a.alive && !a.inTower && a.target == null && t.created && t.alive){
@@ -320,11 +324,12 @@ class CollisionController{
 			a.target = t;
 			t.addWorker(a);
 		}
-
-		trace("hitAllyTower");
 	}
 	private function hitAllyHomebase(a:Ally,obj:FlxObject){
-		trace("hitAllyHomebase");
+		if (a.alive && a.target == null){
+			homebase.health++;
+			a.kill();
+		}
 	}
 	private function hitPlayerHomebase(p:Player, obj:FlxObject){
 		if(p.alive && homebase.health > 0 && prevCollision != CollisionID.PH){
@@ -334,7 +339,6 @@ class CollisionController{
 			ally.target = p;
 		}
 
-		trace("hitPlayerHomebase");
 		prevCollision = CollisionID.PH;
 		collisionDetected = true;
 	}
@@ -342,7 +346,6 @@ class CollisionController{
 		if (p.alive && e.alive){
 			p.kill();
 		}
-		trace("hitPlayerEnemy");
 	}
 	private function hitPlayerTower(p:Player, t:Tower){
 		if (!t.created && prevCollision != CollisionID.PT){
@@ -357,7 +360,6 @@ class CollisionController{
 			}
 		}
 		
-		trace("hitPlayerTower");
 		prevCollision = CollisionID.PT;
 		collisionDetected = true;
 	}
@@ -367,7 +369,6 @@ class CollisionController{
 	private function hitPlayerAlly(p:Player, a:Ally){
 		if (a.alive && a.velocity.x == 0 && a.velocity.y == 0)
 			a.target = p;
-		trace("hitPlayerAlly");
 	}
 }
 
@@ -697,6 +698,11 @@ class Tower extends FlxSprite{
 	}
 }
 class Homebase extends FlxGroup{
+	private static inline var xOffset:Int=-5;
+	private static inline var yOffset:Int=-20;
+	private static inline var gap:Int=15;
+
+	public var point:FlxPoint;
 	public var midpoint:FlxPoint;
 	public var gameover:Bool;
 	public var health(default, set):Int;
@@ -717,13 +723,11 @@ class Homebase extends FlxGroup{
 		add(homebase);
 
 		midpoint = homebase.getMidpoint();
+		point = new FlxPoint(X,Y);
 
 		// make hearts around homebase to show life
 		// max life is 5
 		healthSprites = new FlxTypedGroup<FlxSprite>();
-		var xOffset = -5;
-		var yOffset = -20;
-		var gap = 15;
 		for (h in 0...health)
 		{
 			var heart = new FlxSprite(X+xOffset + gap * h, Y+yOffset);
@@ -751,6 +755,11 @@ class Homebase extends FlxGroup{
 	private function set_health(Health:Int):Int{
 		if (health >= 0 && health > Health)
 			healthSprites.members[Health].kill();
+		if (health < Health){
+			var h = healthSprites.recycle(FlxSprite);
+			h.reset(point.x+xOffset + gap * (Health-1), point.y+yOffset);
+		}
+
 
 		health = Health;
 		return health;
@@ -1141,7 +1150,7 @@ class GameState extends FlxState{
 
 		// load the map
 		originalMap.loadMapFrom2DArray(mapArray, _level.tilemap, Util.TILE_SIZE,Util.TILE_SIZE, AUTO);
-		towerMap.loadMapFrom2DArray(mapArray, _level.tilemap, Util.TILE_SIZE,Util.TILE_SIZE, AUTO);
+		towerMap.loadMapFrom2DArray(Util.copy2DArray(mapArray), _level.tilemap, Util.TILE_SIZE,Util.TILE_SIZE, AUTO);
 		this.map = originalMap;
 
 		// set goal for spawn point and pass the map to spawn area
