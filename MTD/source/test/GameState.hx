@@ -11,6 +11,8 @@ import flixel.util.FlxPath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxVelocity;
 import flixel.group.FlxGroup;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 import flixel.tile.FlxTilemap;
 import flixel.ui.FlxButton;
 import openfl.Assets;
@@ -122,6 +124,7 @@ class Util{
 }
 
 class GameObjectFactory{
+	public static var dummyAlly = new Ally();
 	public static function addEnemy(enemies:FlxTypedGroup<Enemy>, X:Int, Y:Int, Type:Int, Path:Array<FlxPoint>):Enemy{
 		var enemy = enemies.recycle(Enemy);	// uses an already added enemy, or makes a new one and adds it to enemies
 
@@ -148,6 +151,7 @@ class GameObjectFactory{
 		var tower = towers.recycle(Tower);
 		var point = Util.toCameraCoordinates(X,Y);
 		tower.init(Std.int(point.x), Std.int(point.y),bullets,towerLayers,map);
+
 		return tower;
 	}
 
@@ -268,12 +272,14 @@ class CollisionController{
 		FlxG.collide(originalMap, allies);
 
 		// player interactions
-		FlxG.overlap(player, homebase, hitPlayerHomebase);
-		FlxG.overlap(player, enemies, hitPlayerEnemy);
-		FlxG.overlap(player, towers, hitPlayerTower);
-		FlxG.overlap(player, spawnArea, hitPlayerSpawnArea);
-		FlxG.overlap(player, allies, hitPlayerAlly);
-		FlxG.collide(originalMap, player);
+		if (player!= null){
+			FlxG.overlap(player, homebase, hitPlayerHomebase);
+			FlxG.overlap(player, enemies, hitPlayerEnemy);
+			FlxG.overlap(player, towers, hitPlayerTower);
+			FlxG.overlap(player, spawnArea, hitPlayerSpawnArea);
+			FlxG.overlap(player, allies, hitPlayerAlly);
+			FlxG.collide(originalMap, player);
+		}
 
 		// mouse clicks tower region
 		if (FlxG.mouse.justPressed){
@@ -350,9 +356,11 @@ class CollisionController{
 	private function hitPlayerTower(p:Player, t:Tower){
 		if (!t.created && prevCollision != CollisionID.PT){
 			// if the player hasn't made a tower here yet
-			state.openSubState(new BuildState(t));
+			if (state.subState == null)
+				state.openSubState(new BuildState(t));
 		}
-		else if(t.created  && prevCollision != CollisionID.PT){
+		else if(t.created && p!=null && prevCollision != CollisionID.PT){
+			// if the player has already made a tower here but wants to retrieve the ally from it
 			var ally = t.popWorker();
 			if (ally != null){
 				ally.inTower = false;
@@ -674,7 +682,7 @@ class Tower extends FlxSprite{
 			}
 		}
 
-		created = true;
+		created = children.length > 0;
 		map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 1, false);
 	}
 	public function addWorker(a:Ally){
@@ -775,10 +783,12 @@ class BuildState extends FlxSubState
 	private static inline var MAX_TOWER_HEIGHT = 3;
 	private var _tower:Tower;
 	private var _materials:Array<Int>;
-	private var display:FlxGroup;
 	private var currentStack:Int;
 	private var ammo:Int;
 	private var ammoSprite:FlxSprite;
+	private var gui:FlxTypedGroup<FlxSprite>;
+	private var display:FlxTypedGroup<FlxSprite>;
+	private var storePosition:FlxPoint;
 	public function new(tower:Tower){
 		super();
 		_tower = tower;
@@ -786,22 +796,24 @@ class BuildState extends FlxSubState
 	override public function create():Void
 	{
 		super.create();
-		currentStack = 300;
+		currentStack = 500;
 		this.ammo = 6;
 		_materials = new Array<Int>();
+		gui = new FlxTypedGroup<FlxSprite>();
+		storePosition = new FlxPoint(FlxG.width-340, 40);
 
 		// semi transparent black bg overlay
-		var background = new FlxSprite(0,0);
+		var background = new FlxSprite(Std.int(storePosition.x),0);
 		background.makeGraphic(FlxG.width,FlxG.height,FlxColor.BLACK);
 		background.alpha = 0.5;
-		add(background);
+		gui.add(background);
 
 		// store bg
-		var store = new FlxSprite(FlxG.width-320, 40);
+		var store = new FlxSprite(Std.int(storePosition.x+20),Std.int(storePosition.y));
 		store.loadGraphic(AssetPaths.store__png);
-		add(store);
+		gui.add(store);
 
-		// add buttons
+		// add buttons vars
 		var gap = 10; 
 		var width = 50; 
 		var height = 67; 
@@ -814,17 +826,17 @@ class BuildState extends FlxSubState
 		col++;
 		var gun:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(0));
 		gun.loadGraphic(AssetPaths.SnowyGunBase__png, true, width, height); 
-		add(gun);
+		gui.add(gun);
 
 		col++;
 		gun = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(1));
 		gun.loadGraphic(AssetPaths.SpatterGunBase__png, true, width, height); 
-		add(gun);
+		gui.add(gun);
 		
 		col++;
 		gun = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(2));
 		gun.loadGraphic(AssetPaths.SpeedyGunBase__png, true, width, height); 
-		add(gun);
+		gui.add(gun);
 
 		row++;
 		col = -1;
@@ -833,17 +845,17 @@ class BuildState extends FlxSubState
 		col++;
 		var foundation:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", foundationCallback.bind(3));
 		foundation.loadGraphic(AssetPaths.SnowBase__png, true, width, height); 
-		add(foundation);
+		gui.add(foundation);
 
 		col++;
 		foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", foundationCallback.bind(4));
 		foundation.loadGraphic(AssetPaths.IceBase__png, true, width, height); 
-		add(foundation);
+		gui.add(foundation);
 		
 		col++;
 		foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", foundationCallback.bind(5));
 		foundation.loadGraphic(AssetPaths.CoalBase__png, true, width, height); 
-		add(foundation);
+		gui.add(foundation);
 
 		row++;
 		col = -1;
@@ -852,24 +864,48 @@ class BuildState extends FlxSubState
 		col++;
 		var ammo:FlxButton = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(6));
 		ammo.loadGraphic(AssetPaths.PiercingAmmoButton__png, true, width, height); 
-		add(ammo);
+		gui.add(ammo);
 
 		col++;
 		ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(7));
 		ammo.loadGraphic(AssetPaths.ExplodeAmmoButton__png, true, width, height); 
-		add(ammo);
+		gui.add(ammo);
 		
 		col++;
 		ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(8));
 		ammo.loadGraphic(AssetPaths.FreezeAmmoButton__png, true, width, height); 
-		add(ammo);
+		gui.add(ammo);
+
+		// sprite to display the selected ammo
+		ammoSprite = new FlxSprite(Std.int(storePosition.x)+100,460,AssetPaths.snowball__png);
+		gui.add(ammoSprite);
+
+		add(gui);
 
 		// used for displaying the currently created tower
-		display = new FlxGroup();
+		display = new FlxTypedGroup<FlxSprite>();
 		add(display);
 
-		ammoSprite = new FlxSprite(150,150,AssetPaths.snowball__png);
-		add(ammoSprite);
+		// add deny and confirm buttons
+		var but:FlxButton = new FlxButton(Std.int(storePosition.x) + 100, FlxG.height - 100, "", confirmedCallback);
+		but.loadGraphic(AssetPaths.confirmButton__png, true, 50, 50); 
+		gui.add(but);
+
+		but = new FlxButton(Std.int(storePosition.x) +200, FlxG.height - 100, "", exitCallback);
+		but.loadGraphic(AssetPaths.denyButton__png, true, 50, 50); 
+		gui.add(but);
+
+		// move all gui elements outside of screen and stop their scroll factors
+		var xOffset = FlxG.width;
+		for (e in gui){
+			e.x+=xOffset;
+			e.scrollFactor.set(0,0);
+		}
+
+		// add move in tween
+		for (e in gui){
+			FlxTween.tween(e, { x: e.x-xOffset }, 0.5, { ease: FlxEase.expoOut });
+		}
 	}
 
 	override public function add(Object:FlxBasic):FlxBasic{
@@ -888,7 +924,7 @@ class BuildState extends FlxSubState
 		if (FlxG.keys.anyJustPressed([Y])) {
 			confirmedCallback();
 		}
-		if (FlxG.keys.anyJustPressed([N])) {
+		if (FlxG.keys.anyJustPressed([N]) || (FlxG.mouse.justPressed && FlxG.mouse.x < storePosition.x)) {
 			exitCallback();
 		}
 	}
@@ -896,16 +932,19 @@ class BuildState extends FlxSubState
 	private function confirmedCallback(){
 		_materials.push(ammo);
 		_tower.buildTower(_materials);
-		close();
+		exitCallback();
 	}
 
 	private function exitCallback(){
-		close();
+		for (e in display)
+			FlxTween.tween(e, { x: e.x+FlxG.width }, 0.5, { ease: FlxEase.expoIn, onComplete: function(t) close() });
+		for(e in gui)
+			FlxTween.tween(e, { x: e.x+FlxG.width }, 0.5, { ease: FlxEase.expoIn, onComplete: function(t) close() });
 	}
 
 	private function gunCallback(type:Int){
 		if (addMaterial(type)){
-			var temp = new FlxSprite(100,currentStack);
+			var temp = new FlxSprite(Std.int(storePosition.x)+150,currentStack);
 			switch(type){
 				case 0:
 					temp.loadGraphic(AssetPaths.snowman_head__png);
@@ -920,7 +959,7 @@ class BuildState extends FlxSubState
 	}
 	private function foundationCallback(type:Int){
 		if (addMaterial(type)){
-			var temp = new FlxSprite(100,currentStack);
+			var temp = new FlxSprite(Std.int(storePosition.x)+150,currentStack);
 			switch(type){
 				case 3:
 					temp.loadGraphic(AssetPaths.snow1__png);
@@ -1098,6 +1137,7 @@ class GameState extends FlxState{
 	override public function create(){
 		super.create();
 		FlxG.timeScale = 1;
+		persistentUpdate = true;
 
 		// init flx group vars
 		var towers = new FlxTypedGroup<Tower>();
@@ -1163,16 +1203,6 @@ class GameState extends FlxState{
 			a.target = player;
 		}
 
-		// camera setup
-		var LEVEL_MIN_X = 0;
-		var LEVEL_MIN_Y = 0;
-		var LEVEL_MAX_X = Util.TILE_SIZE*mapWidth;
-		var LEVEL_MAX_Y = Util.TILE_SIZE*mapHeight;
-		FlxG.cameras.bgColor = FlxColor.fromInt(0xff85bbff);
-		FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X, LEVEL_MIN_Y,
-			LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
-		FlxG.camera.follow(player, LOCKON, 0.5);
-
 		// collision setup
 		collisionController = new CollisionController(originalMap, towerMap, player, allies, 
 								enemies, bullets, towers, homebase, spawnArea, this);
@@ -1185,8 +1215,28 @@ class GameState extends FlxState{
 		add(enemies);
 		add(bullets);
 		add(towerLayers);
-		add(player);
+		if (player != null)
+			add(player);
+		else{
+			var center = Util.toMapCoordinates(FlxG.width/2, FlxG.height/2);
+			player = GameObjectFactory.createPlayer(Std.int(center.x),Std.int(center.y),allies);
+			player.exists = false;
+
+			// add dummy worker to each tower if there is no player
+			for (t in towers)
+				t.addWorker(GameObjectFactory.dummyAlly);
+		}
 		add(homebase);
+
+		// camera setup
+		var LEVEL_MIN_X = 0;
+		var LEVEL_MIN_Y = 0;
+		var LEVEL_MAX_X = Util.TILE_SIZE*mapWidth;
+		var LEVEL_MAX_Y = Util.TILE_SIZE*mapHeight;
+		FlxG.cameras.bgColor = FlxColor.fromInt(0xff85bbff);
+		FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X, LEVEL_MIN_Y,
+			LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
+		FlxG.camera.follow(player, LOCKON, 0.5);
 	}
 	
 	override public function update(elapsed:Float){
@@ -1199,6 +1249,9 @@ class GameState extends FlxState{
 		// update interactions of game objects
 		collisionController.update(elapsed);
 
+		if (!player.exists)
+			player.update(elapsed);
+
 		// last thing to do on update
 		checkGameOver();
 	}
@@ -1208,8 +1261,10 @@ class GameState extends FlxState{
 	*/
 	private function checkGameOver(){
 		// if you lost the game then open LoseState, then return
-		if (homebase.gameover || !player.alive)
+		if (homebase.gameover || !player.alive){
+			persistentUpdate = false;
 			openSubState(new LoseState());
+		}
 
 		// if you won the game then open WinState, then return
 		var alive = 0;
@@ -1217,7 +1272,9 @@ class GameState extends FlxState{
 			if (e.alive)
 				alive++;
 		}
-		if (spawnArea.gameover && alive == 0)
+		if (spawnArea.gameover && alive == 0){
+			persistentUpdate = false;
 			openSubState(new WinState());
+		}
 	}
 }
