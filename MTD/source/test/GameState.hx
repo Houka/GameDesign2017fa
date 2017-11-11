@@ -35,11 +35,9 @@ class LevelData{
 		mapFilepath:"assets/maps/test.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
-		waves:[[0,0,0]],
-		// waves:[[0,0,0,0,0],
-		// 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-		// 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
-		buttonTypes:[0,1,3,6]//[0,1,3,4,5,6,7,8]
+		waves:[[0,0,0,0,1],
+				[1,1,1,1,1]],
+		buttonTypes:[6,3,2,1]//[0,1,3,4,5,6,7,8]
 	}
 
 	public static var levels = [level1];
@@ -133,10 +131,10 @@ class GameObjectFactory{
 		// make enemy based on type
 		switch (Type) {
 			case 0:
-				enemy.init(X,Y,Type,1,2,100);
+				enemy.init(X,Y,Type,1,1,100);
 				enemy.loadGraphic(AssetPaths.enemy1_spritesheet_64x64__png, true, 64, 64);
 			case 1:
-				enemy.init(X,Y,Type,2,10,50);
+				enemy.init(X,Y,Type,2,5,50);
 				enemy.loadGraphic(AssetPaths.enemy2_spritesheet_64x64__png, true, 64, 64);
 			default:
 				trace('No such enemy type: $Type');
