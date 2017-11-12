@@ -549,11 +549,11 @@ class PlayState extends FlxState
 		if (End)
 			_centerText.text = gameOverText;
 		
-		FlxTween.tween(_centerText, { x: 0 }, 2, { ease: FlxEase.expoOut, onComplete: hideText });
+		//FlxTween.tween(_centerText, { x: 0 }, 2, { ease: FlxEase.expoOut, onComplete: hideText });
 		
-		HUD.hud.waveText.text = "Wave: " + wave;
+		/*HUD.hud.waveText.text = "Wave: " + wave;
 		HUD.hud.waveText.size = 16;
-		HUD.hud.waveText.visible = true;
+		HUD.hud.waveText.visible = true;*/
 	}
 	
 	/**

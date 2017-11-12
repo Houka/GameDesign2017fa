@@ -527,6 +527,7 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 	private var enemies:FlxTypedGroup<Enemy>;
 	
 	public var waveComplete:Bool;
+	public var waveStart:Bool;
 	
 	public function new(X:Int,Y:Int, enemies:FlxTypedGroup<Enemy>, Waves:Array<Array<Int>>){
 		super();
@@ -555,17 +556,21 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 		this.map = null;
 		this.enemies = enemies;
 		waveComplete = false;
-		
-		trace(waves);
+		waveStart = false;
+
 	}
 	override public function update(elapsed:Float){
 		super.update(elapsed);
 		if (gameover || !playerReady)
 			return;
+			
+		if (currentEnemy == 0)
+			waveStart = true;
 
 		counter += Std.int(FlxG.timeScale);
 		if (counter > interval * FlxG.updateFramerate && currentWave < waves.length && waves[currentWave].length > currentEnemy)
 		{
+			
 			var path = map.findPath(midpoint, goal.copyTo());
 			GameObjectFactory.addEnemy(enemies, Std.int(midpoint.x), Std.int(midpoint.y), waves[currentWave][currentEnemy],path);
 			counter = 0;
@@ -577,11 +582,12 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 				waveComplete = true;
 		}
 		
-		/*if (waveComplete) {
-				//currentWave ++;
-				//currentEnemy = 0;
-				waveComplete = false;
-		}*/
+		if (waveComplete) {
+			currentWave ++;
+			currentEnemy = 0;
+			waveComplete = false;
+			waveStart = true;
+		}
 
 		if (currentEnemy >= waves[waves.length-1].length && currentWave >= waves.length)
 			gameover = true;
@@ -963,7 +969,7 @@ class BuildState extends FlxSubState
 		if (FlxG.keys.anyJustPressed([Y])) {
 			confirmedCallback();
 		}
-		if (FlxG.keys.anyJustPressed([N]) || (FlxG.mouse.justPressed && FlxG.mouse.x < storePosition.x)) {
+		if (FlxG.keys.anyJustPressed([N,P]) || (FlxG.mouse.justPressed && FlxG.mouse.x < storePosition.x)) {
 			exitCallback();
 		}
 	}
@@ -1068,8 +1074,9 @@ class PauseState extends FlxSubState
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
-		if (FlxG.keys.anyJustPressed([P])) 
+		if (FlxG.keys.anyJustPressed([P])) {
 			close();		
+		}
 		if (FlxG.keys.anyJustPressed([R])) 
 			FlxG.switchState(new GameState());
 	}	
@@ -1246,6 +1253,12 @@ class GameState extends FlxState{
 		// collision setup
 		collisionController = new CollisionController(originalMap, towerMap, player, allies, 
 								enemies, bullets, towers, homebase, spawnArea, this);
+								
+		
+		// center text
+		_centerText = new FlxText( -200, FlxG.height / 2 - 20, FlxG.width, "", 16);
+		_centerText.alignment = CENTER;
+		_centerText.borderStyle = SHADOW;
 
 		// add all objects to screen
 		add(originalMap);
@@ -1267,6 +1280,7 @@ class GameState extends FlxState{
 				t.addWorker(GameObjectFactory.dummyAlly);
 		}
 		add(homebase);
+		add(_centerText);
 
 		// camera setup
 		var LEVEL_MIN_X = 0;
@@ -1277,27 +1291,29 @@ class GameState extends FlxState{
 		FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X, LEVEL_MIN_Y,
 			LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
 		FlxG.camera.follow(player, LOCKON, 0.5);
-		
-		// center text
-		_centerText = new FlxText( -200, FlxG.height / 2 - 20, FlxG.width, "", 16);
-		_centerText.alignment = CENTER;
-		_centerText.borderStyle = SHADOW;
+	
 	}
 	
 	override public function update(elapsed:Float){
 		super.update(elapsed);
-		announceWave();
 
 		// keyboard shortcuts
-		if (FlxG.keys.anyJustPressed([P,Q]))
+		if (FlxG.keys.anyJustPressed([P, Q])) {
+			persistentUpdate = false;
 			openSubState(new PauseState());
+		} else {
+			persistentUpdate = true;
+		}
 
 		// update interactions of game objects
 		collisionController.update(elapsed);
 		
-		if (spawnArea.waveComplete)
+		if (spawnArea.waveStart) {
+			trace("announce");
 			announceWave();
 			spawnArea.waveComplete = false;
+			spawnArea.waveStart = false;
+		}
 
 		if (!player.exists)
 			player.update(elapsed);
@@ -1310,22 +1326,12 @@ class GameState extends FlxState{
 	*	Announces start of new wave.
 	*/
 	private function announceWave():Void {
+		
 		_centerText.x = -200;
-		_centerText.text = "Wave " + (spawnArea.currentWave+1);
-		trace("announcing wave");
+		_centerText.text = "Wave " + (spawnArea.currentWave + 1);
 		
 		FlxTween.tween(_centerText, { x: 0 }, 2, { ease: FlxEase.expoOut, onComplete: hideText });
 		
-		for (i in 0...100) {
-			//trace(i);
-		}
-		
-		//spawnArea.currentWave++;
-		//spawnArea.currentEnemy = 0;
-		
-		/*HUD.hud.waveText.text = "Wave: " + wave;
-		HUD.hud.waveText.size = 16;
-		HUD.hud.waveText.visible = true;*/
 	}
 	private function hideText(Tween:FlxTween):Void {
 		FlxTween.tween(_centerText, { x: FlxG.width }, 2, { ease: FlxEase.expoIn });
