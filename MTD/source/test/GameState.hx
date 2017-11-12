@@ -499,6 +499,34 @@ class Enemy extends FlxSprite{
 		_prevFacing = facing;
 	}
 
+	override public function update(elapsed:Float) {
+		// update animations based on where we are facing if we changed facing directions
+		calculateFacing();
+		if (isAttacking){
+			animation.play("attack");
+		}
+		else if (_prevFacing != facing){
+			switch (facing){
+				case FlxObject.DOWN:
+					animation.play("walk_down");
+				case FlxObject.UP:
+					animation.play("walk_up");
+				case FlxObject.LEFT:
+					animation.play("walk_left");
+				case FlxObject.RIGHT:
+					animation.play("walk_right");
+				default:
+					animation.play("idle");
+			}
+		}
+
+		_prevFacing = facing;
+
+		super.update(elapsed);
+
+
+	}
+
 	override public function hurt(Damage:Float){
 		healthPt -= Std.int(Damage);
 		alpha -= 0.05;
@@ -517,6 +545,21 @@ class Enemy extends FlxSprite{
 		
 		path = new FlxPath().start(Path, speed, 0, false);
 	}
+
+	private function calculateFacing():Int{
+	 	if (velocity.x < 0)
+	 		facing = FlxObject.LEFT;
+	 	else if (velocity.x > 0)
+	 		facing = FlxObject.RIGHT;
+	 	else if (velocity.y < 0)
+	 		facing = FlxObject.UP;
+	 	else if (velocity.y > 0)
+	 		facing = FlxObject.DOWN;
+	 	else
+	 		facing = FlxObject.NONE;
+
+	 	return facing; 
+	 }
 
 }
 class SpawnArea extends FlxTypedGroup<FlxSprite>{
