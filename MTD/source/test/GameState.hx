@@ -309,6 +309,7 @@ class CollisionController{
 	}
 	private function hitEnemyHomebase(e:Enemy, obj:FlxObject){
 		if (e.alive){
+			e._healthBar.kill();
 			homebase.hurt(1);
 			e.kill();
 		}
@@ -473,7 +474,7 @@ class Enemy extends FlxSprite{
 	private var speed:Int;
 	private var _prevFacing:Int;
 	private var _framerate:Int = 10;
-	private var _healthBar: FlxBar; 
+	public var _healthBar: FlxBar; 
 	public function init(X:Int, Y:Int, Type:Int, Attack:Int, Health:Int, Speed:Int){
 		setPosition(X,Y);
 		type = Type;
