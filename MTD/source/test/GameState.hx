@@ -474,7 +474,8 @@ class Enemy extends FlxSprite{
 	private var speed:Int;
 	private var _prevFacing:Int;
 	private var _framerate:Int = 10;
-	public var _healthBar: FlxBar; 
+	public var _healthBar:FlxBar; 
+	public var isAttacking:Bool = false; 
 	public function init(X:Int, Y:Int, Type:Int, Attack:Int, Health:Int, Speed:Int){
 		setPosition(X,Y);
 		type = Type;
@@ -485,6 +486,7 @@ class Enemy extends FlxSprite{
 		_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "healthPt", 0, this.healthPt);
 		_healthBar.trackParent(15, -25);
 		FlxG.state.add(_healthBar);
+		isAttacking = false; 
 
 		// add animation 
 		animation.add("idle",[0],_framerate, false);
@@ -729,8 +731,9 @@ class Tower extends FlxSprite{
 		health -= Damage;
 		
 		if (health <= 0){
-			// Constants.PS.removeTower(this, true);
 			kill();
+			for (c in children)
+				c.kill();
 		}
 	}
 }
