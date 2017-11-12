@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.FlxG;
 import flixel.FlxBasic;
+import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxPath;
 import flixel.math.FlxPoint;
@@ -36,7 +37,8 @@ class LevelData{
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
 		waves:[[0,0,0,0,1],
-				[1,1,1,1,1]],
+				[1, 1, 1, 1, 1],
+				[0,0]],
 		buttonTypes:[6,3,2,1]//[0,1,3,4,5,6,7,8]
 	}
 
@@ -127,7 +129,7 @@ class GameObjectFactory{
 	public static var dummyAlly = new Ally();
 	public static function addEnemy(enemies:FlxTypedGroup<Enemy>, X:Int, Y:Int, Type:Int, Path:Array<FlxPoint>):Enemy{
 		var enemy = enemies.recycle(Enemy);	// uses an already added enemy, or makes a new one and adds it to enemies
-
+		
 		// make enemy based on type
 		switch (Type) {
 			case 0:
@@ -523,6 +525,9 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 	private var counter:Int;
 	private var waves:Array<Array<Int>>;
 	private var enemies:FlxTypedGroup<Enemy>;
+	
+	public var waveComplete:Bool;
+	
 	public function new(X:Int,Y:Int, enemies:FlxTypedGroup<Enemy>, Waves:Array<Array<Int>>){
 		super();
 
@@ -549,6 +554,9 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 		this.goal = new FlxPoint(X, Y);
 		this.map = null;
 		this.enemies = enemies;
+		waveComplete = false;
+		
+		trace(waves);
 	}
 	override public function update(elapsed:Float){
 		super.update(elapsed);
@@ -556,20 +564,29 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 			return;
 
 		counter += Std.int(FlxG.timeScale);
-		if (counter > interval * FlxG.updateFramerate && waves[currentWave].length > currentEnemy)
+		if (counter > interval * FlxG.updateFramerate && currentWave < waves.length && waves[currentWave].length > currentEnemy)
 		{
 			var path = map.findPath(midpoint, goal.copyTo());
 			GameObjectFactory.addEnemy(enemies, Std.int(midpoint.x), Std.int(midpoint.y), waves[currentWave][currentEnemy],path);
 			counter = 0;
 			currentEnemy ++;
-
-			if (currentEnemy >= waves[currentWave].length)
-				currentWave ++;
+			
 		}
+		else if (currentEnemy >= waves[currentWave].length) {
+			if (enemies.countDead() == currentEnemy)
+				waveComplete = true;
+		}
+		
+		/*if (waveComplete) {
+				//currentWave ++;
+				//currentEnemy = 0;
+				waveComplete = false;
+		}*/
 
 		if (currentEnemy >= waves[waves.length-1].length && currentWave >= waves.length)
 			gameover = true;
 	}
+	
 }
 class Bullet extends FlxSprite{
 	public var attackPt:Int;
@@ -1155,6 +1172,7 @@ class GameState extends FlxState{
 	private var homebase:Homebase;
 	private var player:Player;
 	private var collisionController:CollisionController;
+	private var _centerText:FlxText;
 
 	override public function create(){
 		super.create();
@@ -1259,10 +1277,16 @@ class GameState extends FlxState{
 		FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X, LEVEL_MIN_Y,
 			LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
 		FlxG.camera.follow(player, LOCKON, 0.5);
+		
+		// center text
+		_centerText = new FlxText( -200, FlxG.height / 2 - 20, FlxG.width, "", 16);
+		_centerText.alignment = CENTER;
+		_centerText.borderStyle = SHADOW;
 	}
 	
 	override public function update(elapsed:Float){
 		super.update(elapsed);
+		announceWave();
 
 		// keyboard shortcuts
 		if (FlxG.keys.anyJustPressed([P,Q]))
@@ -1270,12 +1294,41 @@ class GameState extends FlxState{
 
 		// update interactions of game objects
 		collisionController.update(elapsed);
+		
+		if (spawnArea.waveComplete)
+			announceWave();
+			spawnArea.waveComplete = false;
 
 		if (!player.exists)
 			player.update(elapsed);
 
 		// last thing to do on update
 		checkGameOver();
+	}
+	
+	/*	
+	*	Announces start of new wave.
+	*/
+	private function announceWave():Void {
+		_centerText.x = -200;
+		_centerText.text = "Wave " + (spawnArea.currentWave+1);
+		trace("announcing wave");
+		
+		FlxTween.tween(_centerText, { x: 0 }, 2, { ease: FlxEase.expoOut, onComplete: hideText });
+		
+		for (i in 0...100) {
+			//trace(i);
+		}
+		
+		//spawnArea.currentWave++;
+		//spawnArea.currentEnemy = 0;
+		
+		/*HUD.hud.waveText.text = "Wave: " + wave;
+		HUD.hud.waveText.size = 16;
+		HUD.hud.waveText.visible = true;*/
+	}
+	private function hideText(Tween:FlxTween):Void {
+		FlxTween.tween(_centerText, { x: FlxG.width }, 2, { ease: FlxEase.expoIn });
 	}
 
 	/*	Checks whether or not the game is over.

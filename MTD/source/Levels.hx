@@ -58,13 +58,13 @@ class Levels{
 		tilemap:"assets/tiles/auto_tilemap.png",
 		start: toCameraCoordinates(5,0),
 		goal: toCameraCoordinates(7,9),
-		health: 9,
-		money: 50,
+		health: 5,
+		money: 22,
 		defaultTowerPrice: 8,
 		waves:[
-			[0],
-			[0,0],
-			[0,0,0]
+			[0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+			[1,1,1,1,0,0,0,0,0,0,0,0,0]
 		]
 	}
 

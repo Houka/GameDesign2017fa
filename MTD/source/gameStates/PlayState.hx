@@ -615,8 +615,8 @@ class PlayState extends FlxState
 			// copy the default path in
 			path = getPath(0);
 		}
-
-		enemy.followPath(path, _speed + wave);
+		
+		enemy.followPath(path, 100);
 		_spawnCounter = 0;
 	}
 
