@@ -15,6 +15,7 @@ import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
 import flixel.tile.FlxTilemap;
 import flixel.ui.FlxButton;
+import flixel.ui.FlxBar; 
 import openfl.Assets;
 using StringTools;
 
@@ -472,6 +473,7 @@ class Enemy extends FlxSprite{
 	private var speed:Int;
 	private var _prevFacing:Int;
 	private var _framerate:Int = 10;
+	private var _healthBar: FlxBar; 
 	public function init(X:Int, Y:Int, Type:Int, Attack:Int, Health:Int, Speed:Int){
 		setPosition(X,Y);
 		type = Type;
@@ -479,6 +481,9 @@ class Enemy extends FlxSprite{
 		healthPt = Health;
 		speed = Speed;
 		alpha = 1;
+		_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "healthPt", 0, this.healthPt);
+		_healthBar.trackParent(0, -64);
+		FlxG.state.add(_healthBar);
 
 		// add animation 
 		animation.add("idle",[0],_framerate, false);
@@ -497,6 +502,7 @@ class Enemy extends FlxSprite{
 
 		if (healthPt <= 0)
 			kill();
+			_healthBar.kill();
 	}
 
 	public function followPath(Path:Array<FlxPoint>){
@@ -508,6 +514,7 @@ class Enemy extends FlxSprite{
 		
 		path = new FlxPath().start(Path, speed, 0, false);
 	}
+
 }
 class SpawnArea extends FlxTypedGroup<FlxSprite>{
 	public var midpoint:FlxPoint;
@@ -618,6 +625,7 @@ class Tower extends FlxSprite{
 	private var children:Array<FlxSprite>;
 	private var ammoType:Int;
 	private var gunTypes:Array<Int>;
+	private var foundationTypes: Array<Int>; 
 	private var counter:Int;
 	private var interval:Int = 2;
 	private var workers:Array<Ally>;
@@ -631,7 +639,9 @@ class Tower extends FlxSprite{
 		this.children = new Array<FlxSprite>();
 		this.workers = new Array<Ally>();
 		this.gunTypes = new Array<Int>();
+		this.foundationTypes = new Array<Int>(); 
 		counter = 0;
+		health = 3; 
 		created = false;
 	}
 	public function buildTower(materials:Array<Int>){
@@ -664,14 +674,19 @@ class Tower extends FlxSprite{
 						layer.loadGraphic(AssetPaths.snow1__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
+						health += 1; 
+
 					case 4:
 						layer.loadGraphic(AssetPaths.snowman_ice__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
+						health += 2; 
+
 					case 5:
 						layer.loadGraphic(AssetPaths.snowman_coal__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
+						health += 3; 
 				}
 
 				children.push(layer);
@@ -702,6 +717,15 @@ class Tower extends FlxSprite{
 					GameObjectFactory.addBullet(bullets, Std.int(getMidpoint().x), Std.int(getMidpoint().y), g, ammoType);
 				counter = 0;
 			}
+		}
+	}
+
+	override public function hurt(Damage:Float):Void {
+		health -= Damage;
+		
+		if (health <= 0){
+			// Constants.PS.removeTower(this, true);
+			kill();
 		}
 	}
 }
@@ -1155,11 +1179,14 @@ class GameState extends FlxState{
 	private var homebase:Homebase;
 	private var player:Player;
 	private var collisionController:CollisionController;
+	public var healthBars = new FlxTypedGroup<FlxBar>();
+	public static var instance:GameState; 
 
 	override public function create(){
 		super.create();
 		FlxG.timeScale = 1;
 		persistentUpdate = true;
+		instance = this;
 
 		// init flx group vars
 		var towers = new FlxTypedGroup<Tower>();
@@ -1225,6 +1252,7 @@ class GameState extends FlxState{
 			a.target = player;
 		}
 
+
 		// collision setup
 		collisionController = new CollisionController(originalMap, towerMap, player, allies, 
 								enemies, bullets, towers, homebase, spawnArea, this);
@@ -1237,6 +1265,7 @@ class GameState extends FlxState{
 		add(enemies);
 		add(bullets);
 		add(towerLayers);
+
 		if (player != null)
 			add(player);
 		else{
@@ -1249,6 +1278,7 @@ class GameState extends FlxState{
 				t.addWorker(GameObjectFactory.dummyAlly);
 		}
 		add(homebase);
+
 
 		// camera setup
 		var LEVEL_MIN_X = 0;
@@ -1270,6 +1300,8 @@ class GameState extends FlxState{
 
 		// update interactions of game objects
 		collisionController.update(elapsed);
+
+		add(healthBars);
 
 		if (!player.exists)
 			player.update(elapsed);
