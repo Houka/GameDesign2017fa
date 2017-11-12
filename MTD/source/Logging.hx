@@ -29,4 +29,16 @@ class Logging {
         untyped getLogging().recordPageLoad(userInfo);
         #end
     }
+    static public function assignABTestValue(candidate:Int): Int{
+        #if html5
+        return untyped getLogging().assignABTestValue(candidate);
+        #else
+        return 0;
+        #end
+    }
+    static public function recordABTestValue():Void{
+        #if html5
+        untyped getLogging().recordABTestValue();
+        #end
+    }
 }

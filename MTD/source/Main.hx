@@ -12,7 +12,7 @@ class Main extends Sprite
 		super();
 		addChild(new FlxGame(0, 0, test.GameState, 2,60,60,true,false));
 
-        Logging.initialize(771, 4, true, true);
+        Logging.initialize(771, 5, false, true);
         Logging.recordPageLoad();
 	}
 }
