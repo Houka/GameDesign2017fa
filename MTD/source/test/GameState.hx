@@ -482,7 +482,7 @@ class Enemy extends FlxSprite{
 		speed = Speed;
 		alpha = 1;
 		_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "healthPt", 0, this.healthPt);
-		_healthBar.trackParent(0, -64);
+		_healthBar.trackParent(15, -25);
 		FlxG.state.add(_healthBar);
 
 		// add animation 
@@ -629,6 +629,7 @@ class Tower extends FlxSprite{
 	private var counter:Int;
 	private var interval:Int = 2;
 	private var workers:Array<Ally>;
+	private var _healthBar: FlxBar; 
 	public function init(X:Int, Y:Int, bullets:FlxTypedGroup<Bullet>, towerLayers:FlxTypedGroup<FlxSprite>,map:FlxTilemap){
 		loadGraphic(AssetPaths.towerPlaceholder__png);
 		setPosition(X-Math.abs(width-Util.TILE_SIZE)/2,Y-Math.abs(height-Util.TILE_SIZE)/2);
@@ -643,6 +644,9 @@ class Tower extends FlxSprite{
 		counter = 0;
 		health = 3; 
 		created = false;
+		_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "health", 0, this.health);
+		_healthBar.trackParent(15, 55);
+		FlxG.state.add(_healthBar);
 	}
 	public function buildTower(materials:Array<Int>){
 		var yOffset = 0;
