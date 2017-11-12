@@ -949,6 +949,16 @@ class BuildState extends FlxSubState
         if (FlxG.keys.anyJustPressed([N]) || (FlxG.mouse.justPressed && FlxG.mouse.x < storePosition.x)) {
             exitCallback();
         }
+
+        // log mouse clicks
+        if(FlxG.mouse.justReleased){
+            var logString = "Level:"+LevelData.currentLevel+" X:"+FlxG.mouse.x+" Y:"+FlxG.mouse.y;
+            Logging.recordEvent(2, logString);
+        }
+        if(FlxG.mouse.justPressed){
+            var logString = "Level:"+LevelData.currentLevel+" X:"+FlxG.mouse.x+" Y:"+FlxG.mouse.y;
+            Logging.recordEvent(1, logString);
+        }
     }
 
     private function confirmedCallback(){
@@ -1156,6 +1166,8 @@ class GameState extends FlxState{
     private var player:Player;
     private var collisionController:CollisionController;
 
+    public static var abTestVersion = Logging.assignABTestValue(FlxG.random.int(1,3));
+
     override public function create(){
         super.create();
         FlxG.timeScale = 1;
@@ -1173,6 +1185,7 @@ class GameState extends FlxState{
         var mapArray = Util.loadCSV(_level.mapFilepath);
 
         // log the start of this level
+        Logging.recordLevelEnd();
         Logging.recordLevelStart(LevelData.currentLevel);
 
         // make game objects from level data
@@ -1271,6 +1284,16 @@ class GameState extends FlxState{
         if (FlxG.keys.anyJustPressed([P,Q]))
             openSubState(new PauseState());
 
+        // log mouse clicks
+        if(FlxG.mouse.justReleased){
+            var logString = "Level:"+LevelData.currentLevel+" X:"+FlxG.mouse.x+" Y:"+FlxG.mouse.y;
+            Logging.recordEvent(2, logString);
+        }
+        if(FlxG.mouse.justPressed){
+            var logString = "Level:"+LevelData.currentLevel+" X:"+FlxG.mouse.x+" Y:"+FlxG.mouse.y;
+            Logging.recordEvent(1, logString);
+        }
+
         // update interactions of game objects
         collisionController.update(elapsed);
 
@@ -1287,20 +1310,21 @@ class GameState extends FlxState{
     private function checkGameOver(){
         // if you lost the game then open LoseState and record game over
         if (homebase.gameover || !player.alive){
-            Logging.recordEvent(6, "Wave Num:"+spawnArea.currentWave+" Level:"+LevelData.currentLevel);
-            Logging.recordLevelEnd();
+            var logString = "Wave Num:"+spawnArea.currentWave+" Level:"+LevelData.currentLevel;
+            Logging.recordEvent(6, logString);
             persistentUpdate = false;
             openSubState(new LoseState());
         }
 
-        // if you won the game then open WinState and close player quest
+        // if you won the game then open WinState and record win
         var alive = 0;
         for (e in enemies){
             if (e.alive)
                 alive++;
         }
         if (spawnArea.gameover && alive == 0){
-            Logging.recordLevelEnd();
+            var logString = "Level:"+LevelData.currentLevel;
+            Logging.recordEvent(7, logString);
             persistentUpdate = false;
             openSubState(new WinState());
         }

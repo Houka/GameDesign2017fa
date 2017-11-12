@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxGame;
+import flixel.FlxG;
 import openfl.display.Sprite;
 import gameStates.*;
 import Logging;
@@ -14,5 +15,7 @@ class Main extends Sprite
 
         Logging.initialize(771, 5, false, true);
         Logging.recordPageLoad();
+        Logging.assignABTestValue(FlxG.random.int(1, 3));
+        Logging.recordABTestValue();
 	}
 }
