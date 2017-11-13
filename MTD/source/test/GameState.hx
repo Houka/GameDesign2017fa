@@ -61,8 +61,8 @@ class LevelData{
 		mapFilepath:"assets/maps/level3.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
-		waves:[[0, 0, 0, 1, 1],
-				[1, 1, 1],
+		waves:[[0, 0, 0, 1],
+				[1, 1],
 				[0, 1, 0, 1, 0],
 				[1,1,0,0]],
 		buttonTypes:[0, 1,3],
@@ -78,7 +78,7 @@ class LevelData{
 				[0, 1, 1, 0],
 				[1, 1, 1, 1, 0,0,0,0],
 				[0,0,0,1,1,1,0,0]],
-		buttonTypes:[0, 1,2],
+		buttonTypes:[0, 1, 3],
 		buildLimit:2
 	}
 	
