@@ -11,12 +11,14 @@ import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.tile.FlxTilemap;
 import flixel.group.FlxGroup;
+import flixel.system.FlxSound;
 import openfl.Lib;
 import gameObjects.Enemy;
 import utils.Button;
 import Constants;
 import Levels;
 
+import test.GameState.Sounds;
 import test.LevelSelectState;
 
 class MenuState extends FlxState
@@ -91,6 +93,12 @@ class MenuState extends FlxState
 		FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X, LEVEL_MIN_Y,
 			LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
 		FlxG.camera.follow(_enemy, LOCKON, 1);
+
+		// start music
+		if (FlxG.sound.music == null) // don't restart the music if it's already playing
+		{
+		    FlxG.sound.playMusic(AssetPaths.JohnGameLoop__ogg,0.2,true);
+		}
 		
 		// Add everything to the state
 		add(_map);
@@ -130,6 +138,7 @@ class MenuState extends FlxState
 	 */
 	private function levelSelect():Void
 	{
+		Sounds.play("start_game");
 		FlxG.switchState(new LevelSelectState());
 	}
 }

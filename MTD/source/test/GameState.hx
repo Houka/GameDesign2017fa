@@ -17,6 +17,7 @@ import flixel.tweens.FlxEase;
 import flixel.tile.FlxTilemap;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxBar; 
+import flixel.system.FlxSound;
 import openfl.Assets;
 using StringTools;
 
@@ -157,6 +158,10 @@ class LevelData{
 		buildLimit:3
 	}
 	
+  
+  
+  
+ 
 	public static var level11:Level = {
 		mapFilepath:"assets/maps/level11.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
@@ -312,6 +317,16 @@ class Util{
 	 }
 }
 
+class Sounds{
+	/*
+	*	Plays sound effects
+	*	Neko and html5 does not support playing mp3 files
+	*/
+	public static function play(filename:String, volume:Float=0.7):Void {
+		FlxG.sound.play("assets/sounds/"+filename+".ogg", volume);
+	}
+}
+
 class GameObjectFactory{
 	public static var dummyAlly = new Ally();
 	public static function addEnemy(enemies:FlxTypedGroup<Enemy>, X:Int, Y:Int, Type:Int, Path:Array<FlxPoint>):Enemy{
@@ -392,6 +407,7 @@ class GameObjectFactory{
 
 	public static function addBullet(bullets:FlxTypedGroup<Bullet>, X:Int, Y:Int, GunType:Int, Type:Int){
 		var bullet = bullets.recycle(Bullet);
+		Sounds.play("shoot");
 		var attack = 1; 
 		switch (GunType) {
 			case 0:
@@ -543,6 +559,7 @@ class CollisionController{
 	}
 	private function hitEnemyHomebase(e:Enemy, obj:FlxObject){
 		if (e.alive){
+			Sounds.play("life_loss");
 			e._healthBar.kill();
 			homebase.hurt(1);
 			e.kill();
@@ -550,6 +567,7 @@ class CollisionController{
 	}
 	private function hitEnemyBullet(e:Enemy, b:Bullet){
 		if (e.alive && b.alive){
+      Sounds.play("enemy_hit");
 			e.hurt(b.attackPt);
 			b.kill();
 		}
@@ -606,8 +624,10 @@ class CollisionController{
 	private function hitPlayerTower(p:Player, t:Tower){
 		if (!t.created && prevCollision != CollisionID.PT){
 			// if the player hasn't made a tower here yet
-			if (state.subState == null)
+			if (state.subState == null){
+				Sounds.play("select");
 				state.openSubState(new BuildState(t));
+			}
 		}
 		else if(t.created && p!=null && prevCollision != CollisionID.PT){
 			// if the player has already made a tower here but wants to retrieve the ally from it
@@ -784,6 +804,7 @@ class Enemy extends FlxSprite{
 			_attackCounter += Std.int(FlxG.timeScale);
 
 			if (_attackCounter > (_attackInterval * FlxG.updateFramerate)){
+				Sounds.play("enemy_hit");
 				_targetTower.hurt(attackPt);
 				_attackCounter = 0;
 			}
@@ -1180,6 +1201,8 @@ class Tower extends FlxSprite{
 		health -= Damage;
 		
 		if (health <= 0){
+			Sounds.play("destroyed");
+
 			created = false; 
 			_healthBar.visible = false;
 			_healthBar.kill();
@@ -1189,6 +1212,9 @@ class Tower extends FlxSprite{
 			init(Std.int(x), Std.int(y), bullets, towerLayers, map);
 			workers = savedWorkers;
 			map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 0, false);
+
+			//for logging
+			GameState.towersKilled++;
 		}
 	}
 }
@@ -1241,6 +1267,9 @@ class Homebase extends FlxGroup{
 
 	public function hurt(damage:Int){
 		health -= damage;
+		//Log that player sustained damage
+		var logString = "Level:"+LevelData.currentLevel+" HP:"+health;
+		Logging.recordEvent(3,logString);
 		if (health <= 0){
 			gameover = true;
 			kill();
@@ -1480,8 +1509,21 @@ class BuildState extends FlxSubState{
 			GameState.tutorialEvent++;
 		}
 
+		Sounds.play("summon", 1);
 		_materials.push(ammo);
 		_tower.buildTower(_materials);
+
+		// log tower creation and materials list
+		var logString = "Level:"+LevelData.currentLevel+" X:"+_tower.x+" Y:"+_tower.y+" Materials:[";
+		for(i in 0..._materials.length){
+			logString+=_materials[i];
+			if(i!=_materials.length-1){
+				logString+=",";
+			}
+		}
+		logString+="]";
+		Logging.recordEvent(5, logString);
+
 		exitCallback();
 	}
 
@@ -1598,11 +1640,13 @@ class BuildState extends FlxSubState{
 	}
 	private function addMaterial(type:Int):Bool{
 		if (_materials.length < MAX_TOWER_HEIGHT && _materials.length < LevelData.getCurrentLevel().buildLimit){
+      Sounds.play("select");
 			_materials.push(type);
 			return true;
 		}
 
 		trace('cannot add more material to tower... tower already has $_materials');
+		Sounds.play("deny");
 		return false;
 	}
 }
@@ -1761,6 +1805,8 @@ class GameState extends FlxState{
 	private var collisionController:CollisionController;
 	public var healthBars = new FlxTypedGroup<FlxBar>();
 	private var _centerText:FlxText;
+
+	public static var towersKilled = 0;
 
 	public static var abTestVersion = Logging.assignABTestValue(FlxG.random.int(1,2));
 	public static var isATesting = abTestVersion <= 1;
@@ -1969,6 +2015,10 @@ class GameState extends FlxState{
 		_centerText.text = "Wave " + (spawns.getFirstAlive().currentWave + 1);
 		
 		FlxTween.tween(_centerText, { x: 0 }, 2, { ease: FlxEase.expoOut, onComplete: hideText });
+
+		//Log current wave was beaten
+		var logString = "Level:"+LevelData.currentLevel+" Wave:"+spawns.getFirstAlive().currentWave+" Towers Killed:"+towersKilled;
+		Logging.recordEvent(4,logString);
 		
 	}
 	private function hideText(Tween:FlxTween):Void {
@@ -1985,6 +2035,7 @@ class GameState extends FlxState{
 			Logging.recordEvent(6, logString);
 			if (isATesting)
 				persistentUpdate = false;
+			Sounds.play("lose");
 			openSubState(new LoseState());
 			return;
 		}
@@ -2003,6 +2054,7 @@ class GameState extends FlxState{
 		if (gameover && alive == 0){
 			var logString = "Level:"+LevelData.currentLevel;
 			Logging.recordEvent(7, logString);
+			Sounds.play("win");
 
 			if (isATesting)
 				persistentUpdate = false;
