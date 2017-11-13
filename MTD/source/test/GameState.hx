@@ -533,7 +533,7 @@ class CollisionController{
 		}
 	}
 	private function hitEnemyBullet(e:Enemy, b:Bullet){
-		if (e.alive){
+		if (e.alive && b.alive){
 			e.hurt(b.attackPt);
 			b.kill();
 		}
