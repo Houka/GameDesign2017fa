@@ -42,7 +42,7 @@ class LevelData{
 				[1, 1, 1, 1, 1],
 				[0,0]],
 		buttonTypes: [0,1,2,3,4,5,6,7,8],//[6,3,2,1]//[0,1,3,4,5,6,7,8]
-		buildLimit: 1
+		buildLimit: 2
 	}
 
 	public static var levels = [level1];
@@ -1233,7 +1233,7 @@ class BuildState extends FlxSubState
 
 	private function gunCallback(type:Int){
 		if (addMaterial(type)){
-			var temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack);
+			var temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack-23);
 			var gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55)+40, 445); 
 			if (LevelData.getCurrentLevel().buildLimit == 2) {
 				temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack);
@@ -1270,7 +1270,7 @@ class BuildState extends FlxSubState
 	}
 	private function foundationCallback(type:Int){
 		if (addMaterial(type)){
-			var temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack);
+			var temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack-27);
 			var foundationAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*53)+40, 453); 
 			if (LevelData.getCurrentLevel().buildLimit == 2) {
 				temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack);
@@ -1311,7 +1311,7 @@ class BuildState extends FlxSubState
 		ammo = type;
 	}
 	private function addMaterial(type:Int):Bool{
-		if (_materials.length < MAX_TOWER_HEIGHT){
+		if (_materials.length < MAX_TOWER_HEIGHT && _materials.length < LevelData.getCurrentLevel().buildLimit){
 			_materials.push(type);
 			return true;
 		}
