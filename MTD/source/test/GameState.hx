@@ -1059,7 +1059,7 @@ class BuildState extends FlxSubState
 
 		// store bg
 		var store = new FlxSprite(Std.int(storePosition.x+20),Std.int(storePosition.y));
-		store.loadGraphic(AssetPaths.store__png);
+		store.loadGraphic(AssetPaths.StoreWithTextNoAmmo__png);
 		gui.add(store);
 
 		// add buttons vars
@@ -1067,7 +1067,7 @@ class BuildState extends FlxSubState
 		var width = 50; 
 		var height = 67; 
 		var x = FlxG.width-260;
-		var y = 145;
+		var y = 175;
 		var row = 0; 
 		var col = -1;
 		var buttons = LevelData.getCurrentLevel().buttonTypes;
@@ -1102,21 +1102,21 @@ class BuildState extends FlxSubState
 		var foundation:FlxButton;
 		if (buttons.indexOf(3) != -1){
 			col++;
-			foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", foundationCallback.bind(3));
+			foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap)+25, "", foundationCallback.bind(3));
 			foundation.loadGraphic(AssetPaths.SnowBase__png, true, width, height); 
 			gui.add(foundation);
 		}
 
 		if (buttons.indexOf(4) != -1){
 			col++;
-			foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", foundationCallback.bind(4));
+			foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap)+25, "", foundationCallback.bind(4));
 			foundation.loadGraphic(AssetPaths.IceBase__png, true, width, height); 
 			gui.add(foundation);
 		}
 		
 		if (buttons.indexOf(5) != -1){
 			col++;
-			foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", foundationCallback.bind(5));
+			foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap)+25, "", foundationCallback.bind(5));
 			foundation.loadGraphic(AssetPaths.CoalBase__png, true, width, height); 
 			gui.add(foundation);
 		}
