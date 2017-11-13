@@ -870,13 +870,14 @@ class Tower extends FlxSprite{
 					case 0:
 						layer.loadGraphic(AssetPaths.snowman_head__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset - 10);
+						layer.y += 10; 
 						towerLayers.add(layer);
 						gunTypes.push(m);
 						yOffset -= 32;
 					case 1:
 						layer.loadGraphic(AssetPaths.snowman_spray__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset + 10);
-						yOffset += 10; 
+						yOffset += 14; 
 						towerLayers.add(layer);
 						gunTypes.push(m);
 						yOffset -= 32;
