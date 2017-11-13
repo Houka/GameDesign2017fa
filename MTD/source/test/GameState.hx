@@ -1232,7 +1232,7 @@ class BuildState extends FlxSubState
 
 	private function gunCallback(type:Int){
 		if (addMaterial(type)){
-			var temp = new FlxSprite(Std.int(storePosition.x)+250,currentStack);
+			var temp = new FlxSprite(Std.int(storePosition.x)+237,currentStack);
 			var gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 445); 
 			switch(type){
 				case 0:
@@ -1258,7 +1258,7 @@ class BuildState extends FlxSubState
 	}
 	private function foundationCallback(type:Int){
 		if (addMaterial(type)){
-			var temp = new FlxSprite(Std.int(storePosition.x)+250,currentStack);
+			var temp = new FlxSprite(Std.int(storePosition.x)+237,currentStack);
 			// var foundationAddition = new FlxSprite(Std.int(storePosition.x)+78+((_materials.length-1)*48), 453);
 			var foundationAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*53), 453); 
 			switch(type){
