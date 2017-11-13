@@ -889,10 +889,6 @@ class Tower extends FlxSprite{
 		counter = 0;
 		health = 1; 
 		created = false;
-		_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "health", 0, this.health, true);
-		_healthBar.trackParent(15, 55);
-		_healthBar.visible = false; 
-		FlxG.state.add(_healthBar);
 	}
 	public function buildTower(materials:Array<Int>){
 		var yOffset = 0;
@@ -948,7 +944,12 @@ class Tower extends FlxSprite{
 		}
 
 		created = children.length > 0;
-		_healthBar.visible = created; 
+		if (created){
+			_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "health", 0, this.health, true);
+			_healthBar.trackParent(15, 55);
+			_healthBar.visible = created; 
+			FlxG.state.add(_healthBar);
+		}
 		map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 1, false);
 	}
 	public function addWorker(a:Ally){
