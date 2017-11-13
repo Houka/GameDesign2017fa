@@ -42,7 +42,7 @@ class LevelData{
 				[1, 1, 1, 1, 1],
 				[0,0]],
 		buttonTypes: [0,1,2,3,4,5,6,7,8],//[6,3,2,1]//[0,1,3,4,5,6,7,8]
-		buildLimit: 2
+		buildLimit: 3
 	}
 
 	public static var levels = [level1];
@@ -143,23 +143,48 @@ class GameObjectFactory{
 	public static var dummyAlly = new Ally();
 	public static function addEnemy(enemies:FlxTypedGroup<Enemy>, X:Int, Y:Int, Type:Int, Path:Array<FlxPoint>):Enemy{
 		var enemy = enemies.recycle(Enemy);	// uses an already added enemy, or makes a new one and adds it to enemies
-		var _framerate:Int = 8;
+		var _framerate:Int = 13;
     
 		// make enemy based on type
 		switch (Type) {
 			case 0:
 				enemy.init(X,Y,Type,1,1,100);
-				enemy.loadGraphic(AssetPaths.kid_spritesheet__png, true, 64, 64);
+				enemy.loadGraphic(AssetPaths.kid_ss__png, true, 64, 64);
 				enemy.animation.add("idle",[8],_framerate, true);
-				enemy.animation.add("walk_down",[8,9,10,11,12,13,14,15],_framerate, true);
-				enemy.animation.add("walk_left",[16,17,18,19,20,21,22,23],_framerate, true);
-				enemy.animation.add("walk_right",[24,25,26,27,28,29,30,31],_framerate, true);
-				enemy.animation.add("walk_up",[0,1,2,3,4,5,6,7],_framerate, true);
+
+				enemy.animation.add("walk_down",[32,33,34,35,36,37,38,39],_framerate, true);
+				enemy.animation.add("attack_down",[40,41,42,43,44,45],_framerate,true); 
+
+				enemy.animation.add("walk_left",[48,49,50,51,52,53,54,55],_framerate, true);
+				enemy.animation.add("attack_left",[56,57,58,59,60],_framerate,true);
+				
+				enemy.animation.add("walk_right",[0,1,2,3,4,5,6,7],_framerate, true);
+				enemy.animation.add("attack_right", [8,9,10,11,12],_framerate, true);
+				
+				enemy.animation.add("walk_up",[16,17,18,19,20,21,22,23],_framerate, true);
+				enemy.animation.add("attack_up",[24,25,26,27,28],_framerate,true);
+
 				enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
-				enemy.animation.play("walk_down");
 			case 1:
 				enemy.init(X,Y,Type,2,5,50);
-				enemy.loadGraphic(AssetPaths.enemy2_spritesheet_64x64__png, true, 64, 64);
+				enemy.loadGraphic(AssetPaths.gal_ss__png, true, 64, 64);
+				enemy.animation.add("idle",[8],_framerate, true);
+
+				enemy.animation.add("walk_down",[24,25,26,27,28,29],_framerate, true);
+				enemy.animation.add("attack_down",[30,31,32,33,34,35],_framerate,true); 
+
+				enemy.animation.add("walk_left",[36,37,38,39,40,41],_framerate, true);
+				enemy.animation.add("attack_left",[42,43,44,45,46,47],_framerate,true);
+				
+				enemy.animation.add("walk_right",[0,1,2,3,4,5],_framerate, true);
+				enemy.animation.add("attack_right", [6,7,8,9,10,11],_framerate, true);
+				
+				enemy.animation.add("walk_up",[12,13,14,15,16,17],_framerate, true);
+				enemy.animation.add("attack_up",[18,19,20,21,22,23],_framerate,true);
+
+				enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
+
+
 			default:
 				trace('No such enemy type: $Type');
 		}
