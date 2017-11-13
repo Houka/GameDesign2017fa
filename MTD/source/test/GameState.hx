@@ -29,26 +29,41 @@ typedef Level = {
 	var startHealth:Int;
 	var waves:Array<Array<Int>>;
 	var buttonTypes:Array<Int>;
+	var buildLimit:Int;
 }
 
 class LevelData{
+
 	public static var level1:Level = {
-		mapFilepath:"assets/maps/test.csv",
+		mapFilepath:"assets/maps/level1.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
 		waves:[[0,0,0,0,0],
 				[0,0,0,0,0,1],
-				[1,1,1]],
-		buttonTypes:[0]
+				[1,1, 0]],
+		buttonTypes:[0],
+		buildLimit:1
+	}
+	
+	public static var level2:Level = {
+		mapFilepath:"assets/maps/test.csv",
+		tilemap:"assets/tiles/auto_tilemap.png",
+		startHealth:2,
+		waves:[[0, 0, 0, 1, 1],
+				[1, 1, 1],
+				[0,1,0,1,0]],
+		buttonTypes:[0, 1],
+		buildLimit:1
 	}
 
-	public static var levels = [level1];
+	public static var levels = [level1, level2];
 	public static var currentLevel = 0;
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>=levels.length){
 			trace("Error: Level "+currentLevel+" does not exists");
 			return null;
 		}
+		
 		return levels[currentLevel];
 	}
 	public static function gotoNextLevel():Null<Level>{
@@ -136,7 +151,7 @@ class GameObjectFactory{
 				enemy.init(X,Y,Type,1,1,100);
 				enemy.loadGraphic(AssetPaths.snow3_spritesheet__png, true, 64, 64);
 			case 1:
-				enemy.init(X,Y,Type,1,2,200);
+				enemy.init(X,Y,Type,1,2,150);
 				enemy.loadGraphic(AssetPaths.enemy1_spritesheet_64x64__png, true, 64, 64);
 			case 2:
 				enemy.init(X,Y,Type,2,5,100);
@@ -650,6 +665,7 @@ class Tower extends FlxSprite{
 		setPosition(X-Math.abs(width-Util.TILE_SIZE)/2,Y-Math.abs(height-Util.TILE_SIZE)/2);
 
 		this.towerLayers = towerLayers;
+		trace("tower layers " + towerLayers);
 		this.bullets = bullets;
 		this.map = map;
 		this.children = new Array<FlxSprite>();
@@ -804,7 +820,7 @@ class Homebase extends FlxGroup{
 
 class BuildState extends FlxSubState
 {	
-	private static inline var MAX_TOWER_HEIGHT = 3;
+	private var MAX_TOWER_HEIGHT = 3;
 	private var _tower:Tower;
 	private var _materials:Array<Int>;
 	private var currentStack:Int;
@@ -824,7 +840,8 @@ class BuildState extends FlxSubState
 		this.ammo = 6;
 		_materials = new Array<Int>();
 		gui = new FlxTypedGroup<FlxSprite>();
-		storePosition = new FlxPoint(FlxG.width-340, 40);
+		storePosition = new FlxPoint(FlxG.width - 340, 40);
+		MAX_TOWER_HEIGHT = LevelData.getCurrentLevel().buildLimit;
 
 		// semi transparent black bg overlay
 		var background = new FlxSprite(Std.int(storePosition.x),0);
@@ -1001,13 +1018,13 @@ class BuildState extends FlxSubState
 	private function exitCallback(){
 		// reset tutorial
 		if (LevelData.currentLevel == 0 && GameState.tutorialEvent <= 2){
+			gui.remove(GameState.tutorialArrow);
 			FlxG.state.add(GameState.tutorialArrow);
 			var tutPos = Util.toMapCoordinates(_tower.x,_tower.y);
 			tutPos = Util.toCameraCoordinates(Std.int(tutPos.x - 1), Std.int(tutPos.y));
 			GameState.tutorialArrow.setPosition(Std.int(tutPos.x)+GameState.tutorialArrow.width/2, 
 				Std.int(tutPos.y));
 			GameState.tutorialArrow.visible = true;
-			gui.remove(GameState.tutorialArrow);
 			GameState.tutorialEvent=0;			
 		}
 
@@ -1114,8 +1131,11 @@ class PauseState extends FlxSubState
 		if (FlxG.keys.anyJustPressed([P])) {
 			close();		
 		}
-		if (FlxG.keys.anyJustPressed([R])) 
+		if (FlxG.keys.anyJustPressed([R])) {
+			if (LevelData.currentLevel == 0)
+				GameState.tutorialEvent = 0;
 			FlxG.switchState(new GameState());
+		}
 	}	
 }
 
@@ -1411,7 +1431,15 @@ class GameState extends FlxState{
 		}
 		if (spawnArea.gameover && alive == 0){
 			persistentUpdate = false;
-			openSubState(new WinState());
+			
+			if (LevelData.currentLevel == 0) {
+				if (LevelData.gotoNextLevel() == null)
+					FlxG.switchState(new MenuState());
+				FlxG.switchState(new GameState());
+			}
+			else {
+				openSubState(new WinState());
+			}
 		}
 	}
 }
