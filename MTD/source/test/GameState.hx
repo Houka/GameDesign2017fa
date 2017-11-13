@@ -50,8 +50,8 @@ class LevelData{
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:3,
 		waves:[[0,0,0],
-				[0,0,0,0,0,0],
-				[0, 0, 0,1]],
+				[0,0,0],
+				[0, 0,0,1]],
 		buttonTypes:[0,3],
 		buildLimit:1
 	}
@@ -1666,7 +1666,8 @@ class GameState extends FlxState{
 	*/
 	private function checkGameOver(){
 		// if you lost the game then open LoseState, then return
-		if (homebase.gameover || !player.alive){
+		trace(homebase.health);
+		if (homebase.gameover || !player.alive || homebase.health <= 0){
 			persistentUpdate = false;
 			openSubState(new LoseState());
 		}
