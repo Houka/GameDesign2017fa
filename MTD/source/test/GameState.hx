@@ -218,7 +218,6 @@ class GameObjectFactory{
 	public static function addBullet(bullets:FlxTypedGroup<Bullet>, X:Int, Y:Int, GunType:Int, Type:Int){
 		var bullet = bullets.recycle(Bullet);
 		var attack = 1; 
-		trace(GunType+" " +Type);
 		switch (GunType) {
 			case 0:
 				// horizontal only
@@ -373,7 +372,6 @@ class CollisionController{
 	}
 	private function hitEnemyBullet(e:Enemy, b:Bullet){
 		if (e.alive){
-			trace("hit");
 			e.hurt(b.attackPt);
 			b.kill();
 		}
@@ -386,11 +384,10 @@ class CollisionController{
 		var nearest = getNearestTower(midpoint.x, midpoint.y, e.attackRange);
 
 		// return if there are no towers within range
-		if (nearest == null)
+		if (nearest == null || !nearest.created)
 			return;
 
 		e.attack(nearest);
-
 	}
 
 	private function hitAllyEnemy(a:Ally,e:Enemy){
@@ -846,7 +843,6 @@ class Bullet extends FlxSprite{
 		super.update(elapsed);
 		
 		// get rid of off screen bullet or a too transparent bullet
-		trace(alpha);
 		if (!isOnScreen(FlxG.camera) || alpha <= 0.8) 
 		{
 			super.kill();
@@ -874,7 +870,6 @@ class Tower extends FlxSprite{
 		setPosition(X-Math.abs(width-Util.TILE_SIZE)/2,Y-Math.abs(height-Util.TILE_SIZE)/2);
 
 		this.towerLayers = towerLayers;
-		trace("tower layers " + towerLayers);
 		this.bullets = bullets;
 		this.map = map;
 		this.children = new Array<FlxSprite>();
