@@ -982,7 +982,10 @@ class Bullet extends FlxSprite{
 	public function init(X:Int,Y:Int,Type:Int,Attack:Int,Angle:Int){
 		switch (Type) {
 			case 6:
-				loadGraphic(AssetPaths.snowball__png);
+				loadGraphic(AssetPaths.snowball__png,true,20,20);
+				animation.add("idle",[0],10,true);
+				animation.add("explode",[1,2,3,4,5],10,false);
+				animation.play("idle");
 			case 7:
 				loadGraphic(AssetPaths.snowball2__png);
 			case 8:
@@ -998,6 +1001,12 @@ class Bullet extends FlxSprite{
 		velocity.rotate(FlxPoint.weak(0,0), angle);
 		alpha = 1;
 	}
+
+	override public function kill(){
+		velocity.set(0,0);
+		alive = false;
+		animation.play("explode");
+	}
 	
 	override public function update(elapsed:Float):Void
 	{
@@ -1006,10 +1015,14 @@ class Bullet extends FlxSprite{
 		// get rid of off screen bullet or a too transparent bullet
 		if (!isOnScreen(FlxG.camera) || alpha <= 0.8) 
 		{
-			super.kill();
+			kill();
 		}
 		
 		alpha -= 0.005;
+
+		if(!alive && animation.name=="explode" && animation.frameIndex == 4){
+			super.kill();
+		}
 	}
 }
 class Tower extends FlxSprite{
@@ -1333,7 +1346,8 @@ class BuildState extends FlxSubState{
 		}
 
 		// sprite to display the selected ammo
-		ammoSprite = new FlxSprite(Std.int(storePosition.x)+100,460,AssetPaths.snowball__png);
+		ammoSprite = new FlxSprite(Std.int(storePosition.x)+100,460);
+		ammoSprite.loadGraphic(AssetPaths.snowball__png,true,20,20);
 		gui.add(ammoSprite);
 
 		add(gui);
