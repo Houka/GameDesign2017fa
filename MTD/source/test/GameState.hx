@@ -1220,7 +1220,7 @@ class BuildState extends FlxSubState
 	private function gunCallback(type:Int){
 		if (addMaterial(type)){
 			var temp = new FlxSprite(Std.int(storePosition.x)+250,currentStack);
-			var gunAddition = new FlxSprite(Std.int(storePosition.x)+75+((_materials.length-1)*55), 430); 
+			var gunAddition = new FlxSprite(Std.int(storePosition.x)+78+((_materials.length-1)*55), 445); 
 			switch(type){
 				case 0:
 					temp.loadGraphic(AssetPaths.snowman_head__png);
@@ -1228,10 +1228,12 @@ class BuildState extends FlxSubState
 					gui.add(gunAddition);
 				case 1:
 					temp.loadGraphic(AssetPaths.snowman_spray__png);
+					gunAddition.y += 10; 
 					gunAddition.loadGraphic(AssetPaths.snowman_spray__png); 
 					gui.add(gunAddition);
 				case 2:
 					temp.loadGraphic(AssetPaths.snowman_machine_gun__png);
+					gunAddition.y += 8;
 					gunAddition.loadGraphic(AssetPaths.snowman_machine_gun__png); 
 					gui.add(gunAddition);
 			}
@@ -1242,7 +1244,7 @@ class BuildState extends FlxSubState
 	private function foundationCallback(type:Int){
 		if (addMaterial(type)){
 			var temp = new FlxSprite(Std.int(storePosition.x)+250,currentStack);
-			var foundationAddition = new FlxSprite(Std.int(storePosition.x)+75+((_materials.length-1)*55), 430);
+			var foundationAddition = new FlxSprite(Std.int(storePosition.x)+78+((_materials.length-1)*55), 453);
 			switch(type){
 				case 3:
 					temp.loadGraphic(AssetPaths.snow1__png);
