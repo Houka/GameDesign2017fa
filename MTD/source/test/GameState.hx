@@ -212,7 +212,7 @@ class LevelData{
 	}
 
 	public static var levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13];
-	public static var currentLevel = 10;
+	public static var currentLevel = 0;
 	public static var maxLevelReached = currentLevel;
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>=levels.length){
@@ -346,7 +346,7 @@ class GameObjectFactory{
 				enemy.animation.add("walk_up",[16,17,18,19,20,21,22,23],_framerate, true);
 				enemy.animation.add("attack_up",[24,25,26,27,28],_framerate,true);
 
-				enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
+				// enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
 			case 2:
 				enemy.init(X,Y,Type,2,5,50);
 				enemy.loadGraphic(AssetPaths.gal_ss__png, true, 64, 64);
@@ -364,7 +364,7 @@ class GameObjectFactory{
 				enemy.animation.add("walk_up",[12,13,14,15,16,17],_framerate, true);
 				enemy.animation.add("attack_up",[18,19,20,21,22,23],_framerate,true);
 
-				enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
+				// enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
 			default:
 				trace('No such enemy type: $Type');
 		}
@@ -802,10 +802,21 @@ class Enemy extends FlxSprite{
 		// update animations based on where we are facing if we changed facing directions
 		calculateFacing();
 		if (isAttacking){
-			animation.play("attack");
+			switch (facing){
+				case FlxObject.DOWN:
+					this.animation.play("attack_down");
+				case FlxObject.UP:
+					this.animation.play("attack_up");
+				case FlxObject.LEFT:
+					this.animation.play("attack_left");
+				case FlxObject.RIGHT:
+					this.animation.play("attack_right");
+				default:
+					this.animation.play("attack_right");
+			}
 		}
 
-		else if (_prevFacing != facing){
+		else if (!isAttacking && _prevFacing != facing){
 			switch (facing){
 				case FlxObject.DOWN:
 					this.animation.play("walk_down");
