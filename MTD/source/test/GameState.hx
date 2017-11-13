@@ -624,12 +624,13 @@ class Bullet extends FlxSprite{
 		super.update(elapsed);
 		
 		// get rid of off screen bullet or a too transparent bullet
-		if (!isOnScreen(FlxG.camera) || alpha <= 0.1) 
+		trace(alpha);
+		if (!isOnScreen(FlxG.camera) || alpha <= 0.8) 
 		{
 			super.kill();
 		}
 		
-		alpha -= 0.02;
+		alpha -= 0.005;
 	}
 }
 class Tower extends FlxSprite{
@@ -1000,7 +1001,12 @@ class BuildState extends FlxSubState
 	private function exitCallback(){
 		// reset tutorial
 		if (LevelData.currentLevel == 0 && GameState.tutorialEvent <= 2){
-			GameState.tutorialArrow.visible = false;
+			FlxG.state.add(GameState.tutorialArrow);
+			var tutPos = Util.toMapCoordinates(_tower.x,_tower.y);
+			tutPos = Util.toCameraCoordinates(Std.int(tutPos.x - 1), Std.int(tutPos.y));
+			GameState.tutorialArrow.setPosition(Std.int(tutPos.x)+GameState.tutorialArrow.width/2, 
+				Std.int(tutPos.y));
+			GameState.tutorialArrow.visible = true;
 			gui.remove(GameState.tutorialArrow);
 			GameState.tutorialEvent=0;			
 		}
@@ -1330,7 +1336,7 @@ class GameState extends FlxState{
 		// tutorial related setup
 		GameState.tutorialArrow = new FlxSprite(0,0);
 		GameState.tutorialArrow.loadGraphic(AssetPaths.SmallArrow__png, true, 34, 50);
-		GameState.tutorialArrow.animation.add("play", [0,1,2,3,2,1,0], 5, true);
+		GameState.tutorialArrow.animation.add("play", [0,1,2,3], 5, true);
 		GameState.tutorialArrow.animation.play("play");
 		GameState.tutorialArrow.visible = false;
 		GameState.tutorialArrow.angle = 90;
