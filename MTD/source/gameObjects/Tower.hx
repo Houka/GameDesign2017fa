@@ -13,7 +13,7 @@ class Tower extends FlxSprite
 	private static inline var BASE_PRICE:Int = 10;
 
 	public var range:Int = 100;
-	public var fireRate:Float = 1;
+	public var fireRate:Float = 2.0;
 	public var damage:Int = 1;
 	
 	public var rangeLevel:Int = 1;

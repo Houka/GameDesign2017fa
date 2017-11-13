@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.FlxG;
 import flixel.FlxBasic;
+import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.util.FlxPath;
 import flixel.math.FlxPoint;
@@ -37,8 +38,9 @@ class LevelData{
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
 		waves:[[0,0,0,0,1],
-				[1,1,1,1,1]],
-		buttonTypes:[6,3,2,1,0]//[0,1,3,4,5,6,7,8]
+				[1, 1, 1, 1, 1],
+				[0,0]],
+		buttonTypes:[6,3,2,1]//[0,1,3,4,5,6,7,8]
 	}
 
 	public static var levels = [level1];
@@ -129,6 +131,7 @@ class GameObjectFactory{
 	public static function addEnemy(enemies:FlxTypedGroup<Enemy>, X:Int, Y:Int, Type:Int, Path:Array<FlxPoint>):Enemy{
 		var enemy = enemies.recycle(Enemy);	// uses an already added enemy, or makes a new one and adds it to enemies
 		var _framerate:Int = 8;
+    
 		// make enemy based on type
 		switch (Type) {
 			case 0:
@@ -708,6 +711,10 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 	private var counter:Int;
 	private var waves:Array<Array<Int>>;
 	private var enemies:FlxTypedGroup<Enemy>;
+	
+	public var waveComplete:Bool;
+	public var waveStart:Bool;
+	
 	public function new(X:Int,Y:Int, enemies:FlxTypedGroup<Enemy>, Waves:Array<Array<Int>>){
 		super();
 
@@ -734,15 +741,22 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 		this.goal = new FlxPoint(X, Y);
 		this.map = null; 
 		this.enemies = enemies;
+		waveComplete = false;
+		waveStart = false;
+
 	}
 	override public function update(elapsed:Float){
 		super.update(elapsed);
 		if (gameover || !playerReady)
 			return;
+			
+		if (currentEnemy == 0)
+			waveStart = true;
 
 		counter += Std.int(FlxG.timeScale);
-		if (counter > interval * FlxG.updateFramerate && waves[currentWave].length > currentEnemy)
+		if (counter > interval * FlxG.updateFramerate && currentWave < waves.length && waves[currentWave].length > currentEnemy)
 		{
+			
 			var path = map.findPath(midpoint, goal.copyTo());
 			if (path == null) {
 				path = defaultPath; 
@@ -750,9 +764,18 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 			GameObjectFactory.addEnemy(enemies, Std.int(midpoint.x), Std.int(midpoint.y), waves[currentWave][currentEnemy],path);
 			counter = 0;
 			currentEnemy ++;
-
-			if (currentEnemy >= waves[currentWave].length)
-				currentWave ++;
+			
+		}
+		else if (currentEnemy >= waves[currentWave].length) {
+			if (enemies.countDead() == currentEnemy)
+				waveComplete = true;
+		}
+		
+		if (waveComplete) {
+			currentWave ++;
+			currentEnemy = 0;
+			waveComplete = false;
+			waveStart = true;
 		}
 
 		if (currentEnemy >= waves[waves.length-1].length && currentWave >= waves.length)
@@ -763,9 +786,6 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 		this.defaultPath = map.findPath(midpoint, goal.copyTo());
 	}
 
-	// private function copyArray(origArray: Array<FlxPoint>): Array<FlxPoint> { 
-	// 	for 
-	// }
 }
 class Bullet extends FlxSprite{
 	public var attackPt:Int;
@@ -1167,7 +1187,7 @@ class BuildState extends FlxSubState
 		if (FlxG.keys.anyJustPressed([Y])) {
 			confirmedCallback();
 		}
-		if (FlxG.keys.anyJustPressed([N]) || (FlxG.mouse.justPressed && FlxG.mouse.x < storePosition.x)) {
+		if (FlxG.keys.anyJustPressed([N,P]) || (FlxG.mouse.justPressed && FlxG.mouse.x < storePosition.x)) {
 			exitCallback();
 		}
 	}
@@ -1272,8 +1292,9 @@ class PauseState extends FlxSubState
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
-		if (FlxG.keys.anyJustPressed([P])) 
+		if (FlxG.keys.anyJustPressed([P])) {
 			close();		
+		}
 		if (FlxG.keys.anyJustPressed([R])) 
 			FlxG.switchState(new GameState());
 	}	
@@ -1377,13 +1398,12 @@ class GameState extends FlxState{
 	private var player:Player;
 	private var collisionController:CollisionController;
 	public var healthBars = new FlxTypedGroup<FlxBar>();
-	public static var instance:GameState; 
+	private var _centerText:FlxText;
 
 	override public function create(){
 		super.create();
 		FlxG.timeScale = 1;
 		persistentUpdate = true;
-		instance = this;
 
 		// init flx group vars
 		var towers = new FlxTypedGroup<Tower>();
@@ -1454,6 +1474,12 @@ class GameState extends FlxState{
 		// collision setup
 		collisionController = new CollisionController(originalMap, towerMap, player, allies, 
 								enemies, bullets, towers, homebase, spawnArea, this);
+								
+		
+		// center text
+		_centerText = new FlxText( -200, FlxG.height / 2 - 20, FlxG.width, "", 16);
+		_centerText.alignment = CENTER;
+		_centerText.borderStyle = SHADOW;
 
 		// add all objects to screen
 		add(originalMap);
@@ -1476,6 +1502,7 @@ class GameState extends FlxState{
 				t.addWorker(GameObjectFactory.dummyAlly);
 		}
 		add(homebase);
+		add(_centerText);
 
 
 		// camera setup
@@ -1487,17 +1514,29 @@ class GameState extends FlxState{
 		FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X, LEVEL_MIN_Y,
 			LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
 		FlxG.camera.follow(player, LOCKON, 0.5);
+	
 	}
 	
 	override public function update(elapsed:Float){
 		super.update(elapsed);
 
 		// keyboard shortcuts
-		if (FlxG.keys.anyJustPressed([P,Q]))
+		if (FlxG.keys.anyJustPressed([P, Q])) {
+			persistentUpdate = false;
 			openSubState(new PauseState());
+		} else {
+			persistentUpdate = true;
+		}
 
 		// update interactions of game objects
 		collisionController.update(elapsed);
+		
+		if (spawnArea.waveStart) {
+			trace("announce");
+			announceWave();
+			spawnArea.waveComplete = false;
+			spawnArea.waveStart = false;
+		}
 
 		add(healthBars);
 
@@ -1506,6 +1545,21 @@ class GameState extends FlxState{
 
 		// last thing to do on update
 		checkGameOver();
+	}
+	
+	/*	
+	*	Announces start of new wave.
+	*/
+	private function announceWave():Void {
+		
+		_centerText.x = -200;
+		_centerText.text = "Wave " + (spawnArea.currentWave + 1);
+		
+		FlxTween.tween(_centerText, { x: 0 }, 2, { ease: FlxEase.expoOut, onComplete: hideText });
+		
+	}
+	private function hideText(Tween:FlxTween):Void {
+		FlxTween.tween(_centerText, { x: FlxG.width }, 2, { ease: FlxEase.expoIn });
 	}
 
 	/*	Checks whether or not the game is over.
