@@ -30,26 +30,41 @@ typedef Level = {
 	var startHealth:Int;
 	var waves:Array<Array<Int>>;
 	var buttonTypes:Array<Int>;
+	var buildLimit:Int;
 }
 
 class LevelData{
+
 	public static var level1:Level = {
-		mapFilepath:"assets/maps/test.csv",
+		mapFilepath:"assets/maps/level1.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
-		waves:[[0,0,0,0,1],
-				[1, 1, 1, 1, 1],
-				[0,0]],
-		buttonTypes:[6,3,2,1]//[0,1,3,4,5,6,7,8]
+		waves:[[0,0,0,0,0],
+				[0,0,0,0,0,1],
+				[1,1, 0]],
+		buttonTypes:[0],
+		buildLimit:1
+	}
+	
+	public static var level2:Level = {
+		mapFilepath:"assets/maps/test.csv",
+		tilemap:"assets/tiles/auto_tilemap.png",
+		startHealth:2,
+		waves:[[0, 0, 0, 1, 1],
+				[1, 1, 1],
+				[0,1,0,1,0]],
+		buttonTypes:[0, 1],
+		buildLimit:1
 	}
 
-	public static var levels = [level1];
+	public static var levels = [level1, level2];
 	public static var currentLevel = 0;
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>=levels.length){
 			trace("Error: Level "+currentLevel+" does not exists");
 			return null;
 		}
+		
 		return levels[currentLevel];
 	}
 	public static function gotoNextLevel():Null<Level>{
@@ -144,9 +159,19 @@ class GameObjectFactory{
 		var _framerate:Int = 8;
     
 		// make enemy based on type
-		switch (Type) {
+		switch (Type) {	
 			case 0:
 				enemy.init(X,Y,Type,1,1,100);
+				enemy.loadGraphic(AssetPaths.snow3_spritesheet__png, true, 64, 64);
+				enemy.animation.add("idle",[0],_framerate, true);
+				enemy.animation.add("walk_down",[0],_framerate, true);
+				enemy.animation.add("walk_left",[0],_framerate, true);
+				enemy.animation.add("walk_right",[0],_framerate, true);
+				enemy.animation.add("walk_up",[0],_framerate, true);
+				enemy.animation.add("attack",[0], 5, true);
+				enemy.animation.play("idle");
+			case 1:
+				enemy.init(X,Y,Type,1,2,150);
 				enemy.loadGraphic(AssetPaths.kid_spritesheet__png, true, 64, 64);
 				enemy.animation.add("idle",[8],_framerate, true);
 				enemy.animation.add("walk_down",[8,9,10,11,12,13,14,15],_framerate, true);
@@ -155,9 +180,16 @@ class GameObjectFactory{
 				enemy.animation.add("walk_up",[0,1,2,3,4,5,6,7],_framerate, true);
 				enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
 				enemy.animation.play("walk_down");
-			case 1:
-				enemy.init(X,Y,Type,2,5,50);
+			case 2:
+				enemy.init(X,Y,Type,2,5,100);
 				enemy.loadGraphic(AssetPaths.enemy2_spritesheet_64x64__png, true, 64, 64);
+				enemy.animation.add("idle",[0],_framerate, true);
+				enemy.animation.add("walk_down",[0],_framerate, true);
+				enemy.animation.add("walk_left",[0],_framerate, true);
+				enemy.animation.add("walk_right",[0],_framerate, true);
+				enemy.animation.add("walk_up",[0],_framerate, true);
+				enemy.animation.add("attack",[0], 5, true);
+				enemy.animation.play("idle");
 			default:
 				trace('No such enemy type: $Type');
 		}
@@ -742,16 +774,13 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 		this.map = null; 
 		this.enemies = enemies;
 		waveComplete = false;
-		waveStart = false;
+		waveStart = true;
 
 	}
 	override public function update(elapsed:Float){
 		super.update(elapsed);
 		if (gameover || !playerReady)
 			return;
-			
-		if (currentEnemy == 0)
-			waveStart = true;
 
 		counter += Std.int(FlxG.timeScale);
 		if (counter > interval * FlxG.updateFramerate && currentWave < waves.length && waves[currentWave].length > currentEnemy)
@@ -767,18 +796,18 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 			
 		}
 		else if (currentEnemy >= waves[currentWave].length) {
-			if (enemies.countDead() == currentEnemy)
+			if (enemies.countLiving() == 0)
 				waveComplete = true;
 		}
 		
-		if (waveComplete) {
+		if (waveComplete && currentWave <= waves.length - 1) {
 			currentWave ++;
 			currentEnemy = 0;
 			waveComplete = false;
 			waveStart = true;
 		}
 
-		if (currentEnemy >= waves[waves.length-1].length && currentWave >= waves.length)
+		if (currentEnemy >= waves[waves.length-1].length && currentWave >= waves.length - 1)
 			gameover = true;
 	}
 
@@ -802,7 +831,7 @@ class Bullet extends FlxSprite{
 		}
 
 		setPosition(X-width/2,Y-height/2);
-		speed = 100;
+		speed = 200;
 		type = Type;
 		attackPt = Attack;
 		angle = Angle;
@@ -816,12 +845,13 @@ class Bullet extends FlxSprite{
 		super.update(elapsed);
 		
 		// get rid of off screen bullet or a too transparent bullet
-		if (!isOnScreen(FlxG.camera) || alpha <= 0.1) 
+		trace(alpha);
+		if (!isOnScreen(FlxG.camera) || alpha <= 0.8) 
 		{
 			super.kill();
 		}
 		
-		alpha -= 0.02;
+		alpha -= 0.005;
 	}
 }
 class Tower extends FlxSprite{
@@ -843,6 +873,7 @@ class Tower extends FlxSprite{
 		setPosition(X-Math.abs(width-Util.TILE_SIZE)/2,Y-Math.abs(height-Util.TILE_SIZE)/2);
 
 		this.towerLayers = towerLayers;
+		trace("tower layers " + towerLayers);
 		this.bullets = bullets;
 		this.map = map;
 		this.children = new Array<FlxSprite>();
@@ -1021,7 +1052,7 @@ class Homebase extends FlxGroup{
 
 class BuildState extends FlxSubState
 {	
-	private static inline var MAX_TOWER_HEIGHT = 3;
+	private var MAX_TOWER_HEIGHT = 3;
 	private var _tower:Tower;
 	private var _materials:Array<Int>;
 	private var currentStack:Int;
@@ -1041,7 +1072,8 @@ class BuildState extends FlxSubState
 		this.ammo = 6;
 		_materials = new Array<Int>();
 		gui = new FlxTypedGroup<FlxSprite>();
-		storePosition = new FlxPoint(FlxG.width-340, 40);
+		storePosition = new FlxPoint(FlxG.width - 340, 40);
+		MAX_TOWER_HEIGHT = LevelData.getCurrentLevel().buildLimit;
 
 		// semi transparent black bg overlay
 		var background = new FlxSprite(Std.int(storePosition.x),0);
@@ -1063,6 +1095,7 @@ class BuildState extends FlxSubState
 		var row = 0; 
 		var col = -1;
 		var buttons = LevelData.getCurrentLevel().buttonTypes;
+		var tutPos = new FlxPoint(x+col*(width+gap), y+row*(height+gap));
 
 		// row of gun buttons
 		var gun:FlxButton;
@@ -1158,6 +1191,15 @@ class BuildState extends FlxSubState
 		but.loadGraphic(AssetPaths.denyButton__png, true, 50, 50); 
 		gui.add(but);
 
+		// tutorial related events
+		if (LevelData.currentLevel == 0 && GameState.tutorialEvent == 0){
+			FlxG.state.remove(GameState.tutorialArrow);
+			GameState.tutorialArrow.visible = true;
+			GameState.tutorialArrow.setPosition(Std.int(tutPos.x)+20, Std.int(tutPos.y));
+			gui.add(GameState.tutorialArrow);
+			GameState.tutorialEvent++;
+		}
+
 		// move all gui elements outside of screen and stop their scroll factors
 		var xOffset = FlxG.width;
 		for (e in gui){
@@ -1193,12 +1235,31 @@ class BuildState extends FlxSubState
 	}
 
 	private function confirmedCallback(){
+		// tutorial related
+		if (LevelData.currentLevel == 0 && GameState.tutorialEvent == 2){
+			GameState.tutorialArrow.visible = false;
+			gui.remove(GameState.tutorialArrow);
+			GameState.tutorialEvent++;
+		}
+
 		_materials.push(ammo);
 		_tower.buildTower(_materials);
 		exitCallback();
 	}
 
 	private function exitCallback(){
+		// reset tutorial
+		if (LevelData.currentLevel == 0 && GameState.tutorialEvent <= 2){
+			gui.remove(GameState.tutorialArrow);
+			FlxG.state.add(GameState.tutorialArrow);
+			var tutPos = Util.toMapCoordinates(_tower.x,_tower.y);
+			tutPos = Util.toCameraCoordinates(Std.int(tutPos.x - 1), Std.int(tutPos.y));
+			GameState.tutorialArrow.setPosition(Std.int(tutPos.x)+GameState.tutorialArrow.width/2, 
+				Std.int(tutPos.y));
+			GameState.tutorialArrow.visible = true;
+			GameState.tutorialEvent=0;			
+		}
+
 		for (e in display)
 			FlxTween.tween(e, { x: e.x+FlxG.width }, 0.5, { ease: FlxEase.expoIn, onComplete: function(t) close() });
 		for(e in gui)
@@ -1206,6 +1267,13 @@ class BuildState extends FlxSubState
 	}
 
 	private function gunCallback(type:Int){
+		// tutorial 
+		if (LevelData.currentLevel == 0 && GameState.tutorialEvent == 1){
+			GameState.tutorialArrow.setPosition(Std.int(storePosition.x)+50, FlxG.height - 100);
+			GameState.tutorialEvent++;
+		}
+
+		// main
 		if (addMaterial(type)){
 			var temp = new FlxSprite(Std.int(storePosition.x)+150,currentStack);
 			switch(type){
@@ -1295,8 +1363,11 @@ class PauseState extends FlxSubState
 		if (FlxG.keys.anyJustPressed([P])) {
 			close();		
 		}
-		if (FlxG.keys.anyJustPressed([R])) 
+		if (FlxG.keys.anyJustPressed([R])) {
+			if (LevelData.currentLevel == 0)
+				GameState.tutorialEvent = 0;
 			FlxG.switchState(new GameState());
+		}
 	}	
 }
 
@@ -1390,6 +1461,9 @@ class WinState extends FlxSubState
 }
 
 class GameState extends FlxState{
+	public static var tutorialEvent:Int = 0;
+	public static var tutorialArrow:FlxSprite;
+
 	private var _level:Level;
 	private var map:FlxTilemap;
 	private var enemies:FlxTypedGroup<Enemy>;
@@ -1477,9 +1551,10 @@ class GameState extends FlxState{
 								
 		
 		// center text
-		_centerText = new FlxText( -200, FlxG.height / 2 - 20, FlxG.width, "", 16);
+		_centerText = new FlxText( -200, 50, FlxG.width, "", 32);
 		_centerText.alignment = CENTER;
 		_centerText.borderStyle = SHADOW;
+		_centerText.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,5);
 
 		// add all objects to screen
 		add(originalMap);
@@ -1515,6 +1590,22 @@ class GameState extends FlxState{
 			LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
 		FlxG.camera.follow(player, LOCKON, 0.5);
 	
+		// tutorial related setup
+		GameState.tutorialArrow = new FlxSprite(0,0);
+		GameState.tutorialArrow.loadGraphic(AssetPaths.SmallArrow__png, true, 34, 50);
+		GameState.tutorialArrow.animation.add("play", [0,1,2,3], 5, true);
+		GameState.tutorialArrow.animation.play("play");
+		GameState.tutorialArrow.visible = false;
+		GameState.tutorialArrow.angle = 90;
+		add(GameState.tutorialArrow);
+		if (LevelData.currentLevel == 0 && GameState.tutorialEvent == 0){
+			var randomTower = towers.getFirstAlive();
+			var tutPos = Util.toMapCoordinates(randomTower.x,randomTower.y);
+			tutPos = Util.toCameraCoordinates(Std.int(tutPos.x - 1), Std.int(tutPos.y));
+			GameState.tutorialArrow.setPosition(Std.int(tutPos.x)+GameState.tutorialArrow.width/2, 
+				Std.int(tutPos.y));
+			GameState.tutorialArrow.visible = true;
+		}
 	}
 	
 	override public function update(elapsed:Float){
@@ -1531,8 +1622,7 @@ class GameState extends FlxState{
 		// update interactions of game objects
 		collisionController.update(elapsed);
 		
-		if (spawnArea.waveStart) {
-			trace("announce");
+		if (spawnArea.waveStart && spawnArea.playerReady) {
 			announceWave();
 			spawnArea.waveComplete = false;
 			spawnArea.waveStart = false;
@@ -1580,7 +1670,15 @@ class GameState extends FlxState{
 		}
 		if (spawnArea.gameover && alive == 0){
 			persistentUpdate = false;
-			openSubState(new WinState());
+			
+			if (LevelData.currentLevel == 0) {
+				if (LevelData.gotoNextLevel() == null)
+					FlxG.switchState(new MenuState());
+				FlxG.switchState(new GameState());
+			}
+			else {
+				openSubState(new WinState());
+			}
 		}
 	}
 }
