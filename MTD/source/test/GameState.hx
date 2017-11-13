@@ -563,8 +563,8 @@ class Ally extends FlxSprite{
 class Enemy extends FlxSprite{
 	public var attackPt:Int;
 	public var attackRange:Int = 64; 
+	public var healthPt:Int;
 	private var type:Int;
-	private var healthPt:Int;
 	private var speed:Int;
 	private var _prevFacing:Int;
 	private var _framerate:Int = 8;
@@ -589,8 +589,8 @@ class Enemy extends FlxSprite{
 		healthPt = Health;
 		speed = Speed;
 		alpha = 1;
-		_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "healthPt", 0, this.healthPt);
-		_healthBar.trackParent(15, -25);
+		_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "healthPt", 0, this.healthPt,true);
+		_healthBar.trackParent(15, 65);
 		FlxG.state.add(_healthBar);
 		
 		isAttacking = false; 
@@ -656,9 +656,10 @@ class Enemy extends FlxSprite{
 		healthPt -= Std.int(Damage);
 		alpha -= 0.05;
 
-		if (healthPt <= 0)
+		if (healthPt <= 0){
 			kill();
 			_healthBar.kill();
+		}
 	}
 
 	private function calculateFacing():Int{
@@ -883,7 +884,7 @@ class Tower extends FlxSprite{
 		counter = 0;
 		health = 1; 
 		created = false;
-		_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "health", 0, this.health);
+		_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "health", 0, this.health, true);
 		_healthBar.trackParent(15, 55);
 		_healthBar.visible = false; 
 		FlxG.state.add(_healthBar);
