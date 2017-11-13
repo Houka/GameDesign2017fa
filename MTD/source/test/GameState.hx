@@ -845,6 +845,7 @@ class BuildState extends FlxSubState
 		var row = 0; 
 		var col = -1;
 		var buttons = LevelData.getCurrentLevel().buttonTypes;
+		var tutPos = new FlxPoint(x+col*(width+gap), y+row*(height+gap));
 
 		// row of gun buttons
 		var gun:FlxButton;
@@ -940,6 +941,15 @@ class BuildState extends FlxSubState
 		but.loadGraphic(AssetPaths.denyButton__png, true, 50, 50); 
 		gui.add(but);
 
+		// tutorial related events
+		if (LevelData.currentLevel == 0 && GameState.tutorialEvent == 0){
+			FlxG.state.remove(GameState.tutorialArrow);
+			GameState.tutorialArrow.visible = true;
+			GameState.tutorialArrow.setPosition(Std.int(tutPos.x)+20, Std.int(tutPos.y));
+			gui.add(GameState.tutorialArrow);
+			GameState.tutorialEvent++;
+		}
+
 		// move all gui elements outside of screen and stop their scroll factors
 		var xOffset = FlxG.width;
 		for (e in gui){
@@ -975,12 +985,26 @@ class BuildState extends FlxSubState
 	}
 
 	private function confirmedCallback(){
+		// tutorial related
+		if (LevelData.currentLevel == 0 && GameState.tutorialEvent == 2){
+			GameState.tutorialArrow.visible = false;
+			gui.remove(GameState.tutorialArrow);
+			GameState.tutorialEvent++;
+		}
+
 		_materials.push(ammo);
 		_tower.buildTower(_materials);
 		exitCallback();
 	}
 
 	private function exitCallback(){
+		// reset tutorial
+		if (LevelData.currentLevel == 0 && GameState.tutorialEvent <= 2){
+			GameState.tutorialArrow.visible = false;
+			gui.remove(GameState.tutorialArrow);
+			GameState.tutorialEvent=0;			
+		}
+
 		for (e in display)
 			FlxTween.tween(e, { x: e.x+FlxG.width }, 0.5, { ease: FlxEase.expoIn, onComplete: function(t) close() });
 		for(e in gui)
@@ -988,6 +1012,13 @@ class BuildState extends FlxSubState
 	}
 
 	private function gunCallback(type:Int){
+		// tutorial 
+		if (LevelData.currentLevel == 0 && GameState.tutorialEvent == 1){
+			GameState.tutorialArrow.setPosition(Std.int(storePosition.x)+50, FlxG.height - 100);
+			GameState.tutorialEvent++;
+		}
+
+		// main
 		if (addMaterial(type)){
 			var temp = new FlxSprite(Std.int(storePosition.x)+150,currentStack);
 			switch(type){
@@ -1172,6 +1203,9 @@ class WinState extends FlxSubState
 }
 
 class GameState extends FlxState{
+	public static var tutorialEvent:Int = 0;
+	public static var tutorialArrow:FlxSprite;
+
 	private var _level:Level;
 	private var map:FlxTilemap;
 	private var enemies:FlxTypedGroup<Enemy>;
@@ -1292,6 +1326,22 @@ class GameState extends FlxState{
 			LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
 		FlxG.camera.follow(player, LOCKON, 0.5);
 	
+		// tutorial related setup
+		GameState.tutorialArrow = new FlxSprite(0,0);
+		GameState.tutorialArrow.loadGraphic(AssetPaths.SmallArrow__png, true, 34, 50);
+		GameState.tutorialArrow.animation.add("play", [0,1,2,3,2,1,0], 5, true);
+		GameState.tutorialArrow.animation.play("play");
+		GameState.tutorialArrow.visible = false;
+		GameState.tutorialArrow.angle = 90;
+		add(GameState.tutorialArrow);
+		if (LevelData.currentLevel == 0 && GameState.tutorialEvent == 0){
+			var randomTower = towers.getFirstAlive();
+			var tutPos = Util.toMapCoordinates(randomTower.x,randomTower.y);
+			tutPos = Util.toCameraCoordinates(Std.int(tutPos.x - 1), Std.int(tutPos.y));
+			GameState.tutorialArrow.setPosition(Std.int(tutPos.x)+GameState.tutorialArrow.width/2, 
+				Std.int(tutPos.y));
+			GameState.tutorialArrow.visible = true;
+		}
 	}
 	
 	override public function update(elapsed:Float){
