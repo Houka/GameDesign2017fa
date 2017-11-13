@@ -1125,31 +1125,31 @@ class BuildState extends FlxSubState
 		col = -1;
 
 		// row of ammo buttons
-		var ammo:FlxButton;
-		if (buttons.indexOf(6) != -1){
-			col++;
-			ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(6));
-			ammo.loadGraphic(AssetPaths.PiercingAmmoButton__png, true, width, height); 
-			gui.add(ammo);
-		}
+		// var ammo:FlxButton;
+		// if (buttons.indexOf(6) != -1){
+		// 	col++;
+		// 	ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(6));
+		// 	ammo.loadGraphic(AssetPaths.PiercingAmmoButton__png, true, width, height); 
+		// 	gui.add(ammo);
+		// }
 
-		if (buttons.indexOf(7) != -1){
-			col++;
-			ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(7));
-			ammo.loadGraphic(AssetPaths.ExplodeAmmoButton__png, true, width, height); 
-			gui.add(ammo);
-		}
+		// if (buttons.indexOf(7) != -1){
+		// 	col++;
+		// 	ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(7));
+		// 	ammo.loadGraphic(AssetPaths.ExplodeAmmoButton__png, true, width, height); 
+		// 	gui.add(ammo);
+		// }
 		
-		if (buttons.indexOf(8) != -1){
-			col++;
-			ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(8));
-			ammo.loadGraphic(AssetPaths.FreezeAmmoButton__png, true, width, height); 
-			gui.add(ammo);
-		}
+		// if (buttons.indexOf(8) != -1){
+		// 	col++;
+		// 	ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(8));
+		// 	ammo.loadGraphic(AssetPaths.FreezeAmmoButton__png, true, width, height); 
+		// 	gui.add(ammo);
+		// }
 
-		// sprite to display the selected ammo
-		ammoSprite = new FlxSprite(Std.int(storePosition.x)+100,460,AssetPaths.snowball__png);
-		gui.add(ammoSprite);
+		// // sprite to display the selected ammo
+		// ammoSprite = new FlxSprite(Std.int(storePosition.x)+100,460,AssetPaths.snowball__png);
+		// gui.add(ammoSprite);
 
 		add(gui);
 
