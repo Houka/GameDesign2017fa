@@ -62,9 +62,9 @@ class LevelData{
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
 		waves:[[0, 0, 0, 1, 1],
-				[1, 1, 1,1],
+				[1, 1, 1],
 				[0, 1, 0, 1, 0],
-				[1,1,1,0,0]],
+				[1,1,0,0]],
 		buttonTypes:[0, 1,3],
 		buildLimit:2
 	}
@@ -217,6 +217,7 @@ class LevelData{
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>=levels.length){
 			trace("Error: Level "+currentLevel+" does not exists");
+			currentLevel = 0;
 			return null;
 		}
 		
@@ -1604,6 +1605,10 @@ class WinState extends FlxSubState
 		text2.screenCenter();
 		text2.y += 40;
 		add(text2);
+
+		// unlock next level
+		LevelData.gotoNextLevel();
+		LevelData.currentLevel--;
 	}
 
 	override public function add(Object:FlxBasic):FlxBasic{
