@@ -58,8 +58,8 @@ class LevelSelectState extends FlxState
         for (i in 0...levels.length){
             var x = (i%SQUARES_PER_ROW)*GRID_WIDTH+GRID_OFFSET_X;
             var y = Std.int(i/SQUARES_PER_ROW)*GRID_HEIGHT+GRID_OFFSET_Y;
-            if(i<=LevelData.maxLevelReached){
-                levelButton = new FlxButton(x, y, (i+1)+"", levelCallback.bind(i));
+            if(levels[i]<=LevelData.maxLevelReached){
+                levelButton = new FlxButton(x, y, (i+1)+"", levelCallback.bind(levels[i]));
                 levelButton.loadGraphic(AssetPaths.levelButton__png, true, 55, 64);
                 levelButton.label.size = FONT_SIZE;
                 levelButton.label.offset.x -= FONT_OFFSET_X;

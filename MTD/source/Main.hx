@@ -13,7 +13,7 @@ class Main extends Sprite
 		super();
 		addChild(new FlxGame(0, 0, MenuState, 2,60,60,true,false));
 
-        Logging.initialize(771, 5, true, true);
+        Logging.initialize(771, 5, false, true);
         Logging.recordPageLoad();
         Logging.assignABTestValue(FlxG.random.int(1, 2));
         Logging.recordABTestValue();
