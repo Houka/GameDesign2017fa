@@ -136,9 +136,10 @@ class GameObjectFactory{
 				enemy.loadGraphic(AssetPaths.kid_spritesheet__png, true, 64, 64);
 				enemy.animation.add("idle",[8],_framerate, true);
 				enemy.animation.add("walk_down",[8,9,10,11,12,13,14,15],_framerate, true);
-				enemy.animation.add("walk_right",[16,17,18,19,20,21,22,23],_framerate, true);
-				enemy.animation.add("walk_left",[24,25,26,27,28,29,30,31],_framerate, true);
+				enemy.animation.add("walk_left",[16,17,18,19,20,21,22,23],_framerate, true);
+				enemy.animation.add("walk_right",[24,25,26,27,28,29,30,31],_framerate, true);
 				enemy.animation.add("walk_up",[0,1,2,3,4,5,6,7],_framerate, true);
+				enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
 				enemy.animation.play("walk_down");
 				// enemy.animation.add("walkstupid", [8,9,10,11], 8, true); 
 				// enemy.animation.play("walkstupid");
@@ -560,15 +561,6 @@ class Enemy extends FlxSprite{
 		_savedOnComplete = null;
 		angle = 0;
 
-
-		// add animation 
-		// animation.add("idle",[8],_framerate, false);
-		// animation.add("walk_down",[8,9,10,11,12,13,14,15],_framerate, false);
-		// animation.add("walk_left",[16,17,18,19,20,21,22,23],_framerate, false);
-		// animation.add("walk_right",[24,25,26,27,28,29,30,31],_framerate, false);
-		// animation.add("walk_up",[0,1,2,3,4,5,6,7],_framerate, false);
-		// animation.play("walk_down");
-
 		_prevFacing = facing;
 	}
 
@@ -598,7 +590,9 @@ class Enemy extends FlxSprite{
 		if (isAttacking){
 			animation.play("attack");
 		}
+
 		else if (_prevFacing != facing){
+			// loadGraphic(AssetPaths.kid_spritesheet__png, true, 64, 64);
 			switch (facing){
 				case FlxObject.DOWN:
 					this.animation.play("walk_down");
@@ -607,7 +601,7 @@ class Enemy extends FlxSprite{
 				case FlxObject.LEFT:
 					this.animation.play("walk_left");
 				case FlxObject.RIGHT:
-					this.animation.play("right");
+					this.animation.play("walk_right");
 				default:
 					this.animation.play("walk_right");
 			}
