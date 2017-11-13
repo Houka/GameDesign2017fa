@@ -124,6 +124,17 @@ class Util{
 		}
 		return copy;
 	}
+
+	public static function copyPathFrom(Path:Array<FlxPoint>,Index:Int):Array<FlxPoint>{
+		var result:Array<FlxPoint> = new Array<FlxPoint>();
+		var tempPoint:FlxPoint;
+		for (i in Index...Path.length){
+			tempPoint = new FlxPoint(Path[i].x,Path[i].y);
+			result.push(tempPoint);
+		}
+
+		return result;
+	 }
 }
 
 class GameObjectFactory{
@@ -654,7 +665,7 @@ class Enemy extends FlxSprite{
 	public function pausePath():Void{
 		_savedSpeed = path.speed;
 		_savedOnComplete = path.onComplete;
-		_savedPath = copyPathFrom(path.nodes, path.nodeIndex);
+		_savedPath = Util.copyPathFrom(path.nodes, path.nodeIndex);
 		_savedPath.insert(0, getMidpoint());
 		path.cancel();
 		path = null;
@@ -681,17 +692,6 @@ class Enemy extends FlxSprite{
 
 	 		pausePath();
 	 	}
-	 }
-
-	private function copyPathFrom(Path:Array<FlxPoint>,Index:Int):Array<FlxPoint>{
-		var result:Array<FlxPoint> = new Array<FlxPoint>();
-		var tempPoint:FlxPoint;
-		for (i in Index...Path.length){
-			tempPoint = new FlxPoint(Path[i].x,Path[i].y);
-			result.push(tempPoint);
-		}
-
-		return result;
 	 }
 
 }
@@ -759,7 +759,7 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 			
 			var path = map.findPath(midpoint, goal.copyTo());
 			if (path == null) {
-				path = defaultPath; 
+				path = Util.copyPathFrom(defaultPath, 0); 
 			}
 			GameObjectFactory.addEnemy(enemies, Std.int(midpoint.x), Std.int(midpoint.y), waves[currentWave][currentEnemy],path);
 			counter = 0;
