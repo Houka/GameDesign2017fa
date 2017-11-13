@@ -36,10 +36,10 @@ class LevelData{
 		mapFilepath:"assets/maps/test.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
-		waves:[[0,0,0,0,1],
+		waves:[[1,1,1,1,1],
 				[1, 1, 1, 1, 1],
 				[0,0]],
-		buttonTypes:[6,3,2,1]//[0,1,3,4,5,6,7,8]
+		buttonTypes:[0,3, 4,5]//[0,1,3,4,5,6,7,8]
 	}
 
 	public static var levels = [level1];
@@ -131,12 +131,15 @@ class GameObjectFactory{
 		var enemy = enemies.recycle(Enemy);	// uses an already added enemy, or makes a new one and adds it to enemies
 		
 		// make enemy based on type
-		switch (Type) {
+		switch (Type) {	
 			case 0:
 				enemy.init(X,Y,Type,1,1,100);
-				enemy.loadGraphic(AssetPaths.enemy1_spritesheet_64x64__png, true, 64, 64);
+				enemy.loadGraphic(AssetPaths.snow3_spritesheet__png, true, 64, 64);
 			case 1:
-				enemy.init(X,Y,Type,2,5,50);
+				enemy.init(X,Y,Type,1,2,200);
+				enemy.loadGraphic(AssetPaths.enemy1_spritesheet_64x64__png, true, 64, 64);
+			case 2:
+				enemy.init(X,Y,Type,2,5,100);
 				enemy.loadGraphic(AssetPaths.enemy2_spritesheet_64x64__png, true, 64, 64);
 			default:
 				trace('No such enemy type: $Type');
@@ -610,7 +613,7 @@ class Bullet extends FlxSprite{
 		}
 
 		setPosition(X-width/2,Y-height/2);
-		speed = 100;
+		speed = 200;
 		type = Type;
 		attackPt = Attack;
 		angle = Angle;
