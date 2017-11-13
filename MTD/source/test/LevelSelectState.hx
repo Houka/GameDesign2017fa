@@ -8,10 +8,12 @@ import flixel.group.FlxGroup;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import flixel.text.FlxText;
+import flixel.system.FlxSound;
 
 import test.GameState.Level;
 import test.GameState.LevelData;
 import test.GameState.Util;
+import test.GameState.Sounds;
 import gameStates.MenuState;
 
 class LevelSelectState extends FlxState
@@ -91,6 +93,7 @@ class LevelSelectState extends FlxState
      */
     private function levelCallback(level:Int):Void
     {
+        Sounds.play("select");
         LevelData.currentLevel = level;
         FlxG.switchState(new GameState());
     }
@@ -99,6 +102,7 @@ class LevelSelectState extends FlxState
      * Go back to Main Menu; can also press [Q].
      */
     private function mainMenuCallback():Void{
+        Sounds.play("select");
         FlxG.switchState(new MenuState());
     }
 }
