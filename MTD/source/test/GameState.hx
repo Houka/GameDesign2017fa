@@ -22,6 +22,7 @@ using StringTools;
 
 import test.LevelSelectState;
 import Logging;
+import gameStates.MenuState;
 
 ////////////////////////// Level
 ////////////////////////////////
@@ -1066,7 +1067,7 @@ class Homebase extends FlxGroup{
 ////////////////////////// State
 ////////////////////////////////
 
-class BuildState extends FlxSubState
+class BuildState extends FlxSubState{
 	private var MAX_TOWER_HEIGHT = 3;
 	private var _tower:Tower;
 	private var _materials:Array<Int>;
@@ -1502,11 +1503,15 @@ class GameState extends FlxState{
 	private var _centerText:FlxText;
 
 	public static var abTestVersion = Logging.assignABTestValue(FlxG.random.int(1,2));
+	public static var isATesting = abTestVersion <= 1;
 
 	override public function create(){
 		super.create();
 		FlxG.timeScale = 1;
-		persistentUpdate = true;
+		trace(isATesting);
+		isATesting = false;
+		if (isATesting)
+			persistentUpdate = true;
 
 		// init flx group vars
 		var towers = new FlxTypedGroup<Tower>();
@@ -1649,10 +1654,12 @@ class GameState extends FlxState{
 
 		// keyboard shortcuts
 		if (FlxG.keys.anyJustPressed([P, Q])) {
-			persistentUpdate = false;
+			if (isATesting)
+				persistentUpdate = false;
 			openSubState(new PauseState());
 		} else {
-			persistentUpdate = true;
+			if (isATesting)
+				persistentUpdate = true;
 		}
 
 		// log mouse clicks
@@ -1715,11 +1722,11 @@ class GameState extends FlxState{
 	*/
 	private function checkGameOver(){
 		// if you lost the game then open LoseState, then return
-		trace(homebase.health);
 		if (homebase.gameover || !player.alive || homebase.health <= 0){
-			var logString = "Wave Num:"+spawnArea.currentWave+" Level:"+LevelData.currentLevel;
+			var logString = "Wave Num:"+spawns.getFirstAlive().currentWave+" Level:"+LevelData.currentLevel;
 			Logging.recordEvent(6, logString);
-			persistentUpdate = false;
+			if (isATesting)
+				persistentUpdate = false;
 			openSubState(new LoseState());
 			return;
 		}
@@ -1738,7 +1745,9 @@ class GameState extends FlxState{
 		if (gameover && alive == 0){
 			var logString = "Level:"+LevelData.currentLevel;
 			Logging.recordEvent(7, logString);
-			persistentUpdate = false;
+
+			if (isATesting)
+				persistentUpdate = false;
 			
 			if (LevelData.currentLevel == 0) {
 				if (LevelData.gotoNextLevel() == null)
