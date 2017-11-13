@@ -859,6 +859,7 @@ class Tower extends FlxSprite{
 	}
 	public function buildTower(materials:Array<Int>){
 		var yOffset = 0;
+		var yFoundOffset = 0; 
 		var midpoint = getMidpoint();
 		for (m in materials){
 			if (m < 6){
@@ -868,19 +869,23 @@ class Tower extends FlxSprite{
 					// gunbases
 					case 0:
 						layer.loadGraphic(AssetPaths.snowman_head__png);
-						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset - 10);
 						towerLayers.add(layer);
 						gunTypes.push(m);
+						yOffset -= 32;
 					case 1:
 						layer.loadGraphic(AssetPaths.snowman_spray__png);
-						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset + 10);
+						yOffset += 10; 
 						towerLayers.add(layer);
 						gunTypes.push(m);
+						yOffset -= 32;
 					case 2:
 						layer.loadGraphic(AssetPaths.snowman_machine_gun__png);
-						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset - 4);
 						towerLayers.add(layer);
 						gunTypes.push(m);
+						yOffset -= 32;
 
 					// foundations
 					case 3:
@@ -888,23 +893,26 @@ class Tower extends FlxSprite{
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
 						health += 1; 
+						yOffset -= 25;
 
 					case 4:
 						layer.loadGraphic(AssetPaths.snowman_ice__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
 						health += 2; 
+						yOffset -= 25;
 
 					case 5:
 						layer.loadGraphic(AssetPaths.snowman_coal__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
 						health += 3; 
+						yOffset -= 25;
 				}
 
 				children.push(layer);
-				yOffset -= 32;
-			}else{
+			}
+			else{
 				// ammo. only one ammo expected in each materials list
 				ammoType = m;
 			}
