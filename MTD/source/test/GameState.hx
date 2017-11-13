@@ -1136,7 +1136,7 @@ class BuildState extends FlxSubState
 		var origPlaceholderPos = Std.int(storePosition.x)+70;
 		var equalsOffset = 50; 
 
-		var equals = new FlxSprite(Std.int(storePosition.x)+209-equalsOffset, 450); 
+		var equals = new FlxSprite(Std.int(storePosition.x)+159, 450); 
 		equals.loadGraphic(AssetPaths.equal__png); 
 
 		if (buildLimit >= 1){
@@ -1148,18 +1148,18 @@ class BuildState extends FlxSubState
 
 			if (buildLimit >= 2) {
 				placeholder.x = origPlaceholderPos; 
-				var plus = new FlxSprite(Std.int(storePosition.x)+99, 450); 
+				var plus = new FlxSprite(origPlaceholderPos+29, 450); 
 				plus.loadGraphic(AssetPaths.plusButton__png); 
 				gui.add(plus); 
 
-				var placeholder_2 = new FlxSprite(Std.int(storePosition.x)+125, 450); 
+				var placeholder_2 = new FlxSprite(origPlaceholderPos+55, 450); 
 				placeholder_2.loadGraphic(AssetPaths.storePlaceholder__png); 
 				gui.add(placeholder_2); 
 
 				gui.add(equals); 
 
 				if (buildLimit >= 3) {
-					var plus_2 = new FlxSprite(Std.int(storePosition.x)+154, 450); 
+					var plus_2 = new FlxSprite(origPlaceholderPos+84, 450); 
 					plus_2.loadGraphic(AssetPaths.plusButton__png); 
 					gui.add(plus_2); 
 
@@ -1232,15 +1232,17 @@ class BuildState extends FlxSubState
 	}
 
 	private function gunCallback(type:Int){
+		var tempX = Std.int(storePosition.x)+237; 
+
 		if (addMaterial(type)){
-			var temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack-23);
+			var temp = new FlxSprite(tempX-40,currentStack-23);
 			var gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55)+40, 445); 
 			if (LevelData.getCurrentLevel().buildLimit == 2) {
-				temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack);
+				temp = new FlxSprite(tempX-40,currentStack);
 				gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 445); 
 			}
 			else if (LevelData.getCurrentLevel().buildLimit == 3) {
-				temp = new FlxSprite(Std.int(storePosition.x)+237,currentStack);
+				temp = new FlxSprite(tempX,currentStack);
 				gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 445); 
 			}
 
@@ -1269,16 +1271,19 @@ class BuildState extends FlxSubState
 		}
 	}
 	private function foundationCallback(type:Int){
+		var tempX = Std.int(storePosition.x)+237; 
+		var foundationX = Std.int(storePosition.x)+72; 
+
 		if (addMaterial(type)){
-			var temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack-27);
-			var foundationAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*53)+40, 453); 
+			var temp = new FlxSprite(tempX-40,currentStack-27);
+			var foundationAddition = new FlxSprite(foundationX+((_materials.length-1)*53)+40, 453); 
 			if (LevelData.getCurrentLevel().buildLimit == 2) {
-				temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack);
-				foundationAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 453); 
+				temp = new FlxSprite(tempX-40,currentStack);
+				foundationAddition = new FlxSprite(foundationX+((_materials.length-1)*55), 453); 
 			}
 			else if (LevelData.getCurrentLevel().buildLimit == 3) {
-				temp = new FlxSprite(Std.int(storePosition.x)+237,currentStack);
-				foundationAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 453); 
+				temp = new FlxSprite(tempX,currentStack);
+				foundationAddition = new FlxSprite(foundationX+((_materials.length-1)*55), 453); 
 			}
 
 			switch(type){
