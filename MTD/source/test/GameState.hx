@@ -1236,19 +1236,21 @@ class BuildState extends FlxSubState
 			var gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 445); 
 			switch(type){
 				case 0:
+					temp.y -= 10; 
 					temp.loadGraphic(AssetPaths.snowman_head__png);
-					// gunAddition.x -= 8; 
 					gunAddition.loadGraphic(AssetPaths.snowman_head__png); 
 					gui.add(gunAddition);
 				case 1:
+					temp.y += 10;
 					temp.loadGraphic(AssetPaths.snowman_spray__png);
 					gunAddition.y += 10; 
 					gunAddition.loadGraphic(AssetPaths.snowman_spray__png); 
 					gui.add(gunAddition);
+					currentStack += 10;
 				case 2:
+					temp.y -= 4; 
 					temp.loadGraphic(AssetPaths.snowman_machine_gun__png);
 					gunAddition.y += 8;
-					// gunAddition.x += 8; 
 					gunAddition.loadGraphic(AssetPaths.snowman_machine_gun__png); 
 					gui.add(gunAddition);
 			}
@@ -1259,7 +1261,6 @@ class BuildState extends FlxSubState
 	private function foundationCallback(type:Int){
 		if (addMaterial(type)){
 			var temp = new FlxSprite(Std.int(storePosition.x)+237,currentStack);
-			// var foundationAddition = new FlxSprite(Std.int(storePosition.x)+78+((_materials.length-1)*48), 453);
 			var foundationAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*53), 453); 
 			switch(type){
 				case 3:
@@ -1275,7 +1276,7 @@ class BuildState extends FlxSubState
 					foundationAddition.loadGraphic(AssetPaths.snowman_coal__png); 
 					gui.add(foundationAddition);
 			}
-			currentStack -= 32;
+			currentStack -= 25;
 			display.add(temp);
 		}
 	}
