@@ -18,7 +18,7 @@ import flixel.ui.FlxButton;
 import openfl.Assets;
 using StringTools;
 
-import gameStates.MenuState;
+import test.LevelSelectState;
 import Logging;
 
 ////////////////////////// Level
@@ -36,12 +36,21 @@ class LevelData{
         mapFilepath:"assets/maps/test.csv",
         tilemap:"assets/tiles/auto_tilemap.png",
         startHealth:5,
-        waves:[[0,0,0,0,1],
+        waves: [[0,0,0,0,1],
                 [1,1,1,1,1]],
         buttonTypes:[6,3,2,1]//[0,1,3,4,5,6,7,8]
     }
 
-    public static var levels = [level0];
+    public static var level1:Level = {
+        mapFilepath:"assets/maps/level1.csv",
+        tilemap:"assets/tiles/auto_tilemap.png",
+        startHealth:5,
+        waves: [[0,0,0,0,1],
+                [1,1,1,1,1]],
+        buttonTypes:[6,3,2,1]//[0,1,3,4,5,6,7,8]
+    }
+
+    public static var levels = [level0, level1];
     public static var currentLevel = 0;
     public static function getCurrentLevel():Null<Level>{
         if (currentLevel>=levels.length){
@@ -1041,7 +1050,7 @@ class PauseState extends FlxSubState
         text.screenCenter();
         add(text);
 
-        var text2 = new flixel.text.FlxText(0, 0, 0, "press [P] to resume or [R] to restart", 32);
+        var text2 = new flixel.text.FlxText(0, 0, 0, "press [P] to resume, [R] to restart, or [Q] to exit", 32);
         text2.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,5);
         text2.screenCenter();
         text2.y += 40;
@@ -1062,7 +1071,9 @@ class PauseState extends FlxSubState
     {
         super.update(elapsed);
         if (FlxG.keys.anyJustPressed([P])) 
-            close();        
+            close();
+        if (FlxG.keys.anyJustPressed([Q]))
+            FlxG.switchState(new LevelSelectState());        
         if (FlxG.keys.anyJustPressed([R])) 
             FlxG.switchState(new GameState());
     }   
@@ -1104,7 +1115,7 @@ class LoseState extends FlxSubState
     {
         super.update(elapsed);
         if (FlxG.keys.anyJustPressed([Q]))
-            FlxG.switchState(new MenuState());
+            FlxG.switchState(new LevelSelectState());
         if (FlxG.keys.anyJustPressed([R]))
             FlxG.switchState(new GameState());
     }   
@@ -1146,12 +1157,12 @@ class WinState extends FlxSubState
     {
         super.update(elapsed);
         if (FlxG.keys.anyJustPressed([Q]))
-            FlxG.switchState(new MenuState());
+            FlxG.switchState(new LevelSelectState());
         if (FlxG.keys.anyJustPressed([R]))
             FlxG.switchState(new GameState());
         if (FlxG.keys.anyJustPressed([N])){
             if (LevelData.gotoNextLevel() == null)
-                FlxG.switchState(new MenuState());
+                FlxG.switchState(new LevelSelectState());
             FlxG.switchState(new GameState());
         }
     }   
@@ -1166,7 +1177,7 @@ class GameState extends FlxState{
     private var player:Player;
     private var collisionController:CollisionController;
 
-    public static var abTestVersion = Logging.assignABTestValue(FlxG.random.int(1,3));
+    public static var abTestVersion = Logging.assignABTestValue(FlxG.random.int(1,2));
 
     override public function create(){
         super.create();

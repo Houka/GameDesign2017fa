@@ -11,11 +11,11 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
-		addChild(new FlxGame(0, 0, test.GameState, 2,60,60,true,false));
+		addChild(new FlxGame(0, 0, MenuState, 2,60,60,true,false));
 
-        Logging.initialize(771, 5, false, true);
+        Logging.initialize(771, 5, true, true);
         Logging.recordPageLoad();
-        Logging.assignABTestValue(FlxG.random.int(1, 3));
+        Logging.assignABTestValue(FlxG.random.int(1, 2));
         Logging.recordABTestValue();
 	}
 }
