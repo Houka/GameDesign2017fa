@@ -113,22 +113,22 @@ class LevelData{
 		mapFilepath:"assets/maps/level7.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
-		waves:[[0, 0, 0, 1, 1],
-				[1, 1, 1],
-				[0, 1,2, 0]],
-		buttonTypes:[0, 1,2, 3,4],
-		buildLimit:3
+		waves:[[0, 0, 0, 1, 1,1,1],
+				[1, 1, 1,2,2],
+				[0, 1, 0,2,2,2],
+				[1, 1,1,1,2,2]],
+		buttonTypes:[0, 1,2, 3,4,5],
+		buildLimit:2
 	}
 	
 	public static var level8:Level = {
 		mapFilepath:"assets/maps/level8.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
-		waves:[[0, 0, 0, 1, 1,1,1],
-				[1, 1, 1,2,2],
-				[0, 1, 0,2,2,2],
-				[1, 1,1,1,2,2]],
-		buttonTypes:[0, 1,2, 3,4,5],
+		waves:[[0, 0, 0, 1, 1],
+				[1, 1, 1],
+				[0, 1,2, 0]],
+		buttonTypes:[0, 1,2, 3,4],
 		buildLimit:3
 	}
 	
@@ -211,7 +211,7 @@ class LevelData{
 	}
 
 	public static var levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13];
-	public static var currentLevel = 4;
+	public static var currentLevel = 6;
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>=levels.length){
 			trace("Error: Level "+currentLevel+" does not exists");
