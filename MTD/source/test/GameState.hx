@@ -212,7 +212,7 @@ class LevelData{
 	}
 
 	public static var levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13];
-	public static var currentLevel = 0;
+	public static var currentLevel = 10;
 	public static var maxLevelReached = currentLevel;
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>=levels.length){
@@ -1076,13 +1076,15 @@ class Tower extends FlxSprite{
 						yOffset -= 32;
 					case 1:
 						layer.loadGraphic(AssetPaths.snowman_machine_gun__png);
-						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset + 10);
-						yOffset += 14; 
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset - 4);
 						towerLayers.add(layer);
 						gunTypes.push(m);
+						yOffset -= 32;
+
 					case 2:
 						layer.loadGraphic(AssetPaths.snowman_spray__png);
-						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset - 4);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset + 10);
+						yOffset += 14; 
 						towerLayers.add(layer);
 						gunTypes.push(m);
 						yOffset -= 32;
@@ -1505,18 +1507,19 @@ class BuildState extends FlxSubState{
 					gunAddition.loadGraphic(AssetPaths.snowman_head__png); 
 					gui.add(gunAddition);
 				case 1:
-					temp.y += 10;
-				  temp.loadGraphic(AssetPaths.snowman_machine_gun__png);
-					gunAddition.y += 10; 
-					gunAddition.loadGraphic(AssetPaths.snowman_machine_gun__png); 
-					gui.add(gunAddition);
-					currentStack += 10;
-				case 2:
 					temp.y -= 4; 
-					temp.loadGraphic(AssetPaths.snowman_spray__png);
+					temp.loadGraphic(AssetPaths.snowman_machine_gun__png);
+					gunAddition.loadGraphic(AssetPaths.snowman_machine_gun__png); 
 					gunAddition.y += 8;
+					gui.add(gunAddition);
+
+				case 2:
+					temp.y += 10;
+					temp.loadGraphic(AssetPaths.snowman_spray__png);
+					gunAddition.y += 10; 
 					gunAddition.loadGraphic(AssetPaths.snowman_spray__png); 
 					gui.add(gunAddition);
+					currentStack += 10;
 			}
 			currentStack -= 32;
 			display.add(temp);
