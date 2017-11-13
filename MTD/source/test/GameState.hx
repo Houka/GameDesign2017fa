@@ -977,6 +977,7 @@ class Tower extends FlxSprite{
 		
 		if (health <= 0){
 			created = false; 
+			_healthBar.visible = false;
 			_healthBar.kill();
 			for (c in children)
 				c.kill();
@@ -1670,6 +1671,7 @@ class GameState extends FlxState{
 		if (homebase.gameover || !player.alive || homebase.health <= 0){
 			persistentUpdate = false;
 			openSubState(new LoseState());
+			return;
 		}
 
 		// if you won the game then open WinState, then return
