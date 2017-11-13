@@ -39,9 +39,8 @@ class LevelData{
 		mapFilepath:"assets/maps/level1.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
-		waves:[[0,0,0,0,0],
-				[0,0,0,0,0,1],
-				[1,1, 0]],
+		waves:[[0,0,0],
+				[0,0,0,0,1]],
 		buttonTypes:[0],
 		buildLimit:1
 	}
@@ -49,11 +48,11 @@ class LevelData{
 	public static var level2:Level = {
 		mapFilepath:"assets/maps/level2.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:2,
-		waves:[[0,0,0,0,1],
-				[0,0,0,0,0,1],
-				[1,1, 0]],
-		buttonTypes:[0,1],
+		startHealth:3,
+		waves:[[0,0,0],
+				[0,0,0,0,0,0],
+				[0, 0, 0,1]],
+		buttonTypes:[0,3],
 		buildLimit:1
 	}
 	
