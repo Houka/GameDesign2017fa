@@ -1149,15 +1149,15 @@ class BuildState extends FlxSubState
 		display = new FlxTypedGroup<FlxSprite>();
 		add(display);
 
-		var placeholder = new FlxSprite(Std.int(storePosition.x)+75, 430); 
+		var placeholder = new FlxSprite(Std.int(storePosition.x)+70, 450); 
 		placeholder.loadGraphic(AssetPaths.storePlaceholder__png); 
 		gui.add(placeholder); 
 
-		var placeholder_2 = new FlxSprite(Std.int(storePosition.x)+130, 430); 
+		var placeholder_2 = new FlxSprite(Std.int(storePosition.x)+125, 450); 
 		placeholder_2.loadGraphic(AssetPaths.storePlaceholder__png); 
 		gui.add(placeholder_2); 
 
-		var placeholder_3 = new FlxSprite(Std.int(storePosition.x)+185, 430); 
+		var placeholder_3 = new FlxSprite(Std.int(storePosition.x)+180, 450); 
 		placeholder_3.loadGraphic(AssetPaths.storePlaceholder__png); 
 		gui.add(placeholder_3); 
 
@@ -1220,10 +1220,11 @@ class BuildState extends FlxSubState
 	private function gunCallback(type:Int){
 		if (addMaterial(type)){
 			var temp = new FlxSprite(Std.int(storePosition.x)+250,currentStack);
-			var gunAddition = new FlxSprite(Std.int(storePosition.x)+78+((_materials.length-1)*55), 445); 
+			var gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 445); 
 			switch(type){
 				case 0:
 					temp.loadGraphic(AssetPaths.snowman_head__png);
+					// gunAddition.x -= 8; 
 					gunAddition.loadGraphic(AssetPaths.snowman_head__png); 
 					gui.add(gunAddition);
 				case 1:
@@ -1234,6 +1235,7 @@ class BuildState extends FlxSubState
 				case 2:
 					temp.loadGraphic(AssetPaths.snowman_machine_gun__png);
 					gunAddition.y += 8;
+					// gunAddition.x += 8; 
 					gunAddition.loadGraphic(AssetPaths.snowman_machine_gun__png); 
 					gui.add(gunAddition);
 			}
@@ -1244,7 +1246,8 @@ class BuildState extends FlxSubState
 	private function foundationCallback(type:Int){
 		if (addMaterial(type)){
 			var temp = new FlxSprite(Std.int(storePosition.x)+250,currentStack);
-			var foundationAddition = new FlxSprite(Std.int(storePosition.x)+78+((_materials.length-1)*55), 453);
+			// var foundationAddition = new FlxSprite(Std.int(storePosition.x)+78+((_materials.length-1)*48), 453);
+			var foundationAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*53), 453); 
 			switch(type){
 				case 3:
 					temp.loadGraphic(AssetPaths.snow1__png);
