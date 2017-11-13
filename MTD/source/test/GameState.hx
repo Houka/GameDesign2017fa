@@ -66,9 +66,22 @@ class LevelData{
 		buttonTypes:[0, 1],
 		buildLimit:1
 	}
+	
+	public static var level4:Level = {
+		mapFilepath:"assets/maps/level4.csv",
+		tilemap:"assets/tiles/auto_tilemap.png",
+		startHealth:5,
+		waves:[[0, 0, 0, 1, 1],
+				[1, 1, 1],
+				[0, 1, 2, 1, 0],
+				[1, 1, 1, 1, 2, 2, 2],
+				[2,2,0,0,1,2]],
+		buttonTypes:[0, 1,2, 3],
+		buildLimit:2
+	}
 
-	public static var levels = [level1, level2, level3];
-	public static var currentLevel = 0;
+	public static var levels = [level1, level2, level3, level4, level5];
+	public static var currentLevel = 4;
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>=levels.length){
 			trace("Error: Level "+currentLevel+" does not exists");
@@ -1685,7 +1698,6 @@ class GameState extends FlxState{
 	*/
 	private function checkGameOver(){
 		// if you lost the game then open LoseState, then return
-		trace(homebase.health);
 		if (homebase.gameover || !player.alive || homebase.health <= 0){
 			persistentUpdate = false;
 			openSubState(new LoseState());
