@@ -335,16 +335,16 @@ class GameObjectFactory{
 				enemy.animation.add("idle",[8],_framerate, true);
 
 				enemy.animation.add("walk_down",[32,33,34,35,36,37,38,39],_framerate, true);
-				enemy.animation.add("attack_down",[40,41,42,43,44,45],_framerate,true); 
+				enemy.animation.add("attack_down",[40,41,42,43,44,45],6,true); 
 
 				enemy.animation.add("walk_left",[48,49,50,51,52,53,54,55],_framerate, true);
-				enemy.animation.add("attack_left",[56,57,58,59,60],_framerate,true);
+				enemy.animation.add("attack_left",[56,57,58,59,60],5,true);
 				
 				enemy.animation.add("walk_right",[0,1,2,3,4,5,6,7],_framerate, true);
-				enemy.animation.add("attack_right", [8,9,10,11,12],_framerate, true);
+				enemy.animation.add("attack_right", [8,9,10,11,12],5, true);
 				
 				enemy.animation.add("walk_up",[16,17,18,19,20,21,22,23],_framerate, true);
-				enemy.animation.add("attack_up",[24,25,26,27,28],_framerate,true);
+				enemy.animation.add("attack_up",[24,25,26,27,28],5,true);
 
 				// enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
 			case 2:
@@ -801,22 +801,8 @@ class Enemy extends FlxSprite{
 
 		// update animations based on where we are facing if we changed facing directions
 		calculateFacing();
-		if (isAttacking){
-			switch (facing){
-				case FlxObject.DOWN:
-					this.animation.play("attack_down");
-				case FlxObject.UP:
-					this.animation.play("attack_up");
-				case FlxObject.LEFT:
-					this.animation.play("attack_left");
-				case FlxObject.RIGHT:
-					this.animation.play("attack_right");
-				default:
-					this.animation.play("attack_right");
-			}
-		}
 
-		else if (!isAttacking && _prevFacing != facing){
+		if(_prevFacing != facing){
 			switch (facing){
 				case FlxObject.DOWN:
 					this.animation.play("walk_down");
@@ -906,11 +892,28 @@ class Enemy extends FlxSprite{
 	 		// keep attacking the tower at set intervals
 	 		isAttacking = true;
 
+			switch (facing){
+				case FlxObject.DOWN:
+					trace("down");
+					this.animation.play("attack_down");
+				case FlxObject.UP:
+				trace("up");
+					this.animation.play("attack_up");
+				case FlxObject.LEFT:
+				trace("left");
+					this.animation.play("attack_left");
+				case FlxObject.RIGHT:
+				trace("right");
+					this.animation.play("attack_right");
+				default:
+					this.animation.play("attack_right");
+			}
+		}
+
 	 		// TODO: add attacking animation play here
 	 		_targetTower = tower;
 
 	 		pausePath();
-	 	}
 	 }
 
 }
