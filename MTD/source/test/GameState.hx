@@ -128,12 +128,20 @@ class GameObjectFactory{
 	public static var dummyAlly = new Ally();
 	public static function addEnemy(enemies:FlxTypedGroup<Enemy>, X:Int, Y:Int, Type:Int, Path:Array<FlxPoint>):Enemy{
 		var enemy = enemies.recycle(Enemy);	// uses an already added enemy, or makes a new one and adds it to enemies
-
+		var _framerate:Int = 8;
 		// make enemy based on type
 		switch (Type) {
 			case 0:
 				enemy.init(X,Y,Type,1,1,100);
-				enemy.loadGraphic(AssetPaths.enemy1_spritesheet_64x64__png, true, 64, 64);
+				enemy.loadGraphic(AssetPaths.kid_spritesheet__png, true, 64, 64);
+				enemy.animation.add("idle",[8],_framerate, true);
+				enemy.animation.add("walk_down",[8,9,10,11,12,13,14,15],_framerate, true);
+				enemy.animation.add("walk_right",[16,17,18,19,20,21,22,23],_framerate, true);
+				enemy.animation.add("walk_left",[24,25,26,27,28,29,30,31],_framerate, true);
+				enemy.animation.add("walk_up",[0,1,2,3,4,5,6,7],_framerate, true);
+				enemy.animation.play("walk_down");
+				// enemy.animation.add("walkstupid", [8,9,10,11], 8, true); 
+				// enemy.animation.play("walkstupid");
 			case 1:
 				enemy.init(X,Y,Type,2,5,50);
 				enemy.loadGraphic(AssetPaths.enemy2_spritesheet_64x64__png, true, 64, 64);
@@ -265,6 +273,12 @@ class CollisionController{
 		FlxG.overlap(enemies, homebase, hitEnemyHomebase);
 		FlxG.overlap(enemies, bullets, hitEnemyBullet);
 		FlxG.collide(towerMap, enemies);
+		// FlxG.overlap(enemies, enemies, function(e1,e2) {
+		// 	if (e2.isAttacking) {
+		// 		e2.x+=Std.random(Std.int(Util.TILE_SIZE/2)); 
+		// 		e2.y+=Std.random(Std.int(Util.TILE_SIZE/2));
+		// 	}
+		// });
 
 		// ally interactions
 		FlxG.overlap(allies, enemies, hitAllyEnemy);
@@ -299,6 +313,10 @@ class CollisionController{
 		if (!collisionDetected){
 			prevCollision = CollisionID.None;
 		}
+
+		enemies.forEachAlive(hitEnemyTower);
+
+
 	}
 	private function getTowerAt(X:Int,Y:Int):Null<Tower>{
 		for (t in towers){
@@ -320,6 +338,21 @@ class CollisionController{
 			b.kill();
 		}
 	}
+	private function hitEnemyTower(e:Enemy) {
+		if(e.isAttacking)
+			return;
+
+		var midpoint = e.getMidpoint();
+		var nearest = getNearestTower(midpoint.x, midpoint.y, e.attackRange);
+
+		// return if there are no towers within range
+		if (nearest == null)
+			return;
+
+		e.attack(nearest);
+
+	}
+
 	private function hitAllyEnemy(a:Ally,e:Enemy){
 		if (e.alive && a.alive){
 			e.kill();
@@ -379,6 +412,26 @@ class CollisionController{
 	private function hitPlayerAlly(p:Player, a:Ally){
 		if (a.alive && a.velocity.x == 0 && a.velocity.y == 0)
 			a.target = p;
+	}
+
+	public function getNearestTower(X:Float, Y:Float, SearchRadius:Float):Tower
+	{
+		var minDistance:Float = SearchRadius;
+		var closestTower:Tower = null;
+		var searchPoint = FlxPoint.get(X, Y);
+		
+		for (tower in towers)
+		{
+			var dist:Float = searchPoint.distanceTo(tower.getMidpoint());
+			
+			if (dist < minDistance)
+			{
+				closestTower = tower;
+				minDistance = dist;
+			}
+		}
+		
+		return closestTower;
 	}
 }
 
@@ -469,13 +522,26 @@ class Ally extends FlxSprite{
 }
 class Enemy extends FlxSprite{
 	public var attackPt:Int;
+	public var attackRange:Int = 64; 
 	private var type:Int;
 	private var healthPt:Int;
 	private var speed:Int;
 	private var _prevFacing:Int;
-	private var _framerate:Int = 10;
-	public var _healthBar:FlxBar; 
+	private var _framerate:Int = 8;
+
+	// path variables
+	private var _savedPath:Array<FlxPoint>;
+	private var _savedSpeed:Float;
+	private var _savedOnComplete:FlxPath->Void;
+
+	// attacking vars
 	public var isAttacking:Bool = false; 
+	private var _targetTower:Tower;
+	private var _attackInterval:Int = 1;
+	private var _attackCounter:Int = 0;
+
+	public var _healthBar:FlxBar; 
+	
 	public function init(X:Int, Y:Int, Type:Int, Attack:Int, Health:Int, Speed:Int){
 		setPosition(X,Y);
 		type = Type;
@@ -486,20 +552,47 @@ class Enemy extends FlxSprite{
 		_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "healthPt", 0, this.healthPt);
 		_healthBar.trackParent(15, -25);
 		FlxG.state.add(_healthBar);
+		
 		isAttacking = false; 
+		// reset path vars
+		_savedPath = null;
+		_savedSpeed = 0;
+		_savedOnComplete = null;
+		angle = 0;
+
 
 		// add animation 
-		animation.add("idle",[0],_framerate, false);
-		animation.add("walk_down",[0,1,2,3,4],_framerate, true);
-		animation.add("walk_left",[5,6,7,8,9],_framerate, true);
-		animation.add("walk_right",[10,11,12,13,14],_framerate, true);
-		animation.add("walk_up",[15,16,17,18,19],_framerate, true);
-		animation.play("idle");
+		// animation.add("idle",[8],_framerate, false);
+		// animation.add("walk_down",[8,9,10,11,12,13,14,15],_framerate, false);
+		// animation.add("walk_left",[16,17,18,19,20,21,22,23],_framerate, false);
+		// animation.add("walk_right",[24,25,26,27,28,29,30,31],_framerate, false);
+		// animation.add("walk_up",[0,1,2,3,4,5,6,7],_framerate, false);
+		// animation.play("walk_down");
 
 		_prevFacing = facing;
 	}
 
 	override public function update(elapsed:Float) {
+		// what to do during attacking state
+		if (isAttacking){
+			_attackCounter += Std.int(FlxG.timeScale);
+
+			if (_attackCounter > (_attackInterval * FlxG.updateFramerate)){
+				_targetTower.hurt(attackPt);
+				_attackCounter = 0;
+			}
+
+		 	// stop attacking a dead tower and go back to path
+			if (_targetTower!=null && !_targetTower.alive){
+				// resume path
+				resumePath();
+
+				// stop attacking
+		 		isAttacking = false;
+		 		_targetTower = null;
+	 		}
+		}
+
 		// update animations based on where we are facing if we changed facing directions
 		calculateFacing();
 		if (isAttacking){
@@ -508,15 +601,15 @@ class Enemy extends FlxSprite{
 		else if (_prevFacing != facing){
 			switch (facing){
 				case FlxObject.DOWN:
-					animation.play("walk_down");
+					this.animation.play("walk_down");
 				case FlxObject.UP:
-					animation.play("walk_up");
+					this.animation.play("walk_up");
 				case FlxObject.LEFT:
-					animation.play("walk_left");
+					this.animation.play("walk_left");
 				case FlxObject.RIGHT:
-					animation.play("walk_right");
+					this.animation.play("right");
 				default:
-					animation.play("idle");
+					this.animation.play("walk_right");
 			}
 		}
 
@@ -536,7 +629,29 @@ class Enemy extends FlxSprite{
 			_healthBar.kill();
 	}
 
-	public function followPath(Path:Array<FlxPoint>){
+	private function calculateFacing():Int{
+	 	if (velocity.x < 0)
+	 		facing = FlxObject.LEFT;
+	 	else if (velocity.x > 0) {
+	 		facing = FlxObject.RIGHT;
+	 	}
+	 	else if (velocity.y < 0)
+	 		facing = FlxObject.UP;
+	 	else if (velocity.y > 0)
+	 		facing = FlxObject.DOWN;
+	 	else
+	 		facing = FlxObject.NONE;
+
+	 	return facing; 
+	 }
+
+	/**
+	 * Start this enemy on a path, as represented by an array of FlxPoints. Updates position to the first node
+	 * and then uses FlxPath.start() to set this enemy on the path. Speed is determined by wave number, unless
+	 * in the menu, in which case it's arbitrary.
+	 */
+	public function followPath(Path:Array<FlxPoint>):Void
+	{
 		if (Path == null)
 			throw("No valid path was passed to the enemy! Does the tilemap provide a valid path from start to finish?");
 		
@@ -546,19 +661,48 @@ class Enemy extends FlxSprite{
 		path = new FlxPath().start(Path, speed, 0, false);
 	}
 
-	private function calculateFacing():Int{
-	 	if (velocity.x < 0)
-	 		facing = FlxObject.LEFT;
-	 	else if (velocity.x > 0)
-	 		facing = FlxObject.RIGHT;
-	 	else if (velocity.y < 0)
-	 		facing = FlxObject.UP;
-	 	else if (velocity.y > 0)
-	 		facing = FlxObject.DOWN;
-	 	else
-	 		facing = FlxObject.NONE;
 
-	 	return facing; 
+	public function pausePath():Void{
+		_savedSpeed = path.speed;
+		_savedOnComplete = path.onComplete;
+		_savedPath = copyPathFrom(path.nodes, path.nodeIndex);
+		_savedPath.insert(0, getMidpoint());
+		path.cancel();
+		path = null;
+	}
+
+	public function resumePath():Void{
+ 		path = new FlxPath().start(_savedPath, _savedSpeed, 0, false);
+		path.onComplete = _savedOnComplete;
+		_savedPath = null;
+		_savedSpeed = 0;
+		_savedOnComplete = null;
+	}
+
+	/**
+	 *	Starts attacking the tower that is within range until it has died
+	 */
+	 public function attack(tower:Tower):Void{
+	 	if (tower!=null && tower.alive){
+	 		// keep attacking the tower at set intervals
+	 		isAttacking = true;
+
+	 		// TODO: add attacking animation play here
+	 		_targetTower = tower;
+
+	 		pausePath();
+	 	}
+	 }
+
+	private function copyPathFrom(Path:Array<FlxPoint>,Index:Int):Array<FlxPoint>{
+		var result:Array<FlxPoint> = new Array<FlxPoint>();
+		var tempPoint:FlxPoint;
+		for (i in Index...Path.length){
+			tempPoint = new FlxPoint(Path[i].x,Path[i].y);
+			result.push(tempPoint);
+		}
+
+		return result;
 	 }
 
 }
@@ -571,6 +715,8 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 	public var currentWave:Int;
 	public var goal:FlxPoint;
 	public var map:FlxTilemap;
+
+	private var defaultPath: Array<FlxPoint>;
 
 	private var interval:Int = 1;
 	private var counter:Int;
@@ -600,7 +746,7 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 		currentWave = 0;
 		currentEnemy = 0;
 		this.goal = new FlxPoint(X, Y);
-		this.map = null;
+		this.map = null; 
 		this.enemies = enemies;
 	}
 	override public function update(elapsed:Float){
@@ -612,6 +758,9 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 		if (counter > interval * FlxG.updateFramerate && waves[currentWave].length > currentEnemy)
 		{
 			var path = map.findPath(midpoint, goal.copyTo());
+			if (path == null) {
+				path = defaultPath; 
+			}
 			GameObjectFactory.addEnemy(enemies, Std.int(midpoint.x), Std.int(midpoint.y), waves[currentWave][currentEnemy],path);
 			counter = 0;
 			currentEnemy ++;
@@ -623,6 +772,14 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 		if (currentEnemy >= waves[waves.length-1].length && currentWave >= waves.length)
 			gameover = true;
 	}
+
+	public function computeDefaultPath(): Void { 
+		this.defaultPath = map.findPath(midpoint, goal.copyTo());
+	}
+
+	// private function copyArray(origArray: Array<FlxPoint>): Array<FlxPoint> { 
+	// 	for 
+	// }
 }
 class Bullet extends FlxSprite{
 	public var attackPt:Int;
@@ -692,6 +849,7 @@ class Tower extends FlxSprite{
 		created = false;
 		_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "health", 0, this.health);
 		_healthBar.trackParent(15, 55);
+		_healthBar.visible = false; 
 		FlxG.state.add(_healthBar);
 	}
 	public function buildTower(materials:Array<Int>){
@@ -748,6 +906,7 @@ class Tower extends FlxSprite{
 		}
 
 		created = children.length > 0;
+		_healthBar.visible = created; 
 		map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 1, false);
 	}
 	public function addWorker(a:Ally){
@@ -775,6 +934,7 @@ class Tower extends FlxSprite{
 		
 		if (health <= 0){
 			kill();
+			_healthBar.kill();
 			for (c in children)
 				c.kill();
 		}
@@ -1297,6 +1457,7 @@ class GameState extends FlxState{
 		var goal = homebase.midpoint;
 		spawnArea.goal = new FlxPoint(goal.x,goal.y);
 		spawnArea.map = towerMap;
+		spawnArea.computeDefaultPath(); 
 
 		// update allies to follow player
 		for(a in allies){
