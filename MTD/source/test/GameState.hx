@@ -37,7 +37,7 @@ class LevelData{
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
 		waves:[[0,0,0,0,0],
-				[0,0,0,0,0,1,1],
+				[0,0,0,0,0,1],
 				[1,1,1]],
 		buttonTypes:[0]
 	}
@@ -559,16 +559,13 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 		this.map = null;
 		this.enemies = enemies;
 		waveComplete = false;
-		waveStart = false;
+		waveStart = true;
 
 	}
 	override public function update(elapsed:Float){
 		super.update(elapsed);
 		if (gameover || !playerReady)
 			return;
-			
-		if (currentEnemy == 0)
-			waveStart = true;
 
 		counter += Std.int(FlxG.timeScale);
 		if (counter > interval * FlxG.updateFramerate && currentWave < waves.length && waves[currentWave].length > currentEnemy)
@@ -581,18 +578,18 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 			
 		}
 		else if (currentEnemy >= waves[currentWave].length) {
-			if (enemies.countDead() == currentEnemy)
+			if (enemies.countLiving() == 0)
 				waveComplete = true;
 		}
 		
-		if (waveComplete) {
+		if (waveComplete && currentWave <= waves.length - 1) {
 			currentWave ++;
 			currentEnemy = 0;
 			waveComplete = false;
 			waveStart = true;
 		}
 
-		if (currentEnemy >= waves[waves.length-1].length && currentWave >= waves.length)
+		if (currentEnemy >= waves[waves.length-1].length && currentWave >= waves.length - 1)
 			gameover = true;
 	}
 	
@@ -1293,9 +1290,10 @@ class GameState extends FlxState{
 								
 		
 		// center text
-		_centerText = new FlxText( -200, FlxG.height / 2 - 20, FlxG.width, "", 16);
+		_centerText = new FlxText( -200, 50, FlxG.width, "", 32);
 		_centerText.alignment = CENTER;
 		_centerText.borderStyle = SHADOW;
+		_centerText.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,5);
 
 		// add all objects to screen
 		add(originalMap);
@@ -1361,8 +1359,7 @@ class GameState extends FlxState{
 		// update interactions of game objects
 		collisionController.update(elapsed);
 		
-		if (spawnArea.waveStart) {
-			trace("announce");
+		if (spawnArea.waveStart && spawnArea.playerReady) {
 			announceWave();
 			spawnArea.waveComplete = false;
 			spawnArea.waveStart = false;
