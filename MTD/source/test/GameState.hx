@@ -47,9 +47,20 @@ class LevelData{
 	}
 	
 	public static var level2:Level = {
-		mapFilepath:"assets/maps/test.csv",
+		mapFilepath:"assets/maps/level2.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:2,
+		waves:[[0,0,0,0,1],
+				[0,0,0,0,0,1],
+				[1,1, 0]],
+		buttonTypes:[0,1],
+		buildLimit:1
+	}
+	
+	public static var level3:Level = {
+		mapFilepath:"assets/maps/level3.csv",
+		tilemap:"assets/tiles/auto_tilemap.png",
+		startHealth:5,
 		waves:[[0, 0, 0, 1, 1],
 				[1, 1, 1],
 				[0,1,0,1,0]],
@@ -57,7 +68,7 @@ class LevelData{
 		buildLimit:1
 	}
 
-	public static var levels = [level1, level2];
+	public static var levels = [level1, level2, level3];
 	public static var currentLevel = 0;
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>=levels.length){
@@ -1081,7 +1092,7 @@ class BuildState extends FlxSubState
 
 		// store bg
 		var store = new FlxSprite(Std.int(storePosition.x+20),Std.int(storePosition.y));
-		store.loadGraphic(AssetPaths.store__png);
+		store.loadGraphic(AssetPaths.storewithtextnoammo__png);
 		gui.add(store);
 
 		// add buttons vars
