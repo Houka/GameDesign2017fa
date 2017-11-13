@@ -1037,7 +1037,7 @@ class BuildState extends FlxSubState
 	override public function create():Void
 	{
 		super.create();
-		currentStack = 500;
+		currentStack = 480;
 		this.ammo = 6;
 		_materials = new Array<Int>();
 		gui = new FlxTypedGroup<FlxSprite>();
@@ -1149,6 +1149,18 @@ class BuildState extends FlxSubState
 		display = new FlxTypedGroup<FlxSprite>();
 		add(display);
 
+		var placeholder = new FlxSprite(Std.int(storePosition.x)+75, 430); 
+		placeholder.loadGraphic(AssetPaths.storePlaceholder__png); 
+		gui.add(placeholder); 
+
+		var placeholder_2 = new FlxSprite(Std.int(storePosition.x)+130, 430); 
+		placeholder_2.loadGraphic(AssetPaths.storePlaceholder__png); 
+		gui.add(placeholder_2); 
+
+		var placeholder_3 = new FlxSprite(Std.int(storePosition.x)+185, 430); 
+		placeholder_3.loadGraphic(AssetPaths.storePlaceholder__png); 
+		gui.add(placeholder_3); 
+
 		// add deny and confirm buttons
 		var but:FlxButton = new FlxButton(Std.int(storePosition.x) + 100, FlxG.height - 100, "", confirmedCallback);
 		but.loadGraphic(AssetPaths.confirmButton__png, true, 50, 50); 
@@ -1207,7 +1219,7 @@ class BuildState extends FlxSubState
 
 	private function gunCallback(type:Int){
 		if (addMaterial(type)){
-			var temp = new FlxSprite(Std.int(storePosition.x)+150,currentStack);
+			var temp = new FlxSprite(Std.int(storePosition.x)+250,currentStack);
 			switch(type){
 				case 0:
 					temp.loadGraphic(AssetPaths.snowman_head__png);
@@ -1222,7 +1234,7 @@ class BuildState extends FlxSubState
 	}
 	private function foundationCallback(type:Int){
 		if (addMaterial(type)){
-			var temp = new FlxSprite(Std.int(storePosition.x)+150,currentStack);
+			var temp = new FlxSprite(Std.int(storePosition.x)+250,currentStack);
 			switch(type){
 				case 3:
 					temp.loadGraphic(AssetPaths.snow1__png);
