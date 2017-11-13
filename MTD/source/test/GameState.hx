@@ -257,10 +257,12 @@ class GameObjectFactory{
 		return homebase;
 	}
 
-	public static function createSpawnPoint(X:Int,Y:Int,enemies:FlxTypedGroup<Enemy>, 
+	public static function addSpawnPoint(spawns:FlxTypedGroup<SpawnArea>,X:Int,Y:Int,enemies:FlxTypedGroup<Enemy>, 
 											waves:Array<Array<Int>>):SpawnArea{
 		var point = Util.toCameraCoordinates(X,Y);
-		return new SpawnArea(Std.int(point.x), Std.int(point.y),enemies,waves);
+		var spawnArea = spawns.recycle(SpawnArea);
+		spawnArea.init(Std.int(point.x), Std.int(point.y),enemies,waves);
+		return spawnArea;
 	}
 
 	public static function createPlayer(X:Int, Y:Int, allies:FlxTypedGroup<Ally>):Player{
@@ -294,14 +296,14 @@ class CollisionController{
 	private var bullets:FlxTypedGroup<Bullet>;
 	private var towers:FlxTypedGroup<Tower>;
 	private var homebase:Homebase;
-	private var spawnArea:SpawnArea;
+	private var spawnArea:FlxTypedGroup<SpawnArea>;
 	private var state:FlxState;
 
 	private var prevCollision:CollisionID;
 	private var collisionDetected:Bool;
 	public function new(originalMap:FlxTilemap, towerMap:FlxTilemap, player:Player, allies:FlxTypedGroup<Ally>,
 						enemies:FlxTypedGroup<Enemy>, bullets:FlxTypedGroup<Bullet>, towers:FlxTypedGroup<Tower>,
-						homebase:Homebase, spawnArea:SpawnArea, state:FlxState){
+						homebase:Homebase, spawns:FlxTypedGroup<SpawnArea>, state:FlxState){
 		this.originalMap = originalMap;
 		this.towerMap = towerMap;
 		this.player = player;
@@ -310,7 +312,7 @@ class CollisionController{
 		this.bullets = bullets;
 		this.towers = towers;
 		this.homebase = homebase;
-		this.spawnArea = spawnArea;
+		this.spawnArea = spawns;
 		this.state = state;
 
 		prevCollision = CollisionID.None;
@@ -353,7 +355,8 @@ class CollisionController{
 
 		for(t in towers){
 			if (t.alive && t.created){
-				spawnArea.playerReady = true;
+				for (s in spawnArea)
+					s.playerReady = true;
 				break;
 			}
 		}
@@ -755,8 +758,7 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 	public var waveComplete:Bool;
 	public var waveStart:Bool;
 	
-	public function new(X:Int,Y:Int, enemies:FlxTypedGroup<Enemy>, Waves:Array<Array<Int>>){
-		super();
+	public function init(X:Int,Y:Int, enemies:FlxTypedGroup<Enemy>, Waves:Array<Array<Int>>){
 
 		// make 9 forest around spawn point tile
 		var forest:FlxSprite;
@@ -1478,7 +1480,7 @@ class GameState extends FlxState{
 	private var _level:Level;
 	private var map:FlxTilemap;
 	private var enemies:FlxTypedGroup<Enemy>;
-	private var spawnArea:SpawnArea;
+	private var spawns:FlxTypedGroup<SpawnArea>;
 	private var homebase:Homebase;
 	private var player:Player;
 	private var collisionController:CollisionController;
@@ -1496,6 +1498,7 @@ class GameState extends FlxState{
 		this.enemies = new FlxTypedGroup<Enemy>();
 		var bullets = new FlxTypedGroup<Bullet>();
 		var allies = new FlxTypedGroup<Ally>();
+		spawns = new FlxTypedGroup<SpawnArea>();
 
 		// get level data
 		_level = LevelData.getCurrentLevel();
@@ -1515,7 +1518,7 @@ class GameState extends FlxState{
 						continue;
 					case 2:
 						// create spawn point and then remove it from map
-						spawnArea = GameObjectFactory.createSpawnPoint(col,row,enemies,_level.waves);
+						GameObjectFactory.addSpawnPoint(spawns,col,row,enemies,_level.waves);
 						mapArray[row][col] = 0; // remove it
 					case 3:
 						// create homebase and remove it from map
@@ -1546,9 +1549,11 @@ class GameState extends FlxState{
 
 		// set goal for spawn point and pass the map to spawn area
 		var goal = homebase.midpoint;
-		spawnArea.goal = new FlxPoint(goal.x,goal.y);
-		spawnArea.map = towerMap;
-		spawnArea.computeDefaultPath(); 
+		for (spawnArea in spawns){
+			spawnArea.goal = new FlxPoint(goal.x,goal.y);
+			spawnArea.map = towerMap;
+			spawnArea.computeDefaultPath();
+		} 
 
 		// update allies to follow player
 		for(a in allies){
@@ -1558,7 +1563,7 @@ class GameState extends FlxState{
 
 		// collision setup
 		collisionController = new CollisionController(originalMap, towerMap, player, allies, 
-								enemies, bullets, towers, homebase, spawnArea, this);
+								enemies, bullets, towers, homebase, spawns, this);
 								
 		
 		// center text
@@ -1569,7 +1574,7 @@ class GameState extends FlxState{
 
 		// add all objects to screen
 		add(originalMap);
-		add(spawnArea);
+		add(spawns);
 		add(towers);
 		add(allies);
 		add(enemies);
@@ -1633,10 +1638,22 @@ class GameState extends FlxState{
 		// update interactions of game objects
 		collisionController.update(elapsed);
 		
-		if (spawnArea.waveStart && spawnArea.playerReady) {
+		var waveStart = true;
+		var playerReady = true;
+		for (spawnArea in spawns){
+			if (!spawnArea.waveStart)
+				waveStart = false;
+
+			if (!spawnArea.playerReady)
+				playerReady = false;
+		}
+
+		if (waveStart && playerReady) {
 			announceWave();
-			spawnArea.waveComplete = false;
-			spawnArea.waveStart = false;
+			for (spawnArea in spawns){
+				spawnArea.waveComplete = false;
+				spawnArea.waveStart = false;
+			}
 		}
 
 		add(healthBars);
@@ -1654,7 +1671,7 @@ class GameState extends FlxState{
 	private function announceWave():Void {
 		
 		_centerText.x = -200;
-		_centerText.text = "Wave " + (spawnArea.currentWave + 1);
+		_centerText.text = "Wave " + (spawns.getFirstAlive().currentWave + 1);
 		
 		FlxTween.tween(_centerText, { x: 0 }, 2, { ease: FlxEase.expoOut, onComplete: hideText });
 		
@@ -1681,7 +1698,13 @@ class GameState extends FlxState{
 			if (e.alive)
 				alive++;
 		}
-		if (spawnArea.gameover && alive == 0){
+
+		var gameover = true;
+		for (spawnArea in spawns){
+			if (!spawnArea.gameover)
+				gameover = false;
+		}
+		if (gameover && alive == 0){
 			persistentUpdate = false;
 			
 			if (LevelData.currentLevel == 0) {
