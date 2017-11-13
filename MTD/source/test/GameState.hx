@@ -1508,8 +1508,6 @@ class GameState extends FlxState{
 	override public function create(){
 		super.create();
 		FlxG.timeScale = 1;
-		trace(isATesting);
-		isATesting = false;
 		if (isATesting)
 			persistentUpdate = true;
 
