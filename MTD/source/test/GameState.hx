@@ -899,12 +899,12 @@ class Tower extends FlxSprite{
 						towerLayers.add(layer);
 						gunTypes.push(m);
 					case 1:
-						layer.loadGraphic(AssetPaths.snowman_spray__png);
+						layer.loadGraphic(AssetPaths.snowman_machine_gun__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
 						gunTypes.push(m);
 					case 2:
-						layer.loadGraphic(AssetPaths.snowman_machine_gun__png);
+						layer.loadGraphic(AssetPaths.snowman_spray__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
 						gunTypes.push(m);
@@ -1105,14 +1105,14 @@ class BuildState extends FlxSubState
 		if (buttons.indexOf(1) != -1){
 			col++;
 			gun = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(1));
-			gun.loadGraphic(AssetPaths.SpatterGunBase__png, true, width, height); 
+			gun.loadGraphic(AssetPaths.SpeedyGunBase__png, true, width, height); 
 			gui.add(gun);
 		}
 		
 		if (buttons.indexOf(2) != -1){
 			col++;
 			gun = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(2));
-			gun.loadGraphic(AssetPaths.SpeedyGunBase__png, true, width, height); 
+			gun.loadGraphic(AssetPaths.SpatterGunBase__png, true, width, height); 
 			gui.add(gun);
 		}
 
@@ -1276,9 +1276,9 @@ class BuildState extends FlxSubState
 				case 0:
 					temp.loadGraphic(AssetPaths.snowman_head__png);
 				case 1:
-					temp.loadGraphic(AssetPaths.snowman_spray__png);
-				case 2:
 					temp.loadGraphic(AssetPaths.snowman_machine_gun__png);
+				case 2:
+					temp.loadGraphic(AssetPaths.snowman_spray__png);
 			}
 			currentStack -= 32;
 			display.add(temp);
