@@ -79,6 +79,7 @@ class MenuState extends FlxState
 		
 		// The enemy that repeatedly traverses the screen.
 		_enemy = new Enemy();
+		_enemy.loadGraphic(AssetPaths.snow1__png);
 		enemyFollowPath();
 
 		// allow camera movement
