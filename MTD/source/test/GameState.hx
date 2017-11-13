@@ -949,8 +949,8 @@ class Tower extends FlxSprite{
 			_healthBar.trackParent(15, 55);
 			_healthBar.visible = created; 
 			FlxG.state.add(_healthBar);
+			map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 1, false);
 		}
-		map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 1, false);
 	}
 	public function addWorker(a:Ally){
 		workers.push(a);
@@ -984,6 +984,7 @@ class Tower extends FlxSprite{
 			var savedWorkers = workers;
 			init(Std.int(x), Std.int(y), bullets, towerLayers, map);
 			workers = savedWorkers;
+			map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 0, false);
 		}
 	}
 }
