@@ -36,10 +36,10 @@ class LevelData{
 		mapFilepath:"assets/maps/test.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
-		waves:[[1,1,1,1,1],
-				[1, 1, 1, 1, 1],
-				[0,0]],
-		buttonTypes:[0,3, 4,5]//[0,1,3,4,5,6,7,8]
+		waves:[[0,0,0,0,0],
+				[0,0,0,0,0,1,1],
+				[1,1,1]],
+		buttonTypes:[0]
 	}
 
 	public static var levels = [level1];
