@@ -30,6 +30,7 @@ typedef Level = {
 	var startHealth:Int;
 	var waves:Array<Array<Int>>;
 	var buttonTypes:Array<Int>;
+	var buildLimit:Int; 
 }
 
 class LevelData{
@@ -40,7 +41,8 @@ class LevelData{
 		waves:[[0,0,0,0,1],
 				[1, 1, 1, 1, 1],
 				[0,0]],
-		buttonTypes: [0,1,2,3,4,5,6,7,8]//[6,3,2,1]//[0,1,3,4,5,6,7,8]
+		buttonTypes: [0,1,2,3,4,5,6,7,8],//[6,3,2,1]//[0,1,3,4,5,6,7,8]
+		buildLimit: 1
 	}
 
 	public static var levels = [level1];
@@ -1072,6 +1074,7 @@ class BuildState extends FlxSubState
 		var row = 0; 
 		var col = -1;
 		var buttons = LevelData.getCurrentLevel().buttonTypes;
+		var buildLimit = LevelData.getCurrentLevel().buildLimit; 
 
 		// row of gun buttons
 		var gun:FlxButton;
@@ -1158,30 +1161,37 @@ class BuildState extends FlxSubState
 		display = new FlxTypedGroup<FlxSprite>();
 		add(display);
 
-		//add placeholder boxes 
-		var placeholder = new FlxSprite(Std.int(storePosition.x)+70, 450); 
-		placeholder.loadGraphic(AssetPaths.storePlaceholder__png); 
-		gui.add(placeholder); 
+		if (buildLimit >= 1){
+			//add placeholder boxes 
+			var placeholder = new FlxSprite(Std.int(storePosition.x)+70, 450); 
+			placeholder.loadGraphic(AssetPaths.storePlaceholder__png); 
+			gui.add(placeholder); 
 
-		var plus = new FlxSprite(Std.int(storePosition.x)+99, 450); 
-		plus.loadGraphic(AssetPaths.plusButton__png); 
-		gui.add(plus); 
+			if (buildLimit >= 2) {
+				var plus = new FlxSprite(Std.int(storePosition.x)+99, 450); 
+				plus.loadGraphic(AssetPaths.plusButton__png); 
+				gui.add(plus); 
 
-		var placeholder_2 = new FlxSprite(Std.int(storePosition.x)+125, 450); 
-		placeholder_2.loadGraphic(AssetPaths.storePlaceholder__png); 
-		gui.add(placeholder_2); 
+				var placeholder_2 = new FlxSprite(Std.int(storePosition.x)+125, 450); 
+				placeholder_2.loadGraphic(AssetPaths.storePlaceholder__png); 
+				gui.add(placeholder_2); 
 
-		var plus_2 = new FlxSprite(Std.int(storePosition.x)+154, 450); 
-		plus_2.loadGraphic(AssetPaths.plusButton__png); 
-		gui.add(plus_2); 
+				if (buildLimit >= 3) {
+					var plus_2 = new FlxSprite(Std.int(storePosition.x)+154, 450); 
+					plus_2.loadGraphic(AssetPaths.plusButton__png); 
+					gui.add(plus_2); 
 
-		var placeholder_3 = new FlxSprite(Std.int(storePosition.x)+180, 450); 
-		placeholder_3.loadGraphic(AssetPaths.storePlaceholder__png); 
-		gui.add(placeholder_3); 
+					var placeholder_3 = new FlxSprite(Std.int(storePosition.x)+180, 450); 
+					placeholder_3.loadGraphic(AssetPaths.storePlaceholder__png); 
+					gui.add(placeholder_3); 
+				}
+			}
 
-		var equals = new FlxSprite(Std.int(storePosition.x)+209, 450); 
-		equals.loadGraphic(AssetPaths.equal__png); 
-		gui.add(equals); 
+
+			var equals = new FlxSprite(Std.int(storePosition.x)+209, 450); 
+			equals.loadGraphic(AssetPaths.equal__png); 
+			gui.add(equals); 
+		}
 
 		// add deny and confirm buttons
 		var but:FlxButton = new FlxButton(Std.int(storePosition.x) + 100, FlxG.height - 100, "", confirmedCallback);
