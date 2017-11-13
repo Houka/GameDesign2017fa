@@ -1170,6 +1170,10 @@ class BuildState extends FlxSubState
 		placeholder_3.loadGraphic(AssetPaths.storePlaceholder__png); 
 		gui.add(placeholder_3); 
 
+		var equals = new FlxSprite(Std.int(storePosition.x)+209, 450); 
+		equals.loadGraphic(AssetPaths.equal__png); 
+		gui.add(equals); 
+
 		// add deny and confirm buttons
 		var but:FlxButton = new FlxButton(Std.int(storePosition.x) + 100, FlxG.height - 100, "", confirmedCallback);
 		but.loadGraphic(AssetPaths.confirmButton__png, true, 50, 50); 
