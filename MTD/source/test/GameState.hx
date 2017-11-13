@@ -38,7 +38,7 @@ class LevelData{
 		startHealth:5,
 		waves:[[0,0,0,0,1],
 				[1,1,1,1,1]],
-		buttonTypes:[6,3,2,1]//[0,1,3,4,5,6,7,8]
+		buttonTypes:[6,3,2,1,0]//[0,1,3,4,5,6,7,8]
 	}
 
 	public static var levels = [level1];
@@ -141,8 +141,6 @@ class GameObjectFactory{
 				enemy.animation.add("walk_up",[0,1,2,3,4,5,6,7],_framerate, true);
 				enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
 				enemy.animation.play("walk_down");
-				// enemy.animation.add("walkstupid", [8,9,10,11], 8, true); 
-				// enemy.animation.play("walkstupid");
 			case 1:
 				enemy.init(X,Y,Type,2,5,50);
 				enemy.loadGraphic(AssetPaths.enemy2_spritesheet_64x64__png, true, 64, 64);
@@ -274,12 +272,6 @@ class CollisionController{
 		FlxG.overlap(enemies, homebase, hitEnemyHomebase);
 		FlxG.overlap(enemies, bullets, hitEnemyBullet);
 		FlxG.collide(towerMap, enemies);
-		// FlxG.overlap(enemies, enemies, function(e1,e2) {
-		// 	if (e2.isAttacking) {
-		// 		e2.x+=Std.random(Std.int(Util.TILE_SIZE/2)); 
-		// 		e2.y+=Std.random(Std.int(Util.TILE_SIZE/2));
-		// 	}
-		// });
 
 		// ally interactions
 		FlxG.overlap(allies, enemies, hitAllyEnemy);
@@ -335,6 +327,7 @@ class CollisionController{
 	}
 	private function hitEnemyBullet(e:Enemy, b:Bullet){
 		if (e.alive){
+			trace("hit");
 			e.hurt(b.attackPt);
 			b.kill();
 		}
@@ -575,7 +568,7 @@ class Enemy extends FlxSprite{
 			}
 
 		 	// stop attacking a dead tower and go back to path
-			if (_targetTower!=null && !_targetTower.alive){
+			if (_targetTower!=null && (!_targetTower.alive || !_targetTower.created)){
 				// resume path
 				resumePath();
 
@@ -592,7 +585,6 @@ class Enemy extends FlxSprite{
 		}
 
 		else if (_prevFacing != facing){
-			// loadGraphic(AssetPaths.kid_spritesheet__png, true, 64, 64);
 			switch (facing){
 				case FlxObject.DOWN:
 					this.animation.play("walk_down");
@@ -780,7 +772,6 @@ class Bullet extends FlxSprite{
 	public var type:Int;
 	private var speed:Int;
 	public function init(X:Int,Y:Int,Type:Int,Attack:Int,Angle:Int){
-		// load graphic based on type
 		switch (Type) {
 			case 6:
 				loadGraphic(AssetPaths.snowball__png);
@@ -839,7 +830,7 @@ class Tower extends FlxSprite{
 		this.gunTypes = new Array<Int>();
 		this.foundationTypes = new Array<Int>(); 
 		counter = 0;
-		health = 3; 
+		health = 1; 
 		created = false;
 		_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "health", 0, this.health);
 		_healthBar.trackParent(15, 55);
@@ -927,10 +918,11 @@ class Tower extends FlxSprite{
 		health -= Damage;
 		
 		if (health <= 0){
-			kill();
+			created = false; 
 			_healthBar.kill();
 			for (c in children)
 				c.kill();
+			init(Std.int(x), Std.int(y), bullets, towerLayers, map);
 		}
 	}
 }
