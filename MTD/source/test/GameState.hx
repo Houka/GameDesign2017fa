@@ -1149,13 +1149,22 @@ class BuildState extends FlxSubState
 		display = new FlxTypedGroup<FlxSprite>();
 		add(display);
 
+		//add placeholder boxes 
 		var placeholder = new FlxSprite(Std.int(storePosition.x)+70, 450); 
 		placeholder.loadGraphic(AssetPaths.storePlaceholder__png); 
 		gui.add(placeholder); 
 
+		var plus = new FlxSprite(Std.int(storePosition.x)+99, 450); 
+		plus.loadGraphic(AssetPaths.plusButton__png); 
+		gui.add(plus); 
+
 		var placeholder_2 = new FlxSprite(Std.int(storePosition.x)+125, 450); 
 		placeholder_2.loadGraphic(AssetPaths.storePlaceholder__png); 
 		gui.add(placeholder_2); 
+
+		var plus_2 = new FlxSprite(Std.int(storePosition.x)+154, 450); 
+		plus_2.loadGraphic(AssetPaths.plusButton__png); 
+		gui.add(plus_2); 
 
 		var placeholder_3 = new FlxSprite(Std.int(storePosition.x)+180, 450); 
 		placeholder_3.loadGraphic(AssetPaths.storePlaceholder__png); 
