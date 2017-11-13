@@ -40,7 +40,7 @@ class LevelData{
 		waves:[[0,0,0,0,1],
 				[1, 1, 1, 1, 1],
 				[0,0]],
-		buttonTypes:[6,3,2,1]//[0,1,3,4,5,6,7,8]
+		buttonTypes: [0,1,2,3,4,5,6,7,8]//[6,3,2,1]//[0,1,3,4,5,6,7,8]
 	}
 
 	public static var levels = [level1];
@@ -1220,13 +1220,20 @@ class BuildState extends FlxSubState
 	private function gunCallback(type:Int){
 		if (addMaterial(type)){
 			var temp = new FlxSprite(Std.int(storePosition.x)+250,currentStack);
+			var gunAddition = new FlxSprite(Std.int(storePosition.x)+75+((_materials.length-1)*55), 430); 
 			switch(type){
 				case 0:
 					temp.loadGraphic(AssetPaths.snowman_head__png);
+					gunAddition.loadGraphic(AssetPaths.snowman_head__png); 
+					gui.add(gunAddition);
 				case 1:
 					temp.loadGraphic(AssetPaths.snowman_spray__png);
+					gunAddition.loadGraphic(AssetPaths.snowman_spray__png); 
+					gui.add(gunAddition);
 				case 2:
 					temp.loadGraphic(AssetPaths.snowman_machine_gun__png);
+					gunAddition.loadGraphic(AssetPaths.snowman_machine_gun__png); 
+					gui.add(gunAddition);
 			}
 			currentStack -= 32;
 			display.add(temp);
@@ -1235,13 +1242,20 @@ class BuildState extends FlxSubState
 	private function foundationCallback(type:Int){
 		if (addMaterial(type)){
 			var temp = new FlxSprite(Std.int(storePosition.x)+250,currentStack);
+			var foundationAddition = new FlxSprite(Std.int(storePosition.x)+75+((_materials.length-1)*55), 430);
 			switch(type){
 				case 3:
 					temp.loadGraphic(AssetPaths.snow1__png);
+					foundationAddition.loadGraphic(AssetPaths.snow1__png); 
+					gui.add(foundationAddition);
 				case 4:
 					temp.loadGraphic(AssetPaths.snowman_ice__png);
+					foundationAddition.loadGraphic(AssetPaths.snowman_ice__png); 
+					gui.add(foundationAddition);
 				case 5:
 					temp.loadGraphic(AssetPaths.snowman_coal__png);
+					foundationAddition.loadGraphic(AssetPaths.snowman_coal__png); 
+					gui.add(foundationAddition);
 			}
 			currentStack -= 32;
 			display.add(temp);
