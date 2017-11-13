@@ -52,6 +52,7 @@ class LevelData{
 
     public static var levels = [level0, level1];
     public static var currentLevel = 0;
+    public static var maxLevelReached = currentLevel;
     public static function getCurrentLevel():Null<Level>{
         if (currentLevel>=levels.length){
             trace("Error: Level "+currentLevel+" does not exists");
@@ -61,6 +62,10 @@ class LevelData{
     }
     public static function gotoNextLevel():Null<Level>{
         currentLevel ++;
+        maxLevelReached = Std.int(Math.max(currentLevel, maxLevelReached));
+        if(maxLevelReached == 1){
+            maxLevelReached = 2;
+        }
         return getCurrentLevel();
     }
 }

@@ -52,16 +52,22 @@ class LevelSelectState extends FlxState
 
         // Level select buttons
         var levelButton:FlxButton;
-        //for (i in 0...Levels.levels.length){
-        for (i in 0...12){
+        var levels = [0,2,3,4,5,6,7,8,9,10,11,12];
+        for (i in 0...levels.length){
             var x = (i%SQUARES_PER_ROW)*GRID_WIDTH+GRID_OFFSET_X;
             var y = Std.int(i/SQUARES_PER_ROW)*GRID_HEIGHT+GRID_OFFSET_Y;
-            levelButton = new FlxButton(x, y, i+"", levelCallback.bind(i));
-            levelButton.loadGraphic(AssetPaths.levelButton__png, true, 55, 64);
-            levelButton.label.size = FONT_SIZE;
-            levelButton.label.offset.x -= FONT_OFFSET_X;
-            levelButton.label.offset.y -= FONT_OFFSET_Y;
-            buttons.add(levelButton);
+            if(i<=LevelData.maxLevelReached){
+                levelButton = new FlxButton(x, y, (i+1)+"", levelCallback.bind(i));
+                levelButton.loadGraphic(AssetPaths.levelButton__png, true, 55, 64);
+                levelButton.label.size = FONT_SIZE;
+                levelButton.label.offset.x -= FONT_OFFSET_X;
+                levelButton.label.offset.y -= FONT_OFFSET_Y;
+                buttons.add(levelButton);
+            }
+            else{
+                var lockedLevel = new FlxSprite(x,y,AssetPaths.levelLocked__png);
+                buttons.add(lockedLevel);
+            }
         }
         
         // Add everything to the state
