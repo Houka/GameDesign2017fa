@@ -1267,7 +1267,7 @@ class BuildState extends FlxSubState{
 
 		// store bg
 		var store = new FlxSprite(Std.int(storePosition.x+20),Std.int(storePosition.y));
-		store.loadGraphic(AssetPaths.StoreWithTextNoAmmo__png);
+		store.loadGraphic(AssetPaths.storewithtextnoammo__png);
 		gui.add(store);
 
 		// add buttons vars
