@@ -343,7 +343,6 @@ class CollisionController{
 	}
 	private function hitEnemyBullet(e:Enemy, b:Bullet){
 		if (e.alive){
-			trace("hit");
 			e.hurt(b.attackPt);
 			b.kill();
 		}
@@ -1128,46 +1127,27 @@ class BuildState extends FlxSubState
 		row++;
 		col = -1;
 
-		// row of ammo buttons
-		// var ammo:FlxButton;
-		// if (buttons.indexOf(6) != -1){
-		// 	col++;
-		// 	ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(6));
-		// 	ammo.loadGraphic(AssetPaths.PiercingAmmoButton__png, true, width, height); 
-		// 	gui.add(ammo);
-		// }
-
-		// if (buttons.indexOf(7) != -1){
-		// 	col++;
-		// 	ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(7));
-		// 	ammo.loadGraphic(AssetPaths.ExplodeAmmoButton__png, true, width, height); 
-		// 	gui.add(ammo);
-		// }
-		
-		// if (buttons.indexOf(8) != -1){
-		// 	col++;
-		// 	ammo = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", ammoCallback.bind(8));
-		// 	ammo.loadGraphic(AssetPaths.FreezeAmmoButton__png, true, width, height); 
-		// 	gui.add(ammo);
-		// }
-
-		// // sprite to display the selected ammo
-		// ammoSprite = new FlxSprite(Std.int(storePosition.x)+100,460,AssetPaths.snowball__png);
-		// gui.add(ammoSprite);
-
 		add(gui);
 
 		// used for displaying the currently created tower
 		display = new FlxTypedGroup<FlxSprite>();
 		add(display);
 
+		var origPlaceholderPos = Std.int(storePosition.x)+70;
+		var equalsOffset = 50; 
+
+		var equals = new FlxSprite(Std.int(storePosition.x)+209-equalsOffset, 450); 
+		equals.loadGraphic(AssetPaths.equal__png); 
+
 		if (buildLimit >= 1){
 			//add placeholder boxes 
-			var placeholder = new FlxSprite(Std.int(storePosition.x)+70, 450); 
+			var placeholder = new FlxSprite(origPlaceholderPos+40, 450); 
 			placeholder.loadGraphic(AssetPaths.storePlaceholder__png); 
 			gui.add(placeholder); 
+			gui.add(equals); 
 
 			if (buildLimit >= 2) {
+				placeholder.x = origPlaceholderPos; 
 				var plus = new FlxSprite(Std.int(storePosition.x)+99, 450); 
 				plus.loadGraphic(AssetPaths.plusButton__png); 
 				gui.add(plus); 
@@ -1175,6 +1155,8 @@ class BuildState extends FlxSubState
 				var placeholder_2 = new FlxSprite(Std.int(storePosition.x)+125, 450); 
 				placeholder_2.loadGraphic(AssetPaths.storePlaceholder__png); 
 				gui.add(placeholder_2); 
+
+				gui.add(equals); 
 
 				if (buildLimit >= 3) {
 					var plus_2 = new FlxSprite(Std.int(storePosition.x)+154, 450); 
@@ -1184,13 +1166,13 @@ class BuildState extends FlxSubState
 					var placeholder_3 = new FlxSprite(Std.int(storePosition.x)+180, 450); 
 					placeholder_3.loadGraphic(AssetPaths.storePlaceholder__png); 
 					gui.add(placeholder_3); 
+
+					gui.remove(equals);
+					equals.x += equalsOffset; 
+					gui.add(equals); 
 				}
 			}
 
-
-			var equals = new FlxSprite(Std.int(storePosition.x)+209, 450); 
-			equals.loadGraphic(AssetPaths.equal__png); 
-			gui.add(equals); 
 		}
 
 		// add deny and confirm buttons
@@ -1251,8 +1233,17 @@ class BuildState extends FlxSubState
 
 	private function gunCallback(type:Int){
 		if (addMaterial(type)){
-			var temp = new FlxSprite(Std.int(storePosition.x)+237,currentStack);
-			var gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 445); 
+			var temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack);
+			var gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55)+40, 445); 
+			if (LevelData.getCurrentLevel().buildLimit == 2) {
+				temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack);
+				gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 445); 
+			}
+			else if (LevelData.getCurrentLevel().buildLimit == 3) {
+				temp = new FlxSprite(Std.int(storePosition.x)+237,currentStack);
+				gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 445); 
+			}
+
 			switch(type){
 				case 0:
 					temp.y -= 10; 
@@ -1279,8 +1270,17 @@ class BuildState extends FlxSubState
 	}
 	private function foundationCallback(type:Int){
 		if (addMaterial(type)){
-			var temp = new FlxSprite(Std.int(storePosition.x)+237,currentStack);
-			var foundationAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*53), 453); 
+			var temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack);
+			var foundationAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*53)+40, 453); 
+			if (LevelData.getCurrentLevel().buildLimit == 2) {
+				temp = new FlxSprite(Std.int(storePosition.x)+237-40,currentStack);
+				foundationAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 453); 
+			}
+			else if (LevelData.getCurrentLevel().buildLimit == 3) {
+				temp = new FlxSprite(Std.int(storePosition.x)+237,currentStack);
+				foundationAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 453); 
+			}
+
 			switch(type){
 				case 3:
 					temp.loadGraphic(AssetPaths.snow1__png);
