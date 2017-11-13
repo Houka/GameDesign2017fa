@@ -20,7 +20,8 @@ import flixel.ui.FlxBar;
 import openfl.Assets;
 using StringTools;
 
-import gameStates.MenuState;
+import test.LevelSelectState;
+import Logging;
 
 ////////////////////////// Level
 ////////////////////////////////
@@ -34,7 +35,6 @@ typedef Level = {
 }
 
 class LevelData{
-
 	public static var level1:Level = {
 		mapFilepath:"assets/maps/level1.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
@@ -69,6 +69,7 @@ class LevelData{
 
 	public static var levels = [level1, level2, level3];
 	public static var currentLevel = 0;
+	public static var maxLevelReached = currentLevel;
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>=levels.length){
 			trace("Error: Level "+currentLevel+" does not exists");
@@ -79,6 +80,10 @@ class LevelData{
 	}
 	public static function gotoNextLevel():Null<Level>{
 		currentLevel ++;
+		maxLevelReached = Std.int(Math.max(currentLevel, maxLevelReached));
+		if(maxLevelReached == 1){
+			maxLevelReached = 2;
+		}
 		return getCurrentLevel();
 	}
 }
@@ -133,10 +138,10 @@ class Util{
 		return FlxPoint.get(Std.int(x/TILE_SIZE), Std.int(y/TILE_SIZE));
 	}
 	
-	/*	Returns the screen coordinates with respect to the camera
-	*	x = the column position in map coordinates
-	*	y = the row position in map coordinates
-	*	where the first column and row is index 0
+	/*  Returns the screen coordinates with respect to the camera
+	*   x = the column position in map coordinates
+	*   y = the row position in map coordinates
+	*   where the first column and row is index 0
 	*/
 	public static function toCameraCoordinates(x:Int, y:Int):FlxPoint{
 		return FlxPoint.get(x*TILE_SIZE, y*TILE_SIZE);
@@ -167,7 +172,6 @@ class GameObjectFactory{
 	public static function addEnemy(enemies:FlxTypedGroup<Enemy>, X:Int, Y:Int, Type:Int, Path:Array<FlxPoint>):Enemy{
 		var enemy = enemies.recycle(Enemy);	// uses an already added enemy, or makes a new one and adds it to enemies
 		var _framerate:Int = 8;
-    
 		// make enemy based on type
 		switch (Type) {	
 			case 0:
@@ -267,7 +271,7 @@ class GameObjectFactory{
 
 	public static function createPlayer(X:Int, Y:Int, allies:FlxTypedGroup<Ally>):Player{
 		var point = Util.toCameraCoordinates(X,Y);
-		return new Player(Std.int(point.x), Std.int(point.y),allies);		
+		return new Player(Std.int(point.x), Std.int(point.y),allies);       
 	}
 
 }
@@ -551,14 +555,14 @@ class Ally extends FlxSprite{
 			FlxVelocity.moveTowardsObject(this, target, speed);
 		}else{
 			switch (facing) {
-			 	case FlxObject.RIGHT:
-			 		velocity.x = speed;
-			 	case FlxObject.LEFT:
-			 		velocity.x = -speed;
-			 	case FlxObject.UP:
-			 		velocity.y = -speed;
-			 	case FlxObject.DOWN:
-			 		velocity.y = speed;
+				case FlxObject.RIGHT:
+					velocity.x = speed;
+				case FlxObject.LEFT:
+					velocity.x = -speed;
+				case FlxObject.UP:
+					velocity.y = -speed;
+				case FlxObject.DOWN:
+					velocity.y = speed;
 			 }
 		}
 
@@ -845,9 +849,9 @@ class Bullet extends FlxSprite{
 		type = Type;
 		attackPt = Attack;
 		angle = Angle;
-        velocity.set(speed, 0);
-        velocity.rotate(FlxPoint.weak(0,0), angle);
-        alpha = 1;
+		velocity.set(speed, 0);
+		velocity.rotate(FlxPoint.weak(0,0), angle);
+		alpha = 1;
 	}
 	
 	override public function update(elapsed:Float):Void
@@ -1053,7 +1057,6 @@ class Homebase extends FlxGroup{
 			h.reset(point.x+xOffset + gap * (Health-1), point.y+yOffset);
 		}
 
-
 		health = Health;
 		return health;
 	}
@@ -1064,7 +1067,6 @@ class Homebase extends FlxGroup{
 ////////////////////////////////
 
 class BuildState extends FlxSubState
-{	
 	private var MAX_TOWER_HEIGHT = 3;
 	private var _tower:Tower;
 	private var _materials:Array<Int>;
@@ -1245,6 +1247,16 @@ class BuildState extends FlxSubState
 		if (FlxG.keys.anyJustPressed([N,P]) || (FlxG.mouse.justPressed && FlxG.mouse.x < storePosition.x)) {
 			exitCallback();
 		}
+
+		// log mouse clicks
+		if(FlxG.mouse.justReleased){
+			var logString = "Level:"+LevelData.currentLevel+" X:"+FlxG.mouse.x+" Y:"+FlxG.mouse.y;
+			Logging.recordEvent(2, logString);
+		}
+		if(FlxG.mouse.justPressed){
+			var logString = "Level:"+LevelData.currentLevel+" X:"+FlxG.mouse.x+" Y:"+FlxG.mouse.y;
+			Logging.recordEvent(1, logString);
+		}
 	}
 
 	private function confirmedCallback(){
@@ -1339,7 +1351,7 @@ class BuildState extends FlxSubState
 }
 
 class PauseState extends FlxSubState
-{	
+{   
 	override public function create():Void
 	{
 		super.create();
@@ -1353,7 +1365,7 @@ class PauseState extends FlxSubState
 		text.screenCenter();
 		add(text);
 
-		var text2 = new flixel.text.FlxText(0, 0, 0, "press [P] to resume or [R] to restart", 32);
+		var text2 = new flixel.text.FlxText(0, 0, 0, "press [P] to resume, [R] to restart, or [Q] to exit", 32);
 		text2.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,5);
 		text2.screenCenter();
 		text2.y += 40;
@@ -1376,6 +1388,8 @@ class PauseState extends FlxSubState
 		if (FlxG.keys.anyJustPressed([P])) {
 			close();		
 		}
+		if (FlxG.keys.anyJustPressed([Q]))
+			FlxG.switchState(new LevelSelectState());   
 		if (FlxG.keys.anyJustPressed([R])) {
 			if (LevelData.currentLevel == 0)
 				GameState.tutorialEvent = 0;
@@ -1385,7 +1399,7 @@ class PauseState extends FlxSubState
 }
 
 class LoseState extends FlxSubState
-{	
+{   
 	override public function create():Void
 	{
 		super.create();
@@ -1420,14 +1434,14 @@ class LoseState extends FlxSubState
 	{
 		super.update(elapsed);
 		if (FlxG.keys.anyJustPressed([Q]))
-			FlxG.switchState(new MenuState());
+			FlxG.switchState(new LevelSelectState());
 		if (FlxG.keys.anyJustPressed([R]))
 			FlxG.switchState(new GameState());
-	}	
+	}   
 }
 
 class WinState extends FlxSubState
-{	
+{   
 	override public function create():Void
 	{
 		super.create();
@@ -1462,15 +1476,15 @@ class WinState extends FlxSubState
 	{
 		super.update(elapsed);
 		if (FlxG.keys.anyJustPressed([Q]))
-			FlxG.switchState(new MenuState());
+			FlxG.switchState(new LevelSelectState());
 		if (FlxG.keys.anyJustPressed([R]))
 			FlxG.switchState(new GameState());
 		if (FlxG.keys.anyJustPressed([N])){
 			if (LevelData.gotoNextLevel() == null)
-				FlxG.switchState(new MenuState());
+				FlxG.switchState(new LevelSelectState());
 			FlxG.switchState(new GameState());
 		}
-	}	
+	}   
 }
 
 class GameState extends FlxState{
@@ -1486,6 +1500,8 @@ class GameState extends FlxState{
 	private var collisionController:CollisionController;
 	public var healthBars = new FlxTypedGroup<FlxBar>();
 	private var _centerText:FlxText;
+
+	public static var abTestVersion = Logging.assignABTestValue(FlxG.random.int(1,2));
 
 	override public function create(){
 		super.create();
@@ -1503,6 +1519,10 @@ class GameState extends FlxState{
 		// get level data
 		_level = LevelData.getCurrentLevel();
 		var mapArray = Util.loadCSV(_level.mapFilepath);
+
+		// log the start of this level
+		Logging.recordLevelEnd();
+		Logging.recordLevelStart(LevelData.currentLevel);
 
 		// make game objects from level data
 		var originalMap = new FlxTilemap();
@@ -1635,6 +1655,16 @@ class GameState extends FlxState{
 			persistentUpdate = true;
 		}
 
+		// log mouse clicks
+		if(FlxG.mouse.justReleased){
+			var logString = "Level:"+LevelData.currentLevel+" X:"+FlxG.mouse.x+" Y:"+FlxG.mouse.y;
+			Logging.recordEvent(2, logString);
+		}
+		if(FlxG.mouse.justPressed){
+			var logString = "Level:"+LevelData.currentLevel+" X:"+FlxG.mouse.x+" Y:"+FlxG.mouse.y;
+			Logging.recordEvent(1, logString);
+		}
+
 		// update interactions of game objects
 		collisionController.update(elapsed);
 		
@@ -1680,31 +1710,34 @@ class GameState extends FlxState{
 		FlxTween.tween(_centerText, { x: FlxG.width }, 2, { ease: FlxEase.expoIn });
 	}
 
-	/*	Checks whether or not the game is over.
-	*	If it is over then envoke either a win screen or lose screen
+	/*  Checks whether or not the game is over.
+	*   If it is over then envoke either a win screen or lose screen
 	*/
 	private function checkGameOver(){
 		// if you lost the game then open LoseState, then return
 		trace(homebase.health);
 		if (homebase.gameover || !player.alive || homebase.health <= 0){
+			var logString = "Wave Num:"+spawnArea.currentWave+" Level:"+LevelData.currentLevel;
+			Logging.recordEvent(6, logString);
 			persistentUpdate = false;
 			openSubState(new LoseState());
 			return;
 		}
 
-		// if you won the game then open WinState, then return
+		// if you won the game then open WinState and record win
 		var alive = 0;
 		for (e in enemies){
 			if (e.alive)
 				alive++;
 		}
-
 		var gameover = true;
 		for (spawnArea in spawns){
 			if (!spawnArea.gameover)
 				gameover = false;
 		}
 		if (gameover && alive == 0){
+			var logString = "Level:"+LevelData.currentLevel;
+			Logging.recordEvent(7, logString);
 			persistentUpdate = false;
 			
 			if (LevelData.currentLevel == 0) {

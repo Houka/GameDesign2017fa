@@ -10,15 +10,19 @@ import flixel.ui.FlxButton;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.tile.FlxTilemap;
+import flixel.group.FlxGroup;
 import openfl.Lib;
 import gameObjects.Enemy;
 import utils.Button;
 import Constants;
 import Levels;
 
+import test.LevelSelectState;
+
 class MenuState extends FlxState
 {
 	private static inline var SELECTION_MENU_OFFSET_X:Int = -250;
+	private static inline var SELECTION_MENU_OFFSET_Y:Int = -50;
 
 	private var _level:Level;
 	private var _startPosition:FlxPoint;
@@ -32,9 +36,6 @@ class MenuState extends FlxState
 	 */
 	override public function create():Void
 	{
-		// Change the default mouse to an inverted triangle.
-		Constants.toggleCursors(CursorType.Normal);
-
 		// camera and framerate settings
 		FlxG.cameras.bgColor = FlxColor.fromInt(0xff85bbff);
 		FlxG.timeScale = 1;
@@ -47,34 +48,34 @@ class MenuState extends FlxState
 
 		// Menu BG
 		var menuBG = new FlxSprite(0,0, AssetPaths.menu__png);
-		menuBG.setPosition(FlxG.width/2 - menuBG.origin.x + SELECTION_MENU_OFFSET_X, FlxG.height/2 - menuBG.origin.y);
+		menuBG.setPosition(FlxG.width/2 - menuBG.origin.x + SELECTION_MENU_OFFSET_X, FlxG.height/2 - menuBG.origin.y + SELECTION_MENU_OFFSET_Y);
 		menuBG.scrollFactor.x = menuBG.scrollFactor.y = 0;
 		menuBG.alpha = 0.85;
 
 		// Game title
 		var headline = new FlxSprite(0,0, AssetPaths.logo__png);
-		headline.setPosition(FlxG.width/2 - headline.origin.x + SELECTION_MENU_OFFSET_X, FlxG.height/2 - menuBG.height/2);
+		headline.setPosition(FlxG.width/2 - headline.origin.x + SELECTION_MENU_OFFSET_X, FlxG.height/2 - menuBG.height/2 + SELECTION_MENU_OFFSET_Y);
 		headline.scrollFactor.x = headline.scrollFactor.y = 0;
 		headline.alpha = 0.85;
 		
-		
 		// Credits
-		var credits = new FlxText(SELECTION_MENU_OFFSET_X, FlxG.height/2 + menuBG.origin.y + 5, FlxG.width, "Sun Bear Studios", 14);
+		var credits = new FlxText(SELECTION_MENU_OFFSET_X, FlxG.height/2 + menuBG.origin.y + 5 + SELECTION_MENU_OFFSET_Y, FlxG.width, "Sun Bear Studios (c) 2017", 14);
 		credits.scrollFactor.x = credits.scrollFactor.y = 0;
 		credits.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,1);
 		credits.alignment = CENTER;
 		
-		// Level select buttons
-		var buttonSize = 20;
-		var levelButtons = [];
-		for (i in 0...Levels.levels.length){
-			var levelButton = new Button(0, 0, Levels.levels[i].name, startGame.bind(Levels.levels[i].level),150);
-			levelButton.label.size = buttonSize;
-			levelButton.screenCenter();
-			levelButton.y += i*(levelButton.height+2) - menuBG.height/2 + headline.height;
-			levelButton.x += SELECTION_MENU_OFFSET_X;
-			levelButtons.push(levelButton);
-		}
+		// Play button
+		var playButton = new FlxButton(0,0,"",levelSelect);
+		playButton.loadGraphic(AssetPaths.playButton__png, true, 128, 54);
+		playButton.setPosition(FlxG.width/2 - playButton.origin.x + SELECTION_MENU_OFFSET_X, FlxG.height/2 + SELECTION_MENU_OFFSET_Y);
+		playButton.scrollFactor.x = playButton.scrollFactor.y = 0;
+
+		//Privacy Policy
+		var discolsureMSG = "In order to make improvements and provide the best possible experience,"+
+			"this game anonymously records user interactions and IP addresses. No personal information is recorded.";
+		var disclosure = new FlxText(FlxG.width/6, FlxG.height-64, FlxG.width*2/3, discolsureMSG, 12);
+		disclosure.scrollFactor.x = disclosure.scrollFactor.y = 0;
+		disclosure.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,1);
 		
 		// The enemy that repeatedly traverses the screen.
 		_enemy = new Enemy();
@@ -96,12 +97,20 @@ class MenuState extends FlxState
 		add(menuBG);
 		add(headline);
 		add(credits);
-		for (b in levelButtons)
-			add(b);
+		add(playButton);
+		add(disclosure);
 
 		super.create();
 	}
 	
+    override public function update(elapsed:Float):Void
+    {
+        super.update(elapsed);
+        if (FlxG.keys.anyJustPressed([P])) {
+            levelSelect();
+        }
+    }
+
 	/**
 	 * Starts the enemy on the map path.
 	 */
@@ -116,10 +125,10 @@ class MenuState extends FlxState
 	}
 	
 	/**
-	 * Activated when clicking "Play" or pressing P; switches to the playstate.
+	 * Activated when clicking "Start Game" or pressing [P]; switches Level Select screen.
 	 */
-	private function startGame(level:Level):Void
+	private function levelSelect():Void
 	{
-		FlxG.switchState(new PlayState(level));
+		FlxG.switchState(new LevelSelectState());
 	}
 }
