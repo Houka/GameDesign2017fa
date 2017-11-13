@@ -969,7 +969,9 @@ class Tower extends FlxSprite{
 			_healthBar.kill();
 			for (c in children)
 				c.kill();
+			var savedWorkers = workers;
 			init(Std.int(x), Std.int(y), bullets, towerLayers, map);
+			workers = savedWorkers;
 		}
 	}
 }
