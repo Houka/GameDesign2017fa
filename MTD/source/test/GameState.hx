@@ -1215,6 +1215,13 @@ class Tower extends FlxSprite{
 
 			//for logging
 			GameState.towersKilled++;
+
+			if (GameState.tutorialEvent == 3) { 
+				FlxG.state.add(GameState.tutorialArrow);
+				GameState.tutorialArrow.visible = true; 
+				GameState.tutorialArrow.setPosition(x-40, y);  
+				GameState.tutorialEvent++; 
+			}
 		}
 	}
 }
@@ -1454,6 +1461,12 @@ class BuildState extends FlxSubState{
 			GameState.tutorialArrow.visible = true;
 			GameState.tutorialArrow.setPosition(Std.int(tutPos.x)+20, Std.int(tutPos.y));
 			gui.add(GameState.tutorialArrow);
+			GameState.tutorialEvent++;
+		}
+
+		if (GameState.tutorialEvent == 4) { 
+			FlxG.state.remove(GameState.tutorialArrow);
+			GameState.tutorialArrow.visible = false;
 			GameState.tutorialEvent++;
 		}
 
