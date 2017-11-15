@@ -1444,7 +1444,7 @@ class BuildState extends FlxSubState{
 		but.loadGraphic(AssetPaths.confirmButton__png, true, 50, 50); 
 		gui.add(but);
 
-		but = new FlxButton(Std.int(storePosition.x) +200, FlxG.height - 100, "", exitCallback);
+		but = new FlxButton(Std.int(storePosition.x) +200, FlxG.height - 100, "", cancelCallback);
 		but.loadGraphic(AssetPaths.denyButton__png, true, 50, 50); 
 		gui.add(but);
 
@@ -1524,6 +1524,11 @@ class BuildState extends FlxSubState{
 		logString+="]";
 		Logging.recordEvent(5, logString);
 
+		exitCallback();
+	}
+
+	private function cancelCallback(){
+		Sounds.play("cancel");
 		exitCallback();
 	}
 
