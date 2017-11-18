@@ -21,8 +21,9 @@ import flixel.system.FlxSound;
 import openfl.Assets;
 using StringTools;
 
-import gameStates.MenuState;
+import gameStates.*;
 import gameObjects.*;
+import utils.*;
 
 @:enum
 abstract CollisionID(Int) {

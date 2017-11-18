@@ -1,4 +1,4 @@
-package test;
+package gameStates;
 
 import flixel.FlxG;
 import flixel.FlxState;
@@ -11,9 +11,8 @@ import flixel.text.FlxText;
 import flixel.system.FlxSound;
 
 import LevelData;
-import test.GameState.Util;
-import test.GameState.Sounds;
-import gameStates.MenuState;
+import utils.Util;
+import utils.Sounds;
 
 class LevelSelectState extends FlxState
 {

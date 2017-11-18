@@ -21,6 +21,8 @@ import flixel.system.FlxSound;
 import openfl.Assets;
 using StringTools;
 
+import utils.*;
+
 class Enemy extends FlxSprite{
 	public var attackPt:Int;
 	public var attackRange:Int = 64; 
@@ -151,6 +153,18 @@ class Enemy extends FlxSprite{
 		Path[0].y = y;
 		
 		path = new FlxPath().start(Path, speed, 0, false);
+	}
+	
+	public function followPathDemo(Path:Array<FlxPoint>, Speed:Int, ?OnComplete:FlxPath->Void):Void
+	{
+		if (Path == null)
+			throw("No valid path was passed to the enemy! Does the tilemap provide a valid path from start to finish?");
+		
+		Path[0].x = x;
+		Path[0].y = y;
+		
+		path = new FlxPath().start(Path, Speed, 0, false);
+		path.onComplete = OnComplete;
 	}
 
 

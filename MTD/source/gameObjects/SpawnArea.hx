@@ -1,4 +1,4 @@
-package GameObjects;
+package gameObjects;
 
 import flixel.FlxState;
 import flixel.FlxObject;
@@ -21,10 +21,11 @@ import flixel.system.FlxSound;
 import openfl.Assets;
 using StringTools;
 
-import test.LevelSelectState;
+import gameStates.LevelSelectState;
 import Logging;
 import gameStates.MenuState;
 import LevelData;
+import utils.*;
 
 
 class SpawnArea extends FlxTypedGroup<FlxSprite>{

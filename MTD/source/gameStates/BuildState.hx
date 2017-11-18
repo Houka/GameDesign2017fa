@@ -21,6 +21,9 @@ import flixel.system.FlxSound;
 import openfl.Assets;
 using StringTools;
 
+import gameObjects.*;
+import utils.*;
+
 class BuildState extends FlxSubState{
 	private var MAX_TOWER_HEIGHT = 3;
 	private var _tower:Tower;

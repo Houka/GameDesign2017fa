@@ -21,22 +21,6 @@ import flixel.system.FlxSound;
 import openfl.Assets;
 using StringTools;
 
-typedef Demo = {
-	var map: String; 			// path to csv file for this level
-	var mapWidth:Int;
-	var mapHeight:Int;
-	var tilemap: String;		// path to tilemap for this level
-	var start: FlxPoint;
-	var goal: FlxPoint;
-	var health: Int;			// how much health does homebase have
-	var money: Int; 			// starting money
-	var defaultTowerPrice: Int;
-	var waves: Array<Array<Int>>;	// each int represents an enemy type starting from index 0. 
-									// each row in the 2d array is a wave
-									// each wave spawns the cooresponding enemy type in order
-	@:optional var isTutorial: Bool; 
-}
-
 typedef Level = {
 	var mapFilepath:String;
 	var tilemap:String;
@@ -47,19 +31,6 @@ typedef Level = {
 }
 
 class LevelData{
-	public static var demo(default,never):Level = {	// demo level used for menu
-		map:"assets/maps/demo.csv",
-		mapWidth: 40,
-		mapHeight:30,
-		tilemap:"assets/tiles/auto_tilemap.png",
-		start: toCameraCoordinates(5,0),					 
-		goal: toCameraCoordinates(34,29),
-		health: 9,
-		money: 50,
-		defaultTowerPrice: 8,
-		waves:[]
-	}
-	
 	public static var level1:Level = {
 		mapFilepath:"assets/maps/level1.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",

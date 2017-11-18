@@ -1,14 +1,25 @@
 package gameStates;
 
+import flixel.FlxState;
+import flixel.FlxObject;
+import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.FlxG;
-import flixel.FlxState;
+import flixel.FlxBasic;
 import flixel.text.FlxText;
-import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
-import utils.Button;
-import Constants;
-import LevelData;
+import flixel.util.FlxPath;
+import flixel.math.FlxPoint;
+import flixel.math.FlxVelocity;
+import flixel.group.FlxGroup;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import flixel.tile.FlxTilemap;
+import flixel.ui.FlxButton;
+import flixel.ui.FlxBar; 
+import flixel.system.FlxSound;
+import openfl.Assets;
+using StringTools;
 
 class LoseState extends FlxSubState
 {   

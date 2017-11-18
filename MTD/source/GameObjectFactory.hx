@@ -21,6 +21,9 @@ import flixel.system.FlxSound;
 import openfl.Assets;
 using StringTools;
 
+import gameObjects.*;
+import utils.*;
+
 class GameObjectFactory{
 	public static var dummyAlly = new Ally();
 	public static function addEnemy(enemies:FlxTypedGroup<Enemy>, X:Int, Y:Int, Type:Int, Path:Array<FlxPoint>):Enemy{

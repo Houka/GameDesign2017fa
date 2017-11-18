@@ -21,11 +21,13 @@ import flixel.system.FlxSound;
 import openfl.Assets;
 using StringTools;
 
-import test.LevelSelectState;
 import Logging;
-import gameStates.MenuState;
 import LevelData;
 import gameObjects.*;
+import gameObjects.Bullet;
+import controllers.CollisionController;
+import utils.*;
+import GameObjectFactory;
 
 class GameState extends FlxState{
 	public static var tutorialEvent:Int = 0;

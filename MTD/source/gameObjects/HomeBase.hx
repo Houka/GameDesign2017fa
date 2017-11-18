@@ -21,6 +21,8 @@ import flixel.system.FlxSound;
 import openfl.Assets;
 using StringTools;
 
+import utils.*;
+
 class Homebase extends FlxGroup{
 	private static inline var xOffset:Int=-5;
 	private static inline var yOffset:Int=-20;
