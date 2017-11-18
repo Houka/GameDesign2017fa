@@ -10,8 +10,7 @@ import flixel.util.FlxColor;
 import flixel.text.FlxText;
 import flixel.system.FlxSound;
 
-import test.GameState.Level;
-import test.GameState.LevelData;
+import LevelData;
 import test.GameState.Util;
 import test.GameState.Sounds;
 import gameStates.MenuState;

@@ -16,9 +16,9 @@ import openfl.Lib;
 import gameObjects.Enemy;
 import utils.Button;
 import Constants;
-import Levels;
+import LevelData;
 
-import test.GameState.Sounds;
+import utils.Sound;
 import test.LevelSelectState;
 
 class MenuState extends FlxState

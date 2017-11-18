@@ -1,119 +1,224 @@
 package gameObjects;
 
-import flash.display.BlendMode;
-import flixel.FlxG;
+import flixel.FlxState;
+import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.math.FlxAngle;
+import flixel.FlxSubState;
+import flixel.FlxG;
+import flixel.FlxBasic;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import flixel.util.FlxPath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxVelocity;
+import flixel.group.FlxGroup;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import flixel.tile.FlxTilemap;
+import flixel.ui.FlxButton;
+import flixel.ui.FlxBar; 
+import flixel.system.FlxSound;
+import openfl.Assets;
+using StringTools;
 
-class Bullet extends FlxSprite 
-{
-	/**
-	 * The amount of damage this bullet will do to an enemy. Set only via init().
-	 */
-	public var damage(default, null):Int;
+import Logging;
 
-	public var type:Int=0;
-	
-	/**
-	 * This bullet's targeted enemy. Set via init(), and determines direction of motion.
-	 */
-	private var _target:Enemy;
-	
-	/**
-	 * Create a new Bullet object. Generally this would be used by the game to create a pool of bullets that can be recycled later on, as needed.
-	 */
-	public function new() 
-	{
-		super();
-		loadGraphic(AssetPaths.snowball__png, false, 16, 16);
-	}
-	
-	/**
-	 * Initialize this bullet by giving it a position, target, and damage amount. Usually used to create a new bullet as it is fired by a tower.
-	 * 
-	 * @param	X			The desired X position.
-	 * @param	Y			The desired Y position.
-	 * @param	Target		The desired target, an Enemy.
-	 * @param	Damage		The amount of damage this bullet can do, usually determined by the upgrade level of the tower.
-	 */
-	public function init(X:Float, Y:Float, Target:Enemy, Damage:Int, Type:Int):Void
-	{
-		reset(X, Y);
-		setType(Type);
-		_target = Target;
-		damage = Damage;
-		if (_target != null)
-        	angle = FlxAngle.asDegrees(FlxAngle.angleBetweenPoint(this, _target.getMidpoint())) - 90;
-        velocity.set(0,0);
-        alpha = 1;
-	}
-
-	public function setType(Type:Int):Void{
-		type = Type;
+class Bullet extends FlxSprite{
+	public var attackPt:Int;
+	public var type:Int;
+	private var speed:Int;
+	public function init(X:Int,Y:Int,Type:Int,Attack:Int,Angle:Int){
 		switch (Type) {
-			case 0:
-				loadGraphic(AssetPaths.snowball__png, false, 16, 16);
-			case 1:
-				loadGraphic(AssetPaths.snowball2__png, false, 16, 16);
-			case 2:
-				loadGraphic(AssetPaths.snowball3__png, false, 16, 16);
-			case 3:
-				loadGraphic(AssetPaths.snowball4__png, false, 16, 16);
-				damage = 0;
-			default:
-				loadGraphic(AssetPaths.snowball__png, false, 16, 16);
+			case 6:
+				loadGraphic(AssetPaths.snowball__png,true,20,20);
+				animation.add("idle",[0],10,true);
+				animation.add("explode",[1,2,3,4,5],10,false);
+				animation.play("idle");
+			case 7:
+				loadGraphic(AssetPaths.snowball2__png);
+			case 8:
+				loadGraphic(AssetPaths.snowball3__png);
 		}
+
+		setPosition(X-width/2,Y-height/2);
+		speed = 200;
+		type = Type;
+		attackPt = Attack;
+		angle = Angle;
+		velocity.set(speed, 0);
+		velocity.rotate(FlxPoint.weak(0,0), angle);
+		alpha = 1;
 	}
 
-	public function hit(e:Enemy):Void{
-		switch (type) {
-			case 0:
-				super.kill();
-			case 1:
-				// piercing
-				_target = null;
-				angle += 180;
-			case 2:
-				// grenade that spawns other normal bullets
-				for (i in 0...5){
-					var bullet = Constants.PS.collisionController.bullets.recycle(Bullet.new);
-					var midpoint = getMidpoint();
-					bullet.init(midpoint.x - bullet.origin.x, midpoint.y- bullet.origin.y, null, damage, 0);
-					midpoint.put();
-					bullet.angle = Std.random(Std.int(360/5*(i+1)));
-			        bullet.velocity.set(200, 0);
-			        bullet.velocity.rotate(FlxPoint.weak(0,0), bullet.angle);
-		    	}
-		    	super.kill();
-			case 3:
-				// slow down enemy
-				e.freeze();
-				super.kill();
-			default:
-				super.kill();
-		}
+	override public function kill(){
+		velocity.set(0,0);
+		alive = false;
+		animation.play("explode");
 	}
 	
 	override public function update(elapsed:Float):Void
 	{
-		// This bullet missed its target and flew off-screen; no reason to keep it around.
+		super.update(elapsed);
 		
-		if (!isOnScreen(FlxG.camera) || alpha <= 0.1) 
+		// get rid of off screen bullet or a too transparent bullet
+		if (!isOnScreen(FlxG.camera) || alpha <= 0.8) 
 		{
+			kill();
+		}
+		
+		alpha -= 0.005;
+
+		if(!alive && animation.name=="explode" && animation.frameIndex == 4){
 			super.kill();
 		}
-		
-		// Move toward the target that was assigned in init().
-		
-		if (_target!= null && _target.alive)
-		{
-			FlxVelocity.moveTowardsObject(this, _target, 200);
-		}else{
-			alpha -= 0.02;
+	}
+}
+class Tower extends FlxSprite{
+	public var created:Bool;
+	public var map:FlxTilemap;
+	
+	private var towerLayers:FlxTypedGroup<FlxSprite>;
+	private var bullets:FlxTypedGroup<Bullet>;
+	private var children:Array<FlxSprite>;
+	private var ammoType:Int;
+	private var gunTypes:Array<Int>;
+	private var foundationTypes: Array<Int>; 
+	private var counter:Int;
+	private var interval:Int = 2;
+	private var workers:Array<Ally>;
+	private var _healthBar: FlxBar; 
+	public function init(X:Int, Y:Int, bullets:FlxTypedGroup<Bullet>, towerLayers:FlxTypedGroup<FlxSprite>,map:FlxTilemap){
+		loadGraphic(AssetPaths.towerPlaceholder__png);
+		setPosition(X-Math.abs(width-Util.TILE_SIZE)/2,Y-Math.abs(height-Util.TILE_SIZE)/2);
+
+		this.towerLayers = towerLayers;
+		this.bullets = bullets;
+		this.map = map;
+		this.children = new Array<FlxSprite>();
+		this.workers = new Array<Ally>();
+		this.gunTypes = new Array<Int>();
+		this.foundationTypes = new Array<Int>(); 
+		counter = 0;
+		health = 1; 
+		created = false;
+	}
+	public function buildTower(materials:Array<Int>){
+		var yOffset = 0;
+		var yFoundOffset = 0; 
+		var midpoint = getMidpoint();
+		for (m in materials){
+			if (m < 6){
+				// materials
+				var layer = new FlxSprite();
+				switch (m) {
+					// gunbases
+					case 0:
+						layer.loadGraphic(AssetPaths.snowman_head__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset - 10);
+						layer.y += 10; 
+						towerLayers.add(layer);
+						gunTypes.push(m);
+						yOffset -= 32;
+					case 1:
+						layer.loadGraphic(AssetPaths.snowman_machine_gun__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset - 4);
+						towerLayers.add(layer);
+						gunTypes.push(m);
+						yOffset -= 32;
+
+					case 2:
+						layer.loadGraphic(AssetPaths.snowman_spray__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset + 10);
+						yOffset += 14; 
+						towerLayers.add(layer);
+						gunTypes.push(m);
+						yOffset -= 32;
+
+					// foundations
+					case 3:
+						layer.loadGraphic(AssetPaths.snow1__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
+						towerLayers.add(layer);
+						health += 1; 
+						yOffset -= 25;
+
+					case 4:
+						layer.loadGraphic(AssetPaths.snowman_ice__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
+						towerLayers.add(layer);
+						health += 2; 
+						yOffset -= 25;
+
+					case 5:
+						layer.loadGraphic(AssetPaths.snowman_coal__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
+						towerLayers.add(layer);
+						health += 3; 
+						yOffset -= 25;
+				}
+
+				children.push(layer);
+			}
+			else{
+				// ammo. only one ammo expected in each materials list
+				ammoType = m;
+			}
 		}
-		
+
+		created = children.length > 0;
+		if (created){
+			_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "health", 0, this.health, true);
+			_healthBar.trackParent(15, 55);
+			_healthBar.visible = created; 
+			FlxG.state.add(_healthBar);
+			map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 1, false);
+		}
+	}
+	public function addWorker(a:Ally){
+		workers.push(a);
+	}
+	public function popWorker():Ally{
+		return workers.pop();
+	}
+	override public function update(elapsed:Float){
 		super.update(elapsed);
+
+		// TODO: if an enemy is within range then shoot by creating bullet depending on ammo type
+		if (children.length > 0 && gunTypes.length > 0 && workers.length > 0){
+			counter += Std.int(FlxG.timeScale);
+			if (counter > interval * FlxG.updateFramerate){
+				for (g in gunTypes)
+					GameObjectFactory.addBullet(bullets, Std.int(getMidpoint().x), Std.int(getMidpoint().y), g, ammoType);
+				counter = 0;
+			}
+		}
+	}
+
+	override public function hurt(Damage:Float):Void {
+		health -= Damage;
+		
+		if (health <= 0){
+			Sounds.play("destroyed");
+
+			created = false; 
+			_healthBar.visible = false;
+			_healthBar.kill();
+			for (c in children)
+				c.kill();
+			var savedWorkers = workers;
+			init(Std.int(x), Std.int(y), bullets, towerLayers, map);
+			workers = savedWorkers;
+			map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 0, false);
+
+			//for logging
+			GameState.towersKilled++;
+
+			if (GameState.tutorialEvent == 3) { 
+				FlxG.state.add(GameState.tutorialArrow);
+				GameState.tutorialArrow.visible = true; 
+				GameState.tutorialArrow.setPosition(x-40, y);  
+				GameState.tutorialEvent++; 
+			}
+		}
 	}
 }
