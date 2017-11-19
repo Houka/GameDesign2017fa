@@ -1,0 +1,31 @@
+<html> 
+    <head>
+        <style>
+            svg {border: 1px solid black;}
+            .axis path {fill: none; stroke: black;}
+            .axis line {stroke: black;}
+            .axis text {font-size: 10pt;}
+        </style>
+        <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <script src="https://d3js.org/topojson.v1.min.js"></script>
+        <script src="burnout.js"></script>
+        <script src="player_action.parser.js"></script>
+    </head>
+
+    <p> <a href="histogram.html">Histogram</a> </p> 
+    <p> <a href="index.html">Heatmap</a> </p> 
+    <p> <a href="piechart.html">Pie Chart</a> </p> 
+
+    <svg id = "svg1" height= "500" width = "500"> </svg>
+
+    <script> 
+        var burnout = d3.select("#svg1");
+
+        d3.json("data.json", function(data) {
+            var mouse_press = parseAct(data, 1);
+
+            create_burnout(mouse_press, burnout);
+        });   
+    </script> 
+</html> 
+

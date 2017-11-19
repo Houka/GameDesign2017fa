@@ -1,0 +1,50 @@
+<html> 
+    <head>
+        <style>
+            text.mono {
+                font-size: 9pt;
+                font-family: Consolas, courier;
+                fill: #aaa;
+            }
+            svg {border: 1px solid black;}
+            .axis path {fill: none; stroke: black;}
+            .axis line {stroke: black;}
+            .axis text {font-size: 10pt;}
+        </style>
+        <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <script src="https://d3js.org/topojson.v1.min.js"></script>
+        <script src="heatmap.js"></script>
+        <script src="player_action.parser.js"></script>
+        <script src="get_params.js"></script>
+    </head>
+
+    <p> <a href="histogram.html">Histogram</a> </p> 
+    <p> <a href="burnout.html">Burnout</a> </p> 
+    <p> <a href="piechart.html">Pie Chart</a> </p> 
+
+    <svg id = "svg1" height= "100" width = "100"> </svg>
+    <svg id = "svg2" height= "100" width = "100"> </svg>
+    <svg id = "svg3" height= "100" width = "100"> </svg>
+
+    <script> 
+        var tower_spatial = d3.select("#svg1"); 
+        var tower_temporal = d3.select("#svg2"); 
+        var mouse_clicks = d3.select("#svg3");
+
+        var qlevel = getLevel();
+        var normal = isNormalized();
+
+        d3.json("data.json", function(data) {
+            var mouse_press = parseAct(data, 1);
+            var mouse_release = parseAct(data, 2);
+            var tower_create = parseAct(data, 5);
+
+            var tower_metrics = map_tower_spatial(tower_create, qlevel, tower_spatial, normal);
+            map_tower_temporal(tower_create, qlevel, tower_temporal, tower_metrics[0], tower_metrics[1]);
+            map_mouse_clicks(mouse_release, qlevel, mouse_clicks);
+        });
+    
+    </script> 
+
+</html> 
+

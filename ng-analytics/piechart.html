@@ -1,0 +1,39 @@
+<html> 
+    <head>
+        <style>
+            svg {border: 1px solid black;}
+            .axis path {fill: none; stroke: black;}
+            .axis line {stroke: black;}
+            .axis text {font-size: 10pt;}
+            .mono {
+                font-size: 9pt;
+                font-family: Consolas, courier;
+                fill: #777;
+            }
+            rect {
+                stroke-width: 2;
+            }
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+        <script src="https://d3js.org/topojson.v1.min.js"></script>
+        <script src="piechart.js"></script>
+        <script src="piechart.parser.js"></script>
+    </head>
+
+    <p> <a href="histogram.html">Histogram</a> </p>
+    <p> <a href="burnout.html">Burnout</a> </p>  
+    <p> <a href="index.html">Heatmap</a> </p> 
+
+    <svg id = "svg1" height= "500" width = "500"> </svg>
+
+    <script> 
+        var piechart = d3.select("#svg1");
+
+        d3.json("data.json", function(data) {
+            var pie_data = parsePie(data);
+
+            create_piechart(pie_data, piechart);
+        }); 
+    </script> 
+</html> 
+

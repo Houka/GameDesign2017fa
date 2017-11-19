@@ -1,0 +1,31 @@
+<html> 
+    <head>
+        <style>
+            svg {border: 1px solid black;}
+        </style>
+        <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+        <script src="https://d3js.org/topojson.v1.min.js"></script>
+        <script src="histogram.js"></script>
+    </head>
+
+    <p> <a href="burnout.html">Burnout</a> </p>
+    <p> <a href="index.html">Heatmap</a> </p> 
+    <p> <a href="piechart.html">Pie Chart</a> </p> 
+
+    <svg id = "svg1" height= "600" width = "800"> </svg>
+
+    <script> 
+        var histogram = d3.select("#svg1");
+
+        d3.json("data.json", function(data) {
+            var player_quests = data.player_quests;
+
+            var histogram_arr = []
+            for (quest in player_quests) {
+                var level = player_quests[quest]['quest_id'];
+                histogram_arr.push(level);
+            }
+            create_histogram(histogram_arr, histogram);
+        });
+    </script> 
+</html> 
