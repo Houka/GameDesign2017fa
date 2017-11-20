@@ -3,7 +3,7 @@ function filterAB(data){
     var ab_dict = {};
     var ab_data = data["abtesting"];
     for(var i = 0; i < ab_data.length; i++){
-        ab_dict[ab_data["user_id"]] = parseInt(ab_data["ab_testing_value"]);
+        ab_dict[ab_data[i]["user_id"]] = parseInt(ab_data[i]["ab_testing_value"]);
     }
 
     var a_output = {};
