@@ -16,6 +16,7 @@
         </style>
         <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
         <script src="https://d3js.org/topojson.v1.min.js"></script>
+        <script src="filter_abtesting.parser.js"></script>
         <script src="piechart.js"></script>
         <script src="piechart.parser.js"></script>
     </head>
@@ -25,14 +26,24 @@
     <p> <a href="index.html">Heatmap</a> </p> 
 
     <svg id = "svg1" height= "500" width = "500"> </svg>
+    <svg id = "svg2" height= "500" width = "500"> </svg>
+    <svg id = "svg3" height= "500" width = "500"> </svg>
 
     <script> 
         var piechart = d3.select("#svg1");
+        var piechart_a = d3.select("#svg2");
+        var piechart_b = d3.select("#svg3");
 
         d3.json("data.json", function(data) {
+            var filtered = filterAB(data); 
+
             var pie_data = parsePie(data);
+            var pie_data_a = parsePie(filtered[0]);
+            var pie_data_b = parsePie(filtered[1]);
 
             create_piechart(pie_data, piechart);
+            create_piechart(pie_data_a, piechart_a);
+            create_piechart(pie_data_b, piechart_b);
         }); 
     </script> 
 </html> 
