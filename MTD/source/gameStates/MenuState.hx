@@ -16,17 +16,17 @@ import openfl.Lib;
 import gameObjects.Enemy;
 import utils.Button;
 import Constants;
+import LevelData;
 import Levels;
 
-import test.GameState.Sounds;
-import test.LevelSelectState;
+import utils.Sounds;
 
 class MenuState extends FlxState
 {
 	private static inline var SELECTION_MENU_OFFSET_X:Int = -250;
 	private static inline var SELECTION_MENU_OFFSET_Y:Int = -50;
 
-	private var _level:Level;
+	private var _level:Demo;
 	private var _startPosition:FlxPoint;
 	private var _endPosition:FlxPoint;
 	
@@ -130,7 +130,7 @@ class MenuState extends FlxState
 		var lastPoint = path[path.length - 1];
 		lastPoint.x = path[path.length - 2].x;
 		lastPoint.y += 20;
-		_enemy.followPath(path, 500, enemyFollowPath);
+		_enemy.followPathDemo(path, 500, enemyFollowPath);
 	}
 	
 	/**
