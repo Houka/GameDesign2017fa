@@ -3,7 +3,6 @@ package;
 import flixel.math.FlxPoint;
 import flixel.tile.FlxTilemap;
 import flixel.FlxG;
-import gameStates.PlayState;
 import AssetPaths;
 
 @:enum
@@ -32,8 +31,6 @@ class Constants{
 	static public inline var HEIGHT_OFFSET:Float = 25; //the y-distance between layers
 	static public inline var TILE_SIZE:Int = 64;
 	static public inline var HUD_TEXT_SIZE:Int = 14;
-
-	public static var PS:PlayState;
 	
 	// Constant functions
 	public static function toggleCursors(Type:CursorType):Void{

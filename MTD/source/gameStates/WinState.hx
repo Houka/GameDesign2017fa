@@ -1,55 +1,73 @@
 package gameStates;
 
+import flixel.FlxState;
+import flixel.FlxObject;
+import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.FlxG;
-import flixel.FlxState;
+import flixel.FlxBasic;
 import flixel.text.FlxText;
-import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
-import openfl.Lib;
-import utils.Button;
-import Constants;
-import Levels;
+import flixel.util.FlxPath;
+import flixel.math.FlxPoint;
+import flixel.math.FlxVelocity;
+import flixel.group.FlxGroup;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import flixel.tile.FlxTilemap;
+import flixel.ui.FlxButton;
+import flixel.ui.FlxBar; 
+import flixel.system.FlxSound;
+import openfl.Assets;
+using StringTools;
 
 class WinState extends FlxSubState
-{	
-	private var _level: Level;  
-	
-	public function new(level: Level):Void {
-        super();
-        _level = level; 
-    }
-	
+{   
 	override public function create():Void
 	{
 		super.create();
-		
-		var text = new flixel.text.FlxText(0, 0, 0, "Win State", 50);
-		text.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,5);
-		text.alignment = FlxTextAlign.CENTER;
-		text.screenCenter();
-		text.y -=100;
-		
-		var replayButton: FlxButton = new FlxButton(0, 0, "Replay Level", 
-			function() {FlxG.switchState(new PlayState(_level));});
-		replayButton.screenCenter();
-		
-		var menuButton: FlxButton = new FlxButton(0, 0, "Menu", 
-			function() {FlxG.switchState(new MenuState());});
-		menuButton.screenCenter();
-		menuButton.y += 50; 
+		var background = new FlxSprite(0,0);
+		background.makeGraphic(FlxG.width,FlxG.height,FlxColor.BLACK);
+		background.alpha = 0.5;
+		add(background);
 
-		// TODO: Set button to next level from current
-		if (Levels.currentLevel >= 0 && Levels.currentLevel < Levels.levels.length - 1){
-			var nextLevelButton: FlxButton = new FlxButton(0, 0, "Next Level", 
-				function() {FlxG.switchState(new PlayState(Levels.levels[Levels.currentLevel+1].level));});
-			nextLevelButton.screenCenter();
-			nextLevelButton.y += 100; 
-			add(nextLevelButton);
+		var text = new flixel.text.FlxText(0, 0, 0, "Level Cleared!", 64);
+		text.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,5);
+		text.screenCenter();
+		add(text);
+
+		var text2 = new flixel.text.FlxText(0, 0, 0, "press [R] to restart, [N] for next level, or [Q] to exit", 20);
+		text2.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,5);
+		text2.screenCenter();
+		text2.y += 40;
+		add(text2);
+
+		// unlock next level
+		LevelData.gotoNextLevel();
+		LevelData.currentLevel--;
+	}
+
+	override public function add(Object:FlxBasic):FlxBasic{
+		var result = super.add(Object);
+		// needed to prevent camera scrolling from affecting this state
+		if (Std.is(Object, FlxObject)){
+			cast(Object, FlxObject).scrollFactor.set(0,0);
 		}
 
-		add(text);
-		add(replayButton);
-		add(menuButton);
+		return result;
 	}
+
+	override public function update(elapsed:Float):Void
+	{
+		super.update(elapsed);
+		if (FlxG.keys.anyJustPressed([Q]))
+			FlxG.switchState(new LevelSelectState());
+		if (FlxG.keys.anyJustPressed([R]))
+			FlxG.switchState(new GameState());
+		if (FlxG.keys.anyJustPressed([N])){
+			if (LevelData.gotoNextLevel() == null)
+				FlxG.switchState(new LevelSelectState());
+			FlxG.switchState(new GameState());
+		}
+	}   
 }
