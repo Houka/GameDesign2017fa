@@ -23,21 +23,24 @@ using StringTools;
 
 class WinState extends FlxSubState
 {   
+	private var background:FlxSprite;
 	override public function create():Void
 	{
 		super.create();
-		var background = new FlxSprite(0,0);
+		background = new FlxSprite(0,0);
 		background.makeGraphic(FlxG.width,FlxG.height,FlxColor.BLACK);
-		background.alpha = 0.5;
+		background.alpha = 0;
 		add(background);
 
-		var text = new flixel.text.FlxText(0, 0, 0, "Level Cleared!", 64);
-		text.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,5);
+		var text = new flixel.text.FlxText(0, 0, 0, "Level Cleared", 64);
+        text.setFormat("assets/fonts/almonte_woodgrain.ttf", 72, FlxColor.fromInt(0xff70C2FE));
+		text.scale.x = text.scale.y = 2;
 		text.screenCenter();
+		text.y-=200;
 		add(text);
 
-		var text2 = new flixel.text.FlxText(0, 0, 0, "press [R] to restart, [N] for next level, or [Q] to exit", 20);
-		text2.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,5);
+		var text2 = new flixel.text.FlxText(0, 0, 0, "N for next level\nR to restart\nQ to exit", 70);
+        text2.setFormat("assets/fonts/almonte_woodgrain.ttf", 70, FlxColor.fromInt(0xff3F9BDD));
 		text2.screenCenter();
 		text2.y += 40;
 		add(text2);
@@ -45,6 +48,13 @@ class WinState extends FlxSubState
 		// unlock next level
 		LevelData.gotoNextLevel();
 		LevelData.currentLevel--;
+
+		// transition
+        var secs = 0.5;
+        FlxTween.tween(text, { y: text.y }, secs, { ease: FlxEase.expoOut});
+        FlxTween.tween(text2, { y: text2.y }, secs, { ease: FlxEase.expoOut});
+        text.y+=FlxG.height;
+        text2.y+=FlxG.height;
 	}
 
 	override public function add(Object:FlxBasic):FlxBasic{
@@ -69,5 +79,9 @@ class WinState extends FlxSubState
 				FlxG.switchState(new LevelSelectState());
 			FlxG.switchState(new GameState());
 		}
+		
+
+		if (background.alpha <0.5)
+			background.alpha += 0.01;
 	}   
 }

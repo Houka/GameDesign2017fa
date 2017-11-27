@@ -51,6 +51,9 @@ class GameState extends FlxState{
 
 	override public function create(){
 		super.create();
+
+        FlxG.cameras.bgColor = FlxColor.fromInt(0xff85bbff);
+
 		FlxG.timeScale = 1;
 		if (isATesting)
 			persistentUpdate = true;

@@ -203,16 +203,12 @@ class Enemy extends FlxSprite{
 
 			switch (facing){
 				case FlxObject.DOWN:
-					trace("down");
 					this.animation.play("attack_down");
 				case FlxObject.UP:
-				trace("up");
 					this.animation.play("attack_up");
 				case FlxObject.LEFT:
-				trace("left");
 					this.animation.play("attack_left");
 				case FlxObject.RIGHT:
-				trace("right");
 					this.animation.play("attack_right");
 				default:
 					this.animation.play("attack_right");
