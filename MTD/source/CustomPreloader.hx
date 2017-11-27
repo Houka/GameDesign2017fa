@@ -68,13 +68,13 @@ class CustomPreloader extends FlxBasePreloader
 		logoLight.smoothing = true;
 		_buffer.addChild(logoLight);
 
-		_bmpBar = new Bitmap(new BitmapData(1, 7, false, 0x5f6aff));
+		_bmpBar = new Bitmap(new BitmapData(1, 7, false, 0xD3ECFD));
 		_bmpBar.x = 4;
 		_bmpBar.y = _height - 11;
 		_buffer.addChild(_bmpBar);
 		
 		_text = new TextField();
-		_text.defaultTextFormat = new TextFormat(FlxAssets.FONT_DEFAULT, 8, 0x5f6aff);
+		_text.defaultTextFormat = new TextFormat(FlxAssets.FONT_DEFAULT, 8, 0xAFEEFE);
 		_text.embedFonts = true;
 		_text.selectable = false;
 		_text.multiline = false;

@@ -65,7 +65,7 @@ class MenuState extends FlxState
 
 		// Press Enter To Play Text
 		info = new FlxText(0,0, 0, "Click Anywhere", 44);
-		info.setFormat(font, 44, FlxColor.fromInt(0xff3F9BDD));
+		info.setFormat(font, 44, FlxColor.fromInt(0xffAFEEFE));
 		info.scrollFactor.x = info.scrollFactor.y = 0;
 		info.screenCenter();
 		info.y += 100;
