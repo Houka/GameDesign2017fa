@@ -41,12 +41,13 @@ class LevelSelectState extends FlxState
         bg.loadMapFrom2DArray(mapArray, "assets/tiles/auto_tilemap.png", Util.TILE_SIZE,Util.TILE_SIZE, AUTO);
 
         // "Select Level" Text
-        var title = new FlxText(FlxG.width/2-100, Util.TILE_SIZE, 0, "Select Level", 28);
-        title.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,1);
-        title.alignment = CENTER;
+        var title = new FlxText(0,0, 0, "Select Level", 70);
+        title.setFormat("assets/fonts/almonte.ttf", 72, FlxColor.fromInt(0x508AADFF));
+        title.screenCenter();
+        title.y -= Std.int(FlxG.height/2) - 100;
 
         // Back button
-        var backButton = new FlxButton(GRID_OFFSET_X-128,GRID_OFFSET_Y-32,"",mainMenuCallback);
+        var backButton = new FlxButton(GRID_OFFSET_X-32*3-16,GRID_OFFSET_Y-128-32,"",mainMenuCallback);
         backButton.loadGraphic(AssetPaths.backButton__png, true, 50, 50);
         buttons.add(backButton);
 
