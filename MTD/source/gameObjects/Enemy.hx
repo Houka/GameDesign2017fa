@@ -26,7 +26,7 @@ import utils.*;
 class Enemy extends FlxSprite{
 	public var attackPt:Int;
 	public var attackRange:Int = 64; 
-	public var healthPt:Int;
+	public var healthPt:Float;
 	private var type:Int;
 	private var speed:Int;
 	private var _prevFacing:Int;
@@ -117,6 +117,14 @@ class Enemy extends FlxSprite{
 		healthPt -= Std.int(Damage);
 		alpha -= 0.05;
 
+		if (healthPt <= 0){
+			kill();
+			_healthBar.kill();
+		}
+	}
+
+	public function chipDmg(_){
+		healthPt -= 0.25;
 		if (healthPt <= 0){
 			kill();
 			_healthBar.kill();
