@@ -46,7 +46,7 @@ class MenuState extends FlxState
 		_map.loadMapFromCSV("assets/maps/menu.csv", "assets/tiles/auto_tilemap_menu.png", Util.TILE_SIZE, Util.TILE_SIZE, AUTO);
 
 		// camera and framerate settings
-		FlxG.cameras.bgColor = FlxColor.fromInt(0x508AADFF);
+		FlxG.cameras.bgColor = FlxColor.fromInt(0xFF508AAD);
 		FlxG.timeScale = 1;
 
 		// make bg visual snow effect
@@ -57,7 +57,7 @@ class MenuState extends FlxState
 
 		// Game title
 		headline = new FlxText(0,0,0, "Permafrost", 140);
-		headline.setFormat(font, 72, FlxColor.fromInt(0x3F9BDDff));
+		headline.setFormat(font, 72, FlxColor.fromInt(0xff70C2FE));
 		headline.scrollFactor.x = headline.scrollFactor.y = 0;
 		headline.scale.x = headline.scale.y  = 2;
 		headline.screenCenter();
@@ -65,23 +65,23 @@ class MenuState extends FlxState
 
 		// Press Enter To Play Text
 		info = new FlxText(0,0, 0, "Click Anywhere", 44);
-		info.setFormat(font, 44, FlxColor.fromInt(0x70C2FEff));
+		info.setFormat(font, 44, FlxColor.fromInt(0xff3F9BDD));
 		info.scrollFactor.x = info.scrollFactor.y = 0;
 		info.screenCenter();
 		info.y += 100;
 		
 		// Credits
 		var credits = new FlxText(0,0,0, "Sun Bear Studios (c) 2017", 14);
-		credits.setFormat("arial", 14, FlxColor.fromInt(0xAFEEFEff));
+		credits.setFormat("arial", 14, FlxColor.fromInt(0xffAFEEFE));
 		credits.scrollFactor.x = credits.scrollFactor.y = 0;
 		credits.screenCenter();
 		credits.y += 260;
 
 		// Privacy Policy
-		var discolsureMSG = "In order to make improvements and provide the best possible experience,"+
+		var discolsureMSG = "In order to make improvements and provide the best possible experience, "+
 			"this game anonymously records user interactions and IP addresses. No personal information is recorded.";
 		var disclosure = new FlxText(FlxG.width/6, FlxG.height-64, FlxG.width*2/3, discolsureMSG, 12);
-		disclosure.setFormat("arial", 15, FlxColor.fromInt(0x508AADff));
+		disclosure.setFormat("arial", 15, FlxColor.fromInt(0xff508AAD));
 		disclosure.scrollFactor.x = disclosure.scrollFactor.y = 0;
 
 		// homebase sprite
