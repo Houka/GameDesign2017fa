@@ -18,6 +18,7 @@ import flixel.tile.FlxTilemap;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxBar; 
 import flixel.system.FlxSound;
+import flixel.input.mouse.FlxMouseEventManager;
 import openfl.Assets;
 using StringTools;
 
@@ -29,6 +30,8 @@ class GameObjectFactory{
 	public static function addEnemy(enemies:FlxTypedGroup<Enemy>, X:Int, Y:Int, Type:Int, Path:Array<FlxPoint>):Enemy{
 		var enemy = enemies.recycle(Enemy);	// uses an already added enemy, or makes a new one and adds it to enemies
 		var _framerate:Int = 13;
+		//set up cookie clicker interaction
+		FlxMouseEventManager.add(enemy, enemy.chipDmg);
 		// make enemy based on type
 		switch (Type) {	
 			case 0:

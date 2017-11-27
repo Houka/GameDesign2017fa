@@ -18,6 +18,7 @@ import flixel.tile.FlxTilemap;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxBar; 
 import flixel.system.FlxSound;
+import flixel.input.mouse.FlxMouseEventManager;
 import openfl.Assets;
 using StringTools;
 
@@ -69,6 +70,10 @@ class GameState extends FlxState{
 		// log the start of this level
 		Logging.recordLevelEnd();
 		Logging.recordLevelStart(LevelData.currentLevel);
+
+		// Set up sprite-mouse-interaction for cookie clicker enemies
+		// Call this before making enemies
+		FlxG.plugins.add(new FlxMouseEventManager());
 
 		// make game objects from level data
 		var originalMap = new FlxTilemap();
