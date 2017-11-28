@@ -124,7 +124,7 @@ class Enemy extends FlxSprite{
 	}
 
 	public function chipDmg(_){
-		healthPt -= 0.25;
+		healthPt -= 0.0625;
 		if (healthPt <= 0){
 			kill();
 			_healthBar.kill();
