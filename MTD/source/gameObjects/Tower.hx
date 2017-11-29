@@ -104,7 +104,7 @@ class Tower extends FlxSprite{
 						layer.loadGraphic(AssetPaths.snowman_coal__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
-						health += 5; 
+						health += 7; 
 						yOffset -= 25;
 				}
 

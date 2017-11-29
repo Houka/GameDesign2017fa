@@ -344,7 +344,15 @@ class BuildState extends FlxSubState{
 		var foundationX = Std.int(storePosition.x)+72; 
 
         //main
-        var space = type-2; //HARDCODED SPACE VALUES
+        var space = MAX_TOWER_HEIGHT+1;
+        switch(type){
+            case 3:
+                space = 1;
+            case 4:
+                space = 2;
+            case 5:
+                space = 4;
+        }
 		if (addMaterial(type, space)){
 			var temp = new FlxSprite(tempX-40,currentStack-27);
 			var foundationAddition = new FlxSprite(foundationX+((_materials.length-1)*53)+40, 453); 
