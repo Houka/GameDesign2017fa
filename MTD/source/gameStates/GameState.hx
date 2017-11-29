@@ -47,7 +47,7 @@ class GameState extends FlxState{
 	public static var towersKilled = 0;
 
 	public static var abTestVersion = Logging.assignABTestValue(FlxG.random.int(1,2));
-	public static var isATesting = abTestVersion <= 1;
+	public static var isATesting = true;
 
 	override public function create(){
 		super.create();
