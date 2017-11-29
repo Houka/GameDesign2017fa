@@ -208,7 +208,7 @@ class LevelData{
 
 	public static var levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13];
 	public static var currentLevel = 0;
-	public static var maxLevelReached = currentLevel;
+	public static var maxLevelReached = 8;
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>=levels.length){
 			trace("Error: Level "+currentLevel+" does not exists");
