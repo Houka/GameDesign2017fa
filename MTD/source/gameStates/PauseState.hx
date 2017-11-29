@@ -33,14 +33,14 @@ class PauseState extends FlxSubState
 		add(background);
 
 		var text = new flixel.text.FlxText(0, 0, 0, "Paused", 64);
-        text.setFormat("assets/fonts/almonte_woodgrain.ttf", 72, FlxColor.fromInt(0xff70C2FE));
+        text.setFormat("assets/fonts/almonte_woodgrain.ttf", 72, FlxColor.fromInt(0xffffffff));
 		text.scale.x = text.scale.y = 2;
 		text.screenCenter();
 		text.y-=200;
 		add(text);
 
 		var text2 = new flixel.text.FlxText(0, 0, 0, "P to resume\nR to restart\nQ to exit", 70);
-        text2.setFormat("assets/fonts/almonte_woodgrain.ttf", 70, FlxColor.fromInt(0xff3F9BDD));
+        text2.setFormat("assets/fonts/almonte_woodgrain.ttf", 70, FlxColor.fromInt(0xff70C2FE));
 		text2.screenCenter();
 		text2.y += 40;
 		add(text2);
@@ -78,6 +78,6 @@ class PauseState extends FlxSubState
 
 
 		if (background.alpha <0.5)
-			background.alpha += 0.01;
+			background.alpha += 0.05;
 	}	
 }
