@@ -240,6 +240,20 @@ class BuildState extends FlxSubState{
 		}
 	}
 
+    //translate type to spaces
+    private function getSpaces(type:Int):Int{
+        switch(type){
+            case 3:
+                return 1;
+            case 4:
+                return 2;
+            case 5:
+                return 4;
+            default:
+                return 1;
+        }
+    }
+
 	private function confirmedCallback(){
 		// tutorial related
 		if (LevelData.currentLevel == 0 && GameState.tutorialEvent == 2){
@@ -300,8 +314,7 @@ class BuildState extends FlxSubState{
 		}
 
 		// main
-        var space = 1;
-		if (addMaterial(type, space)){
+		if (addMaterial(type)){
 			var temp = new FlxSprite(tempX-40,currentStack-23);
 			var gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55)+40, 445); 
 			if (LevelData.getCurrentLevel().buildLimit == 2) {
@@ -334,7 +347,7 @@ class BuildState extends FlxSubState{
 					gui.add(gunAddition);
 					currentStack += 10;
 			}
-            _currTowerHeight += space;
+            _currTowerHeight += getSpaces(type);
 			currentStack -= 32;
 			display.add(temp);
 		}
@@ -344,16 +357,7 @@ class BuildState extends FlxSubState{
 		var foundationX = Std.int(storePosition.x)+72; 
 
         //main
-        var space = MAX_TOWER_HEIGHT+1;
-        switch(type){
-            case 3:
-                space = 1;
-            case 4:
-                space = 2;
-            case 5:
-                space = 4;
-        }
-		if (addMaterial(type, space)){
+		if (addMaterial(type)){
 			var temp = new FlxSprite(tempX-40,currentStack-27);
 			var foundationAddition = new FlxSprite(foundationX+((_materials.length-1)*53)+40, 453); 
 			if (LevelData.getCurrentLevel().buildLimit == 2) {
@@ -379,7 +383,7 @@ class BuildState extends FlxSubState{
 					foundationAddition.loadGraphic(AssetPaths.snowman_coal__png); 
 					gui.add(foundationAddition);
 			}
-            _currTowerHeight += space;
+            _currTowerHeight += getSpaces(type);
 			currentStack -= 25;
 			display.add(temp);
 		}
@@ -395,8 +399,8 @@ class BuildState extends FlxSubState{
 		}
 		ammo = type;
 	}
-	private function addMaterial(type:Int, space:Int):Bool{
-		if (_currTowerHeight+space <= MAX_TOWER_HEIGHT){
+	private function addMaterial(type:Int):Bool{
+		if (_currTowerHeight+getSpaces(type) <= MAX_TOWER_HEIGHT){
             Sounds.play("select");
 			_materials.push(type);
 			return true;
