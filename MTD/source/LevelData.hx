@@ -34,9 +34,9 @@ class LevelData{
 	public static var level1:Level = {
 		mapFilepath:"assets/maps/level1.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:5,
-		waves:[[0,0,0],
-				[0,0,0,0,1]],
+		startHealth:1,
+		waves:[[0],
+				[1,0]],
 		buttonTypes:[0],
 		buildLimit:1
 	}
@@ -44,10 +44,10 @@ class LevelData{
 	public static var level2:Level = {
 		mapFilepath:"assets/maps/level2.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:3,
-		waves:[[0,0,0],
-				[0,0,0],
-				[0, 0,0,1]],
+		startHealth:1,
+		waves:[[0],
+				[0,0],
+				[1]],
 		buttonTypes:[0,3],
 		buildLimit:1
 	}
@@ -55,11 +55,11 @@ class LevelData{
 	public static var level3:Level = {
 		mapFilepath:"assets/maps/level3.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:5,
-		waves:[[0, 0, 0, 1],
-				[1, 1],
-				[0, 1, 0, 1, 0],
-				[1,1,0,0]],
+		startHealth:1,
+		waves:[[0,0,1,0],
+				[1,0],
+				[1,0,1,0],
+				[1,0,0]],
 		buttonTypes:[0, 1,3],
 		buildLimit:2
 	}
@@ -206,11 +206,22 @@ class LevelData{
 		buildLimit:3
 	}
 
-	public static var levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13];
-	public static var currentLevel = 0;
-	public static var maxLevelReached = 8;
+	public static var level14:Level = {
+		mapFilepath:"assets/maps/level14.csv",
+		tilemap:"assets/tiles/auto_tilemap.png",
+		startHealth:1,
+		waves:[[0,0,0],
+				[1,0],
+				[0,1,0]],
+		buttonTypes:[0,1],
+		buildLimit:1
+	}
+
+	public static var levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13, level14];
+	public static var currentLevel = 13;
+	public static var maxLevelReached = currentLevel;
 	public static function getCurrentLevel():Null<Level>{
-		if (currentLevel>=levels.length){
+		if (currentLevel>levels.length){
 			trace("Error: Level "+currentLevel+" does not exists");
 			currentLevel = 0;
 			return null;
