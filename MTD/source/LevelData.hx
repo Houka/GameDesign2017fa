@@ -230,8 +230,23 @@ class LevelData{
 		buildLimit:1
 	}
 
-	public static var levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13, level14, level15];
-	public static var currentLevel = 14;
+	public static var level16:Level = {
+		mapFilepath:"assets/maps/level16.csv",
+		tilemap:"assets/tiles/auto_tilemap.png",
+		startHealth:2,
+		waves:[
+				[1,1,1,2,2,1,1,2,2]],
+		buttonTypes:[0,1,2,3,4],
+		buildLimit:2
+	}
+
+	// [0,0,0,1,1],
+	// 			[1,1,1,2],
+	// 			[2,2,2,1,1,2],
+	// 			[1,1,1,1,2,2,2],
+
+	public static var levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13, level14, level15, level16];
+	public static var currentLevel = 15;
 	public static var maxLevelReached = currentLevel;
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>levels.length){

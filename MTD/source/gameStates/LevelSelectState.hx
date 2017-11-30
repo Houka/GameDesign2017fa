@@ -60,7 +60,7 @@ class LevelSelectState extends FlxState
 
         // Level select buttons
         var levelButton:FlxButton;
-        var levels = [0,2,3,4,5,6,7,8,9,10,11,12,13,14];
+        var levels = [0,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
         for (i in 0...levels.length){
             var x = (i%SQUARES_PER_ROW)*GRID_WIDTH+GRID_OFFSET_X;
             var y = Std.int(i/SQUARES_PER_ROW)*GRID_HEIGHT+GRID_OFFSET_Y;
