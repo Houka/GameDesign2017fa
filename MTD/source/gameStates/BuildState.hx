@@ -29,11 +29,12 @@ class BuildState extends FlxSubState{
 	private var _tower:Tower;
 	private var _materials:Array<Int>;
     private var _currTowerHeight:Int;
-	private var currentStack:Int;
 	private var ammo:Int;
 	private var ammoSprite:FlxSprite;
 	private var gui:FlxTypedGroup<FlxSprite>;
-	private var display:FlxTypedGroup<FlxSprite>;
+    private var matSlots:Array<FlxSprite>;
+    private var slotSpacing:Int;
+    private var buildStartPosition:FlxPoint;
 	private var storePosition:FlxPoint;
 	public function new(tower:Tower){
 		super();
@@ -42,12 +43,14 @@ class BuildState extends FlxSubState{
 	override public function create():Void
 	{
 		super.create();
-		currentStack = 480;
 		this.ammo = 6;
 		_materials = new Array<Int>();
         _currTowerHeight = 0;
 		gui = new FlxTypedGroup<FlxSprite>();
+        matSlots = new Array<FlxSprite>();
+        slotSpacing = 48;
 		storePosition = new FlxPoint(FlxG.width - 340, 40);
+        buildStartPosition = new FlxPoint(storePosition.x+180,storePosition.y+520);
 		MAX_TOWER_HEIGHT = LevelData.getCurrentLevel().buildLimit;
 
 		// semi transparent black bg overlay
@@ -78,6 +81,9 @@ class BuildState extends FlxSubState{
 		if (buttons.indexOf(0) != -1){
 			col++;
 			gun = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(0));
+            gun.onOver.callback = materialButtonsHover.bind(0);
+            gun.onDown.callback = materialButtonsOut;
+            gun.onOut.callback = materialButtonsOut;
 			gun.loadGraphic(AssetPaths.SnowyGunBase__png, true, width, height); 
 			gui.add(gun);
 		}
@@ -85,6 +91,9 @@ class BuildState extends FlxSubState{
 		if (buttons.indexOf(1) != -1){
 			col++;
 			gun = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(1));
+            gun.onOver.callback = materialButtonsHover.bind(1);
+            gun.onDown.callback = materialButtonsOut;
+            gun.onOut.callback = materialButtonsOut;
 			gun.loadGraphic(AssetPaths.SpeedyGunBase__png, true, width, height); 
 			gui.add(gun);
 		}
@@ -92,6 +101,9 @@ class BuildState extends FlxSubState{
 		if (buttons.indexOf(2) != -1){
 			col++;
 			gun = new FlxButton(x+col*(width+gap), y+row*(height+gap), "", gunCallback.bind(2));
+            gun.onOver.callback = materialButtonsHover.bind(2);
+            gun.onDown.callback = materialButtonsOut;
+            gun.onOut.callback = materialButtonsOut;
 			gun.loadGraphic(AssetPaths.SpatterGunBase__png, true, width, height); 
 			gui.add(gun);
 		}
@@ -104,6 +116,9 @@ class BuildState extends FlxSubState{
 		if (buttons.indexOf(3) != -1){
 			col++;
 			foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap)+25, "", foundationCallback.bind(3));
+            foundation.onOver.callback = materialButtonsHover.bind(3);
+            foundation.onDown.callback = materialButtonsOut;
+            foundation.onOut.callback = materialButtonsOut;
 			foundation.loadGraphic(AssetPaths.SnowBase__png, true, width, height); 
 			gui.add(foundation);
 		}
@@ -111,6 +126,9 @@ class BuildState extends FlxSubState{
 		if (buttons.indexOf(4) != -1){
 			col++;
 			foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap)+25, "", foundationCallback.bind(4));
+            foundation.onOver.callback = materialButtonsHover.bind(4);
+            foundation.onDown.callback = materialButtonsOut;
+            foundation.onOut.callback = materialButtonsOut;
 			foundation.loadGraphic(AssetPaths.IceBase__png, true, width, height); 
 			gui.add(foundation);
 		}
@@ -118,6 +136,9 @@ class BuildState extends FlxSubState{
 		if (buttons.indexOf(5) != -1){
 			col++;
 			foundation = new FlxButton(x+col*(width+gap), y+row*(height+gap)+25, "", foundationCallback.bind(5));
+            foundation.onOver.callback = materialButtonsHover.bind(5);
+            foundation.onDown.callback = materialButtonsOut;
+            foundation.onOut.callback = materialButtonsOut;
 			foundation.loadGraphic(AssetPaths.CoalBase__png, true, width, height); 
 			gui.add(foundation);
 		}
@@ -126,51 +147,15 @@ class BuildState extends FlxSubState{
 		col = -1;
 		add(gui);
 
-		// used for displaying the currently created tower
-		display = new FlxTypedGroup<FlxSprite>();
-		add(display);
-
-		var origPlaceholderPos = Std.int(storePosition.x)+70;
-		var equalsOffset = 50; 
-
-		var equals = new FlxSprite(Std.int(storePosition.x)+159, 450); 
-		equals.loadGraphic(AssetPaths.equal__png); 
-
-		if (buildLimit >= 1){
-			//add placeholder boxes 
-			var placeholder = new FlxSprite(origPlaceholderPos+40, 450); 
-			placeholder.loadGraphic(AssetPaths.storePlaceholder__png); 
-			gui.add(placeholder); 
-			gui.add(equals); 
-
-			if (buildLimit >= 2) {
-				placeholder.x = origPlaceholderPos; 
-				var plus = new FlxSprite(origPlaceholderPos+29, 450); 
-				plus.loadGraphic(AssetPaths.plusButton__png); 
-				gui.add(plus); 
-
-				var placeholder_2 = new FlxSprite(origPlaceholderPos+55, 450); 
-				placeholder_2.loadGraphic(AssetPaths.storePlaceholder__png); 
-				gui.add(placeholder_2); 
-
-				gui.add(equals); 
-
-				if (buildLimit >= 3) {
-					var plus_2 = new FlxSprite(origPlaceholderPos+84, 450); 
-					plus_2.loadGraphic(AssetPaths.plusButton__png); 
-					gui.add(plus_2); 
-
-					var placeholder_3 = new FlxSprite(Std.int(storePosition.x)+180, 450); 
-					placeholder_3.loadGraphic(AssetPaths.storePlaceholder__png); 
-					gui.add(placeholder_3); 
-
-					gui.remove(equals);
-					equals.x += equalsOffset; 
-					gui.add(equals); 
-				}
-			}
-
-		}
+		//add the material slots in the build area
+        for(i in 0...MAX_TOWER_HEIGHT){
+            var slot = new FlxSprite(buildStartPosition.x,buildStartPosition.y-(i*slotSpacing));
+            slot.loadGraphic(AssetPaths.material_sockets__png, true, 48, 48);
+            slot.x -= slot.origin.x;
+            slot.y -= slot.origin.y;
+            matSlots.push(slot);
+            gui.add(slot);
+        }
 
 		// add deny and confirm buttons
 		var but:FlxButton = new FlxButton(Std.int(storePosition.x) + 100, FlxG.height - 100, "", confirmedCallback);
@@ -298,15 +283,11 @@ class BuildState extends FlxSubState{
 			GameState.tutorialEvent=0;			
 		}
 
-		for (e in display)
-			FlxTween.tween(e, { x: e.x+FlxG.width }, 0.5, { ease: FlxEase.expoIn, onComplete: function(t) close() });
 		for(e in gui)
 			FlxTween.tween(e, { x: e.x+FlxG.width }, 0.5, { ease: FlxEase.expoIn, onComplete: function(t) close() });
 	}
 
 	private function gunCallback(type:Int){
-		var tempX = Std.int(storePosition.x)+237; 
-
 		// tutorial 
 		if (LevelData.currentLevel == 0 && GameState.tutorialEvent == 1){
 			GameState.tutorialArrow.setPosition(Std.int(storePosition.x)+50, FlxG.height - 100);
@@ -314,78 +295,108 @@ class BuildState extends FlxSubState{
 		}
 
 		// main
+        var iconOffset = 32;
 		if (addMaterial(type)){
-			var temp = new FlxSprite(tempX-40,currentStack-23);
-			var gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55)+40, 445); 
-			if (LevelData.getCurrentLevel().buildLimit == 2) {
-				temp = new FlxSprite(tempX-40,currentStack);
-				gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 445); 
-			}
-			else if (LevelData.getCurrentLevel().buildLimit == 3) {
-				temp = new FlxSprite(tempX,currentStack);
-				gunAddition = new FlxSprite(Std.int(storePosition.x)+72+((_materials.length-1)*55), 445); 
-			}
+			var gunAddition = new FlxSprite(buildStartPosition.x,buildStartPosition.y-(_currTowerHeight*slotSpacing)); 
+
+            var swordIcon = new FlxSprite(buildStartPosition.x+iconOffset,buildStartPosition.y-(_currTowerHeight*slotSpacing));
+            swordIcon.loadGraphic(AssetPaths.sword__png,true,16,16);
+            swordIcon.animation.add("shining",[0,1,2,3],10,true);
+            swordIcon.animation.play("shining");
 
 			switch(type){
 				case 0:
-					temp.y -= 10; 
-					temp.loadGraphic(AssetPaths.snowman_head__png);
-					gunAddition.loadGraphic(AssetPaths.snowman_head__png); 
-					gui.add(gunAddition);
+					gunAddition.loadGraphic(AssetPaths.snowman_head__png);
+                    gunAddition.x -= gunAddition.origin.x;
+                    gunAddition.y -= gunAddition.origin.y;
+                    gui.add(gunAddition);
+                    gui.add(swordIcon);
 				case 1:
-					temp.y -= 4; 
-					temp.loadGraphic(AssetPaths.snowman_machine_gun__png);
-					gunAddition.loadGraphic(AssetPaths.snowman_machine_gun__png); 
-					gunAddition.y += 8;
-					gui.add(gunAddition);
-
+					gunAddition.loadGraphic(AssetPaths.snowman_machine_gun__png);
+                    gunAddition.x -= gunAddition.origin.x;
+                    gunAddition.y -= gunAddition.origin.y;
+                    gui.add(gunAddition);
+                    gui.add(swordIcon);
 				case 2:
-					temp.y += 10;
-					temp.loadGraphic(AssetPaths.snowman_spray__png);
-					gunAddition.y += 10; 
-					gunAddition.loadGraphic(AssetPaths.snowman_spray__png); 
-					gui.add(gunAddition);
-					currentStack += 10;
+					gunAddition.loadGraphic(AssetPaths.snowman_spray__png);
+                    gunAddition.x -= gunAddition.origin.x;
+                    gunAddition.y -= gunAddition.origin.y;
+                    gui.add(gunAddition);
+                    gui.add(swordIcon);
 			}
             _currTowerHeight += getSpaces(type);
-			currentStack -= 32;
-			display.add(temp);
 		}
 	}
-	private function foundationCallback(type:Int){
-		var tempX = Std.int(storePosition.x)+237; 
-		var foundationX = Std.int(storePosition.x)+72; 
 
+    private function materialButtonsHover(type:Int){
+        if(_currTowerHeight+getSpaces(type)<=MAX_TOWER_HEIGHT){
+            for(i in _currTowerHeight...getSpaces(type)+_currTowerHeight){
+                matSlots[i].animation.frameIndex = 1;
+            }
+        }
+        else{ //not enough room
+            for(i in _currTowerHeight...matSlots.length){
+                matSlots[i].animation.frameIndex = 2;
+            }
+        }
+    }
+
+    private function materialButtonsOut(){
+        for(i in _currTowerHeight...matSlots.length){
+            matSlots[i].animation.frameIndex = 0;
+        }
+    }
+
+	private function foundationCallback(type:Int){
         //main
+        var iconOffset = 40;
+        var heartOffset = 16;
 		if (addMaterial(type)){
-			var temp = new FlxSprite(tempX-40,currentStack-27);
-			var foundationAddition = new FlxSprite(foundationX+((_materials.length-1)*53)+40, 453); 
-			if (LevelData.getCurrentLevel().buildLimit == 2) {
-				temp = new FlxSprite(tempX-40,currentStack);
-				foundationAddition = new FlxSprite(foundationX+((_materials.length-1)*55), 453); 
-			}
-			else if (LevelData.getCurrentLevel().buildLimit == 3) {
-				temp = new FlxSprite(tempX,currentStack);
-				foundationAddition = new FlxSprite(foundationX+((_materials.length-1)*55), 453); 
-			}
+			var foundationAddition = new FlxSprite(buildStartPosition.x,buildStartPosition.y-(_currTowerHeight*slotSpacing));
 
 			switch(type){
 				case 3:
-					temp.loadGraphic(AssetPaths.snow1__png);
-					foundationAddition.loadGraphic(AssetPaths.snow1__png); 
+					foundationAddition.loadGraphic(AssetPaths.snow1__png);
+                    foundationAddition.x -= foundationAddition.origin.x;
+                    foundationAddition.y -= foundationAddition.origin.y;
 					gui.add(foundationAddition);
+                    for(i in 0...1){
+                        var healthIcon = new FlxSprite(buildStartPosition.x-iconOffset-(i*heartOffset),buildStartPosition.y-(_currTowerHeight*slotSpacing));
+                        healthIcon.loadGraphic(AssetPaths.heart__png,true,16,16);
+                        healthIcon.animation.add("beating",[0,1,2,1,0,0,0,0,0,0,0],10,true);
+                        healthIcon.animation.play("beating");
+                        gui.add(healthIcon);
+                    }
 				case 4:
-					temp.loadGraphic(AssetPaths.snowman_ice__png);
 					foundationAddition.loadGraphic(AssetPaths.snowman_ice__png); 
-					gui.add(foundationAddition);
+                    foundationAddition.x -= foundationAddition.origin.x;
+                    foundationAddition.y -= foundationAddition.origin.y;
+                    gui.add(foundationAddition);
+                    for(i in 0...3){
+                        var healthIcon = new FlxSprite(buildStartPosition.x-iconOffset-(i*heartOffset),buildStartPosition.y-(_currTowerHeight*slotSpacing));
+                        healthIcon.loadGraphic(AssetPaths.heart__png,true,16,16);
+                        healthIcon.animation.add("beating",[0,1,2,1,0,0,0,0,0,0,0],10,true);
+                        healthIcon.animation.play("beating");
+                        gui.add(healthIcon);
+                    }
 				case 5:
-					temp.loadGraphic(AssetPaths.snowman_coal__png);
 					foundationAddition.loadGraphic(AssetPaths.snowman_coal__png); 
-					gui.add(foundationAddition);
+                    foundationAddition.x -= foundationAddition.origin.x;
+                    foundationAddition.y -= foundationAddition.origin.y;
+                    gui.add(foundationAddition);
+                    for(i in 0...7){
+                        var healthIcon = new FlxSprite(buildStartPosition.x-iconOffset-(i*heartOffset),buildStartPosition.y-(_currTowerHeight*slotSpacing));
+                        healthIcon.loadGraphic(AssetPaths.heart__png,true,16,16);
+                        healthIcon.animation.add("beating",[0,1,2,1,0,0,0,0,0,0,0],10,true);
+                        healthIcon.animation.play("beating");
+                        gui.add(healthIcon);
+                    }
 			}
+            //grey out additional spaces the foundation takes up
+            for(i in _currTowerHeight+1..._currTowerHeight+getSpaces(type)){
+                matSlots[i].animation.frameIndex = 2;
+            }
             _currTowerHeight += getSpaces(type);
-			currentStack -= 25;
-			display.add(temp);
 		}
 	}
 	private function ammoCallback(type:Int){

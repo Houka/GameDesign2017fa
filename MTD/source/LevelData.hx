@@ -37,8 +37,8 @@ class LevelData{
 		startHealth:5,
 		waves:[[0,0,0],
 				[0,0,0,0,1]],
-		buttonTypes:[0],
-		buildLimit:1
+		buttonTypes:[0,1,2,3,4,5],
+		buildLimit:4
 	}
 	
 	public static var level2:Level = {
