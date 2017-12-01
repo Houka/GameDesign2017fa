@@ -143,22 +143,22 @@ class LevelData{
 		mapFilepath:"assets/maps/level10.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:2,
-		waves:[[0, 0, 0, 1, 1],
-				[1, 1, 1],
-				[0, 1,2, 0]],
-		buttonTypes:[0, 1,2, 3,4],
+		waves:[[0,0,0,1,1],
+				[1,1,1],
+				[0,1,2,0]],
+		buttonTypes:[0,1,2,3,4],
 		buildLimit:3
 	}
 	
 	public static var level11:Level = {
 		mapFilepath:"assets/maps/level11.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:5,
-		waves:[[0, 0, 0, 1, 1],
-				[1, 1, 1],
-				[0, 1, 0],
-				[1, 1, 1]],
-		buttonTypes:[0, 1,2, 3,4],
+		startHealth:2,
+		waves:[[0,0,0,1,1],
+				[1,1,1],
+				[0,1,0],
+				[1,1,1]],
+		buttonTypes:[0,1,2,3,4],
 		buildLimit:3
 	}
 	
