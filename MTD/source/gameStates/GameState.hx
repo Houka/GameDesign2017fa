@@ -154,10 +154,10 @@ class GameState extends FlxState{
 
 		// add all objects to screen
 		add(originalMap);
-		add(spawns);
 		add(towers);
 		add(allies);
 		add(enemies);
+		add(spawns);
 		add(bullets);
 		add(towerLayers);
 
@@ -175,6 +175,8 @@ class GameState extends FlxState{
 		add(homebase);
 		add(_centerText);
 
+		// start music
+		Sounds.playBGM("GameLoop",0.4);
 
 		// camera setup
 		var LEVEL_MIN_X = 0;
@@ -340,7 +342,7 @@ class GameState extends FlxState{
 			Logging.recordEvent(6, logString);
 			if (isATesting)
 				persistentUpdate = false;
-			Sounds.play("lose");
+			Sounds.play("lose",1.0);
 			openSubState(new LoseState());
 			return;
 		}
@@ -359,7 +361,7 @@ class GameState extends FlxState{
 		if (gameover && alive == 0){
 			var logString = "Level:"+LevelData.currentLevel;
 			Logging.recordEvent(7, logString);
-			Sounds.play("win");
+			Sounds.play("win",0.5);
 
 			if (isATesting)
 				persistentUpdate = false;

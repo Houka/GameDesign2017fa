@@ -36,14 +36,20 @@ class GameObjectFactory{
 		switch (Type) {	
 			case 0:
 				enemy.init(X,Y,Type,1,1,100);
-				enemy.loadGraphic(AssetPaths.snow3_spritesheet__png, true, 64, 64);
+				enemy.loadGraphic(AssetPaths.snowball_spritesheet__png, true, 64, 64);
 				enemy.animation.add("idle",[0],_framerate, true);
-				enemy.animation.add("walk_down",[0],_framerate, true);
-				enemy.animation.add("walk_left",[0],_framerate, true);
-				enemy.animation.add("walk_right",[0],_framerate, true);
-				enemy.animation.add("walk_up",[0],_framerate, true);
-				enemy.animation.add("attack",[0], 5, true);
-				enemy.animation.play("idle");
+
+				enemy.animation.add("walk_down",[16,17,18,19,20,21,22,23],_framerate, true);
+				enemy.animation.add("attack_down",[16,17,18,19,20,21,22,23],_framerate, true);
+
+				enemy.animation.add("walk_left",[24,25,26,27,28,29,30,31],_framerate, true);
+				enemy.animation.add("attack_left",[24,25,26,27,28,29,30,31],_framerate, true);
+
+				enemy.animation.add("walk_right",[0,1,2,3,4,5,6,7],_framerate, true);
+				enemy.animation.add("attack_right",[0,1,2,3,4,5,6,7],_framerate, true);
+
+				enemy.animation.add("walk_up",[8,9,10,11,12,13,14,15],_framerate, true);
+				enemy.animation.add("attack_up",[8,9,10,11,12,13,14,15],_framerate, true);
 			case 1:
 				enemy.init(X,Y,Type,1,2,150);
 				enemy.loadGraphic(AssetPaths.kid_ss__png, true, 64, 64);

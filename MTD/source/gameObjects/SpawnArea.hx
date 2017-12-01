@@ -51,16 +51,12 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 	
 	public function init(X:Int,Y:Int, enemies:FlxTypedGroup<Enemy>, Waves:Array<Array<Int>>){
 
-		// make 9 forest around spawn point tile
-		var forest:FlxSprite;
-		for (y in -1...2){
-			for (x in -1...2){
-				forest = new FlxSprite();
-				forest.loadGraphic(AssetPaths.forest__png,false,Util.TILE_SIZE,Util.TILE_SIZE);
-				forest.setPosition(X+x*Util.TILE_SIZE,Y+y*Util.TILE_SIZE);
-				add(forest);
-			}
-		}
+		// make forest around spawn point tile
+		var forest = new FlxSprite();
+		forest.loadGraphic(AssetPaths.tree_tileset__png,false,192,192);
+		forest.setPosition(X-Util.TILE_SIZE,Y-Util.TILE_SIZE);
+		add(forest);
+
 
 		// set the mid point of the forest. X and Y are the location of the center forest
 		midpoint = new FlxPoint(X,Y);
