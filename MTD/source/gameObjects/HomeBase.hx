@@ -34,6 +34,8 @@ class Homebase extends FlxGroup{
 	public var health(default, set):Int;
 
 	private var healthSprites:FlxTypedGroup<FlxSprite>;
+	private var homebase:FlxSprite;
+
 	public function new(X:Int, Y:Int, Health:Int){
 		super();
 
@@ -42,7 +44,7 @@ class Homebase extends FlxGroup{
 		health = Health;
 
 		// make homebase
-		var homebase = new FlxSprite(X,Y, AssetPaths.homebase__png);
+		homebase = new FlxSprite(X,Y, AssetPaths.homebase__png);
 		var diffW = homebase.width - Util.TILE_SIZE;
 		var diffH = homebase.height - Util.TILE_SIZE;
 		homebase.setPosition(X - diffW/2, Y - diffH/2);
@@ -82,8 +84,10 @@ class Homebase extends FlxGroup{
 	}
 
 	private function set_health(Health:Int):Int{
-		if (health >= 0 && health > Health)
+		if (health >= 0 && health > Health){
 			healthSprites.members[Health].kill();
+			FlxTween.linearPath(homebase, [FlxPoint.get(homebase.x+5, homebase.y), FlxPoint.get(homebase.x-5, homebase.y),FlxPoint.get(homebase.x, homebase.y)], 0.1, true, {});
+		}
 		if (health < Health){
 			var h = healthSprites.recycle(FlxSprite);
 			h.reset(point.x+xOffset + gap * (Health-1), point.y+yOffset);
