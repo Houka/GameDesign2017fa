@@ -137,7 +137,7 @@ class CollisionController{
 	}
 	private function hitEnemyBullet(e:Enemy, b:Bullet){
 		if (e.alive && b.alive){
-      Sounds.play("enemy_hit");
+      		Sounds.play("enemy_hit");
 			e.hurt(b.attackPt);
 			b.kill();
 		}
