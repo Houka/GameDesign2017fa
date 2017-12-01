@@ -238,7 +238,7 @@ class GameState extends FlxState{
 				persistentUpdate = false;
 			paused = true;
 			openSubState(new PauseState());
-		} else if (!paused){
+		} else if (!paused && !Std.is(subState, PauseState)){
 			if (isATesting)
 				persistentUpdate = true;
 		}
@@ -299,8 +299,10 @@ class GameState extends FlxState{
 	}
 	
 	private function pauseCallBack():Void {
-		if(Std.is(subState,BuildState) )
+		if(Std.is(subState,BuildState) ){
+			paused = false;
 			return;
+		}
 		if (isATesting)
 			persistentUpdate = false;
 		paused = true;
