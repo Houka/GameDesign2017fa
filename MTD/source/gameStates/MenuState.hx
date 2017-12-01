@@ -88,10 +88,7 @@ class MenuState extends FlxState
 		var homebase = new FlxSprite(4*Util.TILE_SIZE-50,7*Util.TILE_SIZE-30,"assets/images/homebase.png");
 
 		// start music
-		if (FlxG.sound.music == null) // don't restart the music if it's already playing
-		{
-		    FlxG.sound.playMusic(AssetPaths.JohnGameLoop__ogg,0.2,true);
-		}
+		Sounds.playBGM("JohnGameLoop");
 		
 		// Add everything to the state
 		add(_map);

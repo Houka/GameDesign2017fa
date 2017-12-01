@@ -38,6 +38,7 @@ class Tower extends FlxSprite{
 	private var interval:Int = 2;
 	private var workers:Array<Ally>;
 	private var _healthBar: FlxBar; 
+	private var dropshadow:FlxSprite;
 	public function init(X:Int, Y:Int, bullets:FlxTypedGroup<Bullet>, towerLayers:FlxTypedGroup<FlxSprite>,map:FlxTilemap){
 		loadGraphic(AssetPaths.towerPlaceholder__png);
 		setPosition(X-Math.abs(width-Util.TILE_SIZE)/2,Y-Math.abs(height-Util.TILE_SIZE)/2);
@@ -55,7 +56,6 @@ class Tower extends FlxSprite{
 	}
 	public function buildTower(materials:Array<Int>){
 		var yOffset = 0;
-		var yFoundOffset = 0; 
 		var midpoint = getMidpoint();
 		for (m in materials){
 			if (m < 6){
@@ -64,48 +64,46 @@ class Tower extends FlxSprite{
 				switch (m) {
 					// gunbases
 					case 0:
-						layer.loadGraphic(AssetPaths.snowman_head__png);
-						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset - 10);
-						layer.y += 10; 
+						layer.loadGraphic(AssetPaths.snowman_h__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
 						gunTypes.push(m);
-						yOffset -= 32;
+						yOffset -= 30;
 					case 1:
-						layer.loadGraphic(AssetPaths.snowman_machine_gun__png);
-						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset - 4);
+						layer.loadGraphic(AssetPaths.snowman_v__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset-3);
 						towerLayers.add(layer);
 						gunTypes.push(m);
-						yOffset -= 32;
+						yOffset -= 30;
 
 					case 2:
-						layer.loadGraphic(AssetPaths.snowman_spray__png);
-						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset + 10);
-						yOffset += 14; 
+						layer.loadGraphic(AssetPaths.snowman_x__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
 						gunTypes.push(m);
-						yOffset -= 32;
+						yOffset -= 30;
 
 					// foundations
 					case 3:
-						layer.loadGraphic(AssetPaths.snow1__png);
+						layer.loadGraphic(AssetPaths.rusty__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
 						health += 1; 
-						yOffset -= 25;
+						yOffset -= 30;
 
 					case 4:
-						layer.loadGraphic(AssetPaths.snowman_ice__png);
+						layer.loadGraphic(AssetPaths.plated__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
 						health += 3; 
-						yOffset -= 25;
+						yOffset -= 30;
 
 					case 5:
-						layer.loadGraphic(AssetPaths.snowman_coal__png);
+						layer.loadGraphic(AssetPaths.steel__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
 						health += 7; 
-						yOffset -= 25;
+						yOffset -= 30;
 				}
 
 				children.push(layer);
@@ -131,6 +129,12 @@ class Tower extends FlxSprite{
 				c.y -= FlxG.height;
 			}
 		}
+
+		//add dropshadow
+		dropshadow = new FlxSprite();
+		dropshadow.loadGraphic(AssetPaths.tower__png);
+		dropshadow.setPosition(midpoint.x-dropshadow.width/2, midpoint.y+8);
+		FlxG.state.add(dropshadow);
 	}
 	public function addWorker(a:Ally){
 		workers.push(a);
@@ -161,6 +165,7 @@ class Tower extends FlxSprite{
 			created = false; 
 			_healthBar.visible = false;
 			_healthBar.kill();
+			dropshadow.kill();
 			for (c in children)
 				c.kill();
 			var savedWorkers = workers;

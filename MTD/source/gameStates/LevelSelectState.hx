@@ -84,6 +84,9 @@ class LevelSelectState extends FlxState
         add(title);
         add(buttons);
 
+        // start music
+        Sounds.playBGM("JohnGameLoop");
+
         // shift everything down and add a tween to have it come back up
         var secs = 0.5;
         FlxTween.tween(background, { y: background.y }, secs, { ease: FlxEase.expoOut});
