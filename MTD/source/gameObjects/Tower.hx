@@ -154,6 +154,11 @@ class Tower extends FlxSprite{
 
 	override public function hurt(Damage:Float):Void {
 		health -= Damage;
+
+		// flash each child as red with a delay
+		for (i in 0...children.length){
+			Util.animateDamage(children[i],i);
+		}
 		
 		if (health <= 0){
 			Sounds.play("destroyed");

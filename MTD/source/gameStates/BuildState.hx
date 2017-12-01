@@ -331,7 +331,7 @@ class BuildState extends FlxSubState{
                     gui.add(gunAddition);
                     gui.add(swordIcon);
 			}
-            _currTowerHeight += getSpaces(type);
+            _currTowerHeight += 1;
 		}
 	}
 
@@ -360,7 +360,6 @@ class BuildState extends FlxSubState{
         var heartOffset = 16;
 		if (addMaterial(type)){
 			var foundationAddition = new FlxSprite(buildStartPosition.x, buildStartPosition.y - (_currTowerHeight * slotSpacing));
-			
 			tower_gui.add(foundationAddition);
 
 			switch(type){
@@ -370,7 +369,7 @@ class BuildState extends FlxSubState{
                     foundationAddition.y -= foundationAddition.origin.y;
 					gui.add(foundationAddition);
                     for(i in 0...1){
-                        var healthIcon = new FlxSprite(buildStartPosition.x-iconOffset-(i*heartOffset),buildStartPosition.y-(_currTowerHeight*slotSpacing));
+                        var healthIcon = new FlxSprite(buildStartPosition.x-iconOffset-(i*heartOffset),buildStartPosition.y-(_currTowerHeight+getSpaces(type)-1)*slotSpacing);
                         healthIcon.loadGraphic(AssetPaths.heart__png,true,16,16);
                         healthIcon.animation.add("beating",[0,1,2,1,0,0,0,0,0,0,0],10,true);
                         healthIcon.animation.play("beating");
@@ -383,7 +382,7 @@ class BuildState extends FlxSubState{
                     foundationAddition.y -= foundationAddition.origin.y;
                     gui.add(foundationAddition);
                     for(i in 0...3){
-                        var healthIcon = new FlxSprite(buildStartPosition.x-iconOffset-(i*heartOffset),buildStartPosition.y-(_currTowerHeight*slotSpacing));
+                        var healthIcon = new FlxSprite(buildStartPosition.x-iconOffset-(i*heartOffset),buildStartPosition.y-(_currTowerHeight+getSpaces(type)-1)*slotSpacing);
                         healthIcon.loadGraphic(AssetPaths.heart__png,true,16,16);
                         healthIcon.animation.add("beating",[0,1,2,1,0,0,0,0,0,0,0],10,true);
                         healthIcon.animation.play("beating");
@@ -396,7 +395,7 @@ class BuildState extends FlxSubState{
                     foundationAddition.y -= foundationAddition.origin.y;
                     gui.add(foundationAddition);
                     for(i in 0...7){
-                        var healthIcon = new FlxSprite(buildStartPosition.x-iconOffset-(i*heartOffset),buildStartPosition.y-(_currTowerHeight*slotSpacing));
+                        var healthIcon = new FlxSprite(buildStartPosition.x-iconOffset-(i*heartOffset),buildStartPosition.y-(_currTowerHeight+getSpaces(type)-1)*slotSpacing);
                         healthIcon.loadGraphic(AssetPaths.heart__png,true,16,16);
                         healthIcon.animation.add("beating",[0,1,2,1,0,0,0,0,0,0,0],10,true);
                         healthIcon.animation.play("beating");
@@ -405,7 +404,7 @@ class BuildState extends FlxSubState{
                     }
 			}
             //grey out additional spaces the foundation takes up
-            for(i in _currTowerHeight+1..._currTowerHeight+getSpaces(type)){
+            for(i in _currTowerHeight..._currTowerHeight+getSpaces(type)-1){
                 matSlots[i].animation.frameIndex = 2;
             }
             _currTowerHeight += getSpaces(type);

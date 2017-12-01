@@ -19,11 +19,11 @@ import utils.Sounds;
 
 class LevelSelectState extends FlxState
 {
-    private static inline var GRID_OFFSET_X:Float = Util.TILE_SIZE*3 - 8;
+    private static inline var GRID_OFFSET_X:Float = Util.TILE_SIZE*2 - 8;
     private static inline var GRID_OFFSET_Y:Float = Util.TILE_SIZE*4 - 24;
-    private static inline var GRID_WIDTH:Int = Util.TILE_SIZE*3;
+    private static inline var GRID_WIDTH:Int = Util.TILE_SIZE*2;
     private static inline var GRID_HEIGHT:Int = Util.TILE_SIZE*2;
-    private static inline var SQUARES_PER_ROW:Int = 4;
+    private static inline var SQUARES_PER_ROW:Int = 6;
     private static inline var FONT_SIZE:Int = 16;
     private static inline var FONT_OFFSET_X:Int = -6;
     private static inline var FONT_OFFSET_Y:Int = 20;
@@ -54,13 +54,13 @@ class LevelSelectState extends FlxState
         title.y -= Std.int(FlxG.height/2) - 100;
 
         // Back button
-        var backButton = new FlxButton(GRID_OFFSET_X-32*3-16,GRID_OFFSET_Y-128-32,"",mainMenuCallback);
+        var backButton = new FlxButton(GRID_OFFSET_X-32-16,GRID_OFFSET_Y-128-32,"",mainMenuCallback);
         backButton.loadGraphic(AssetPaths.backButton__png, true, 50, 50);
         buttons.add(backButton);
 
         // Level select buttons
         var levelButton:FlxButton;
-        var levels = [0,2,3,4,5,6,7,8,9,10,11,12];
+        var levels = [0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
         for (i in 0...levels.length){
             var x = (i%SQUARES_PER_ROW)*GRID_WIDTH+GRID_OFFSET_X;
             var y = Std.int(i/SQUARES_PER_ROW)*GRID_HEIGHT+GRID_OFFSET_Y;
