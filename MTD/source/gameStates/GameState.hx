@@ -216,7 +216,7 @@ class GameState extends FlxState{
 		remaining.y += 40;
 		add(remaining);
 		
-		enemiesRemaining = new flixel.text.FlxText(900, -35, 0, "", 20);
+		enemiesRemaining = new flixel.text.FlxText(900, -35, 0, "0", 20);
         enemiesRemaining.setFormat("assets/fonts/almonte.ttf", 40, FlxColor.fromInt(0xFF508AAD));
 		enemiesRemaining.y += 40;
 		add(enemiesRemaining);
