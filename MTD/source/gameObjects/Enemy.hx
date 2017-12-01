@@ -42,6 +42,7 @@ class Enemy extends FlxSprite{
 	private var _targetTower:Tower;
 	private var _attackInterval:Int = 1;
 	private var _attackCounter:Int = 0;
+	private var _tween:FlxTween;
 
 	public var _healthBar:FlxBar; 
 	
@@ -57,11 +58,13 @@ class Enemy extends FlxSprite{
 		FlxG.state.add(_healthBar);
 		
 		isAttacking = false; 
+		_attackCounter = 0;
 		// reset path vars
 		_savedPath = null;
 		_savedSpeed = 0;
 		_savedOnComplete = null;
 		angle = 0;
+		_tween = null;
 
 		_prevFacing = facing;
 	}
@@ -71,20 +74,31 @@ class Enemy extends FlxSprite{
 		if (isAttacking){
 			_attackCounter += Std.int(FlxG.timeScale);
 
-			if (_attackCounter > (_attackInterval * FlxG.updateFramerate)){
+			if (_attackCounter > (_attackInterval * FlxG.updateFramerate) +  Std.random(10)){
 				Sounds.play("enemy_hit");
 				_targetTower.hurt(attackPt);
 				_attackCounter = 0;
+
+				// move enemy towards tower and then back
+				if (_targetTower!=null)
+					animateAttack();
 			}
 
 		 	// stop attacking a dead tower and go back to path
 			if (_targetTower!=null && (!_targetTower.alive || !_targetTower.created)){
+				// stop attack animation
+				if (_tween != null){
+					_tween.cancel();
+					_tween = null;
+				}
+
 				// resume path
 				resumePath();
 
 				// stop attacking
 		 		isAttacking = false;
 		 		_targetTower = null;
+		 		_attackCounter = 0;
 	 		}
 		}
 
@@ -124,11 +138,7 @@ class Enemy extends FlxSprite{
 	}
 
 	public function chipDmg(_){
-		healthPt -= 0.04;
-		if (healthPt <= 0){
-			kill();
-			_healthBar.kill();
-		}
+		hurt(0.04);
 	}
 
 	private function calculateFacing():Int{
@@ -213,12 +223,23 @@ class Enemy extends FlxSprite{
 				default:
 					this.animation.play("attack_down");
 			}
+
 		}
 
-	 		// TODO: add attacking animation play here
-	 		_targetTower = tower;
+ 		_targetTower = tower;
+		animateAttack();
 
-	 		pausePath();
+ 		pausePath();
+	 }
+
+	 private function animateAttack(?duration:Float=0.3, ?delay:Float=0.7):Void
+	 {
+		var targetXDirection = _targetTower.getMidpoint().x == getMidpoint().x? 0 : (_targetTower.getMidpoint().x > getMidpoint().x? 1 : -1); 
+		var targetYDirection = _targetTower.getMidpoint().y == getMidpoint().y? 0 :( _targetTower.getMidpoint().y > getMidpoint().y? 1 : -1); 
+		var travelDist = Std.int(Util.TILE_SIZE/3);
+		_tween = FlxTween.linearPath(this, 
+			[FlxPoint.get(x, y), FlxPoint.get(x+targetXDirection*travelDist, y+targetYDirection*travelDist), 
+			FlxPoint.get(x, y)], duration, true, {startDelay:delay});
 	 }
 
 }

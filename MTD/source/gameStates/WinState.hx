@@ -39,11 +39,20 @@ class WinState extends FlxSubState
 		text.y-=200;
 		add(text);
 
-		var text2 = new flixel.text.FlxText(0, 0, 0, "N for next level\nR to restart\nQ to exit", 70);
+		var text2 = new flixel.text.FlxText(0, 0, 0, "N for next level\nR to restart\nQ for Level Select", 70);
         text2.setFormat("assets/fonts/almonte_woodgrain.ttf", 70, FlxColor.fromInt(0xff70C2FE));
 		text2.screenCenter();
 		text2.y += 40;
 		add(text2);
+
+		// tell player they have unlocked last 5 challenge levels
+		var text3 = new flixel.text.FlxText(0, 0, 0, "You've unlocked the last 5 challenge levels! Go to Level Select screen to view.", 20);
+		if (LevelData.currentLevel == LevelData.levels.length - 6){
+	        text3.setFormat("assets/fonts/almonte_woodgrain.ttf", 30, FlxColor.fromInt(0xffffffff));
+			text3.screenCenter();
+			text3.y -= 110;
+			add(text3);
+		}
 
 		// unlock next level
 		LevelData.gotoNextLevel();
@@ -53,8 +62,10 @@ class WinState extends FlxSubState
         var secs = 0.5;
         FlxTween.tween(text, { y: text.y }, secs, { ease: FlxEase.expoOut});
         FlxTween.tween(text2, { y: text2.y }, secs, { ease: FlxEase.expoOut});
+        FlxTween.tween(text3, { y: text3.y }, secs, { ease: FlxEase.expoOut});
         text.y+=FlxG.height;
         text2.y+=FlxG.height;
+        text3.y+=FlxG.height;
 	}
 
 	override public function add(Object:FlxBasic):FlxBasic{
