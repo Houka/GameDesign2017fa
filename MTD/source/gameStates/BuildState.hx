@@ -36,6 +36,7 @@ class BuildState extends FlxSubState{
     private var slotSpacing:Int;
     private var buildStartPosition:FlxPoint;
 	private var storePosition:FlxPoint;
+	private var tower_gui:FlxTypedGroup<FlxSprite>;
 	public function new(tower:Tower){
 		super();
 		_tower = tower;
@@ -47,6 +48,7 @@ class BuildState extends FlxSubState{
 		_materials = new Array<Int>();
         _currTowerHeight = 0;
 		gui = new FlxTypedGroup<FlxSprite>();
+		tower_gui = new FlxTypedGroup<FlxSprite>();
         matSlots = new Array<FlxSprite>();
         slotSpacing = 48;
 		storePosition = new FlxPoint(FlxG.width - 340, 40);
@@ -267,7 +269,9 @@ class BuildState extends FlxSubState{
 
 	private function cancelCallback(){
 		Sounds.play("cancel");
-		exitCallback();
+		_materials = new Array<Int>();
+		_currTowerHeight = 0;
+		tower_gui.forEach(function(g) {gui.remove(g, true); } );
 	}
 
 	private function exitCallback(){
@@ -303,6 +307,9 @@ class BuildState extends FlxSubState{
             swordIcon.loadGraphic(AssetPaths.sword__png,true,16,16);
             swordIcon.animation.add("shining",[0,1,2,3],10,true);
             swordIcon.animation.play("shining");
+			
+			tower_gui.add(gunAddition);
+			tower_gui.add(swordIcon);
 
 			switch(type){
 				case 0:
@@ -352,7 +359,9 @@ class BuildState extends FlxSubState{
         var iconOffset = 40;
         var heartOffset = 16;
 		if (addMaterial(type)){
-			var foundationAddition = new FlxSprite(buildStartPosition.x,buildStartPosition.y-(_currTowerHeight*slotSpacing));
+			var foundationAddition = new FlxSprite(buildStartPosition.x, buildStartPosition.y - (_currTowerHeight * slotSpacing));
+			
+			tower_gui.add(foundationAddition);
 
 			switch(type){
 				case 3:
@@ -366,6 +375,7 @@ class BuildState extends FlxSubState{
                         healthIcon.animation.add("beating",[0,1,2,1,0,0,0,0,0,0,0],10,true);
                         healthIcon.animation.play("beating");
                         gui.add(healthIcon);
+						tower_gui.add(healthIcon);
                     }
 				case 4:
 					foundationAddition.loadGraphic(AssetPaths.snowman_ice__png); 
@@ -378,6 +388,7 @@ class BuildState extends FlxSubState{
                         healthIcon.animation.add("beating",[0,1,2,1,0,0,0,0,0,0,0],10,true);
                         healthIcon.animation.play("beating");
                         gui.add(healthIcon);
+						tower_gui.add(healthIcon);
                     }
 				case 5:
 					foundationAddition.loadGraphic(AssetPaths.snowman_coal__png); 
@@ -390,6 +401,7 @@ class BuildState extends FlxSubState{
                         healthIcon.animation.add("beating",[0,1,2,1,0,0,0,0,0,0,0],10,true);
                         healthIcon.animation.play("beating");
                         gui.add(healthIcon);
+						tower_gui.add(healthIcon);
                     }
 			}
             //grey out additional spaces the foundation takes up

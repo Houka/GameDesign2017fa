@@ -43,6 +43,7 @@ class GameState extends FlxState{
 	private var collisionController:CollisionController;
 	public var healthBars = new FlxTypedGroup<FlxBar>();
 	private var _centerText:FlxText;
+	private var paused = false;
 
 	public static var towersKilled = 0;
 
@@ -196,15 +197,21 @@ class GameState extends FlxState{
 				Std.int(tutPos.y));
 			GameState.tutorialArrow.visible = true;
 		}
+		
+		// pause button
+		var pauseButton = new FlxButton(10,630,"", pauseCallBack);
+        pauseButton.loadGraphic(AssetPaths.pauseButton__png, true, 84, 98);
+        add(pauseButton);
 	}
 	
 	override public function update(elapsed:Float){
 		super.update(elapsed);
 
 		// keyboard shortcuts
-		if (FlxG.keys.anyJustPressed([P, Q])) {
+		if (FlxG.keys.anyJustPressed([P, Q]) && !paused) {
 			if (isATesting)
 				persistentUpdate = false;
+			paused = true;
 			openSubState(new PauseState());
 		} else {
 			if (isATesting)
@@ -249,6 +256,11 @@ class GameState extends FlxState{
 
 		// last thing to do on update
 		checkGameOver();
+	}
+	
+	private function pauseCallBack():Void {
+		paused = true;
+		openSubState(new PauseState());
 	}
 	
 	/*	
