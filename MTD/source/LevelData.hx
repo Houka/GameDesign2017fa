@@ -177,13 +177,13 @@ class LevelData{
 	public static var level13:Level = {
 		mapFilepath:"assets/maps/level13.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:5,
-		waves:[[0, 0, 0, 1, 1,1,1],
-				[1, 1, 1,2,2],
-				[0, 1, 0,2,2,2],
-				[1, 1,1,1]],
-		buttonTypes:[0, 1,2, 3,4,5],
-		buildLimit:3
+		startHealth:2,
+		waves:[[0,0,0,1,1,1,1],
+				[1,1,1,2,2],
+				[0,1,0,2,2,2],
+				[1,1,1,1]],
+		buttonTypes:[0,1,2,3,4,5],
+		buildLimit:4
 	}
 	
 	public static var level14:Level = {
@@ -204,7 +204,7 @@ class LevelData{
 				[1, 2, 1, 2, 1],
 				[2,2,2,2,0,0]],
 		buttonTypes:[0, 1,2, 3,4,5],
-		buildLimit:3
+		buildLimit:5
 	}
 	
 	public static var level15:Level = {
@@ -225,7 +225,7 @@ class LevelData{
 				[1, 2, 1, 2, 1],
 				[2,2,2,2,0,0]],
 		buttonTypes:[0, 1,2, 3,4,5],
-		buildLimit:3
+		buildLimit:5
 	}
 
 	public static var level16:Level = {
@@ -239,8 +239,8 @@ class LevelData{
 				[1, 1, 1, 1, 1, 1, 2, 2],
 				[2, 2, 1, 2, 1, 1, 2],
 				[2,2,2,2,2,2,2]],
-		buttonTypes:[0, 1,2, 3,4],
-		buildLimit:2
+		buttonTypes:[0,1,2,3,4,5],
+		buildLimit:5
 	}
 
 
