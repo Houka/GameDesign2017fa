@@ -43,8 +43,14 @@ class GameState extends FlxState{
 	private var collisionController:CollisionController;
 	public var healthBars = new FlxTypedGroup<FlxBar>();
 	private var _centerText:FlxText;
+	private var wavesRemaining:FlxText;
+	private var enemiesRemaining:FlxText;
+	private var paused = false;
 
 	public static var towersKilled = 0;
+	public var totalWaves:Int;
+	public var enemiesLeft:Int;
+	public var startSpawn:Bool;
 
 	public static var abTestVersion = Logging.assignABTestValue(FlxG.random.int(1,2));
 	public static var isATesting = true;
@@ -198,15 +204,39 @@ class GameState extends FlxState{
 				Std.int(tutPos.y));
 			GameState.tutorialArrow.visible = true;
 		}
+		
+		// pause button
+		var pauseButton = new FlxButton(860,630,"", pauseCallBack);
+        pauseButton.loadGraphic(AssetPaths.pauseButton__png, true, 84, 98);
+        add(pauseButton);
+		
+		// enemies remaining and waves left count
+		var remaining = new flixel.text.FlxText(600, -35, 0, "Enemies Remaining:\nWaves Remaining:", 20);
+        remaining.setFormat("assets/fonts/almonte_snow.ttf", 35, FlxColor.fromInt(0xFF508AAD));
+		remaining.y += 40;
+		add(remaining);
+		
+		enemiesRemaining = new flixel.text.FlxText(900, -35, 0, "", 20);
+        enemiesRemaining.setFormat("assets/fonts/almonte.ttf", 40, FlxColor.fromInt(0xFF508AAD));
+		enemiesRemaining.y += 40;
+		add(enemiesRemaining);
+		
+		startSpawn = false;
+		totalWaves = spawns.getFirstAlive().wavesLeft;
+		wavesRemaining = new flixel.text.FlxText(870, 5, 0, Std.string(totalWaves), 20);
+        wavesRemaining.setFormat("assets/fonts/almonte.ttf", 40, FlxColor.fromInt(0xFF508AAD));
+		wavesRemaining.y += 40;
+		add(wavesRemaining);
 	}
 	
 	override public function update(elapsed:Float){
 		super.update(elapsed);
 
 		// keyboard shortcuts
-		if (FlxG.keys.anyJustPressed([P, Q])) {
+		if (FlxG.keys.anyJustPressed([P, Q]) && !paused) {
 			if (isATesting)
 				persistentUpdate = false;
+			paused = true;
 			openSubState(new PauseState());
 		} else {
 			if (isATesting)
@@ -248,9 +278,29 @@ class GameState extends FlxState{
 
 		if (!player.exists)
 			player.update(elapsed);
+			
+		
+		// enemies remaining counter
+		if (startSpawn) {
+			var enemiesLeft = enemies.countLiving();
+			
+			if (enemiesLeft < 0)
+				enemiesLeft = 0;
+		
+			enemiesRemaining.destroy();
+			enemiesRemaining = new flixel.text.FlxText(900, -38, 0, Std.string(enemiesLeft), 20);
+			enemiesRemaining.setFormat("assets/fonts/almonte.ttf", 40, FlxColor.fromInt(0xFF508AAD));
+			enemiesRemaining.y += 40;
+			add(enemiesRemaining);
+		}
 
 		// last thing to do on update
 		checkGameOver();
+	}
+	
+	private function pauseCallBack():Void {
+		paused = true;
+		openSubState(new PauseState());
 	}
 	
 	/*	
@@ -265,7 +315,17 @@ class GameState extends FlxState{
 
 		//Log current wave was beaten
 		var logString = "Level:"+LevelData.currentLevel+" Wave:"+spawns.getFirstAlive().currentWave+" Towers Killed:"+towersKilled;
-		Logging.recordEvent(4,logString);
+		Logging.recordEvent(4, logString);
+		
+		
+		startSpawn = true;
+		
+		// waves remaining counter		
+		wavesRemaining.destroy();
+		wavesRemaining = new flixel.text.FlxText(870, 5, 0, Std.string(spawns.getFirstAlive().wavesLeft - 1), 20);
+        wavesRemaining.setFormat("assets/fonts/almonte.ttf", 40, FlxColor.fromInt(0xFF508AAD));
+		wavesRemaining.y += 40;
+		add(wavesRemaining);
 		
 	}
 	private function hideText(Tween:FlxTween):Void {

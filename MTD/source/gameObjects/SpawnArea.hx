@@ -35,6 +35,7 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 
 	public var currentEnemy:Int;
 	public var currentWave:Int;
+	public var wavesLeft:Int;
 	public var goal:FlxPoint;
 	public var map:FlxTilemap;
 
@@ -71,6 +72,7 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 		this.enemies = enemies;
 		waveComplete = false;
 		waveStart = true;
+		wavesLeft = waves.length;
 
 	}
 	override public function update(elapsed:Float){
@@ -101,6 +103,7 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 			currentEnemy = 0;
 			waveComplete = false;
 			waveStart = true;
+			wavesLeft = waves.length - currentWave;
 		}
 
 		if (currentEnemy >= waves[waves.length-1].length && currentWave >= waves.length - 1)
