@@ -42,12 +42,11 @@ class Enemy extends FlxSprite{
 	private var _targetTower:Tower;
 	private var _attackInterval:Int = 1;
 	private var _attackCounter:Int = 0;
-	private var _tween:Array<FlxTween>;
 
 	public var _healthBar:FlxBar; 
 	
 	public function init(X:Int, Y:Int, Type:Int, Attack:Int, Health:Int, Speed:Int,Path:Array<FlxPoint>){
-		setPosition(X,Y);
+		reset(X,Y);
 		type = Type;
 		attackPt = Attack;
 		healthPt = Health;
@@ -59,7 +58,6 @@ class Enemy extends FlxSprite{
 		
 		isAttacking = false; 
 		_attackCounter = 0;
-		_tween = [];
 		// reset path vars
 		_savedPath = null;
 		_savedSpeed = 0;
@@ -67,8 +65,6 @@ class Enemy extends FlxSprite{
 		angle = 0;
 
 		_prevFacing = facing;
-		x=X;
-		y=Y;
 
 		followPath(Path, X, Y);
 	}
@@ -226,10 +222,9 @@ class Enemy extends FlxSprite{
 		var targetXDirection = _targetTower.getMidpoint().x == getMidpoint().x? 0 : (_targetTower.getMidpoint().x > getMidpoint().x? 1 : -1); 
 		var targetYDirection = _targetTower.getMidpoint().y == getMidpoint().y? 0 :( _targetTower.getMidpoint().y > getMidpoint().y? 1 : -1); 
 		var travelDist = Std.int(Util.TILE_SIZE/3);
-		var tween = FlxTween.linearPath(this, 
+		FlxTween.linearPath(this, 
 			[FlxPoint.get(x, y), FlxPoint.get(x+targetXDirection*travelDist, y+targetYDirection*travelDist), 
-			FlxPoint.get(x, y)], duration, true, {});
-		_tween.push(tween);
+			FlxPoint.get(x, y)], duration, true, {startDelay:delay});
 	 }
 
 }
