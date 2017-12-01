@@ -224,6 +224,11 @@ class LevelData{
 		if(maxLevelReached == 1){
 			maxLevelReached = 2;
 		}
+
+		// unlock last 5 challenge levels all at once for convience
+		if(maxLevelReached >= levels.length - 5){
+			maxLevelReached = levels.length-1;
+		}
 		return getCurrentLevel();
 	}
 }
