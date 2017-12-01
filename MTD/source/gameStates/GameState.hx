@@ -207,7 +207,7 @@ class GameState extends FlxState{
 		
 		// pause button
 		var pauseButton = new FlxButton(860,630,"", pauseCallBack);
-        pauseButton.loadGraphic(AssetPaths.pauseButton__png, true, 84, 98);
+        pauseButton.loadGraphic(AssetPaths.PauseButton__png, true, 84, 98);
         add(pauseButton);
 		
 		// enemies remaining and waves left count
