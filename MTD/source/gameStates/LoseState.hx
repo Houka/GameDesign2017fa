@@ -39,7 +39,7 @@ class LoseState extends FlxSubState
 		text.y-=200;
 		add(text);
 
-		var text2 = new flixel.text.FlxText(0, 0, 0, "R to restart\nQ to exit", 70);
+		var text2 = new flixel.text.FlxText(0, 0, 0, "R to restart\nQ for Level Select", 70);
         text2.setFormat("assets/fonts/almonte_woodgrain.ttf", 70, FlxColor.fromInt(0xff70C2FE));
 		text2.screenCenter();
 		text2.y += 40;

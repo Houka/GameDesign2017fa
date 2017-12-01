@@ -24,7 +24,6 @@ using StringTools;
 import utils.*;
 
 class Homebase extends FlxGroup{
-	private static inline var xOffset:Int=-5;
 	private static inline var yOffset:Int=-20;
 	private static inline var gap:Int=15;
 
@@ -33,6 +32,7 @@ class Homebase extends FlxGroup{
 	public var gameover:Bool;
 	public var health(default, set):Int;
 
+	private var xOffset:Int;
 	private var healthSprites:FlxTypedGroup<FlxSprite>;
 	public function new(X:Int, Y:Int, Health:Int){
 		super();
@@ -54,9 +54,11 @@ class Homebase extends FlxGroup{
 		// make hearts around homebase to show life
 		// max life is 5
 		healthSprites = new FlxTypedGroup<FlxSprite>();
+		var healthSpritesWidth = gap * (health);
+		xOffset = Std.int(homebase.width/2 - healthSpritesWidth/2);
 		for (h in 0...health)
 		{
-			var heart = new FlxSprite(X+xOffset + gap * h, Y+yOffset);
+			var heart = new FlxSprite(homebase.x+xOffset + gap * h, Y+yOffset);
 			heart.loadGraphic(AssetPaths.heart__png, true, 16, 16);
 			heart.animation.add("beating",[0,1,2,1,0,0,0,0,0,0,0],10,true);
 			heart.animation.play("beating");
