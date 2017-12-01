@@ -116,23 +116,23 @@ class GameObjectFactory{
 		switch (GunType) {
 			case 0:
 				// horizontal only
-				bullet.init(X,Y,Type,attack,0);
+				bullet.init(X,Y+Std.int(Std.random(Std.int(Util.TILE_SIZE/4))-Util.TILE_SIZE/8),Type,attack,0);
 				bullet = bullets.recycle(Bullet);
-				bullet.init(X,Y,Type,attack,180);
+				bullet.init(X,Y+Std.int(Std.random(Std.int(Util.TILE_SIZE/4))-Util.TILE_SIZE/8),Type,attack,180);
 			case 1:
 				// vertical only
-				bullet.init(X,Y,Type,attack,90);
+				bullet.init(X+Std.int(Std.random(Std.int(Util.TILE_SIZE/4))-Util.TILE_SIZE/8),Y,Type,attack,90);
 				bullet = bullets.recycle(Bullet);
-				bullet.init(X,Y,Type,attack,-90);
+				bullet.init(X+Std.int(Std.random(Std.int(Util.TILE_SIZE/4))-Util.TILE_SIZE/8),Y,Type,attack,-90);
 			case 2:
 				// X only
-				bullet.init(X,Y,Type,attack,45);
+				bullet.init(X+Std.int(Std.random(Std.int(Util.TILE_SIZE/4))-Util.TILE_SIZE/8),Y+Std.int(Std.random(Std.int(Util.TILE_SIZE/4))-Util.TILE_SIZE/8),Type,attack,45);
 				bullet = bullets.recycle(Bullet);
-				bullet.init(X,Y,Type,attack,-45);
+				bullet.init(X+Std.int(Std.random(Std.int(Util.TILE_SIZE/4))-Util.TILE_SIZE/8),Y+Std.int(Std.random(Std.int(Util.TILE_SIZE/4))-Util.TILE_SIZE/8),Type,attack,-45);
 				bullet = bullets.recycle(Bullet);
-				bullet.init(X,Y,Type,attack,135);
+				bullet.init(X+Std.int(Std.random(Std.int(Util.TILE_SIZE/4))-Util.TILE_SIZE/8),Y+Std.int(Std.random(Std.int(Util.TILE_SIZE/4))-Util.TILE_SIZE/8),Type,attack,135);
 				bullet = bullets.recycle(Bullet);
-				bullet.init(X,Y,Type,attack,-135);
+				bullet.init(X+Std.int(Std.random(Std.int(Util.TILE_SIZE/4))-Util.TILE_SIZE/8),Y+Std.int(Std.random(Std.int(Util.TILE_SIZE/4))-Util.TILE_SIZE/8),Type,attack,-135);
 		}
 	}
 
