@@ -173,6 +173,7 @@ class Tower extends FlxSprite{
 			dropshadow.kill();
 			for (c in children)
 				c.kill();
+			children = [];
 			var savedWorkers = workers;
 			init(Std.int(x), Std.int(y), bullets, towerLayers, map);
 			workers = savedWorkers;

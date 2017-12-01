@@ -29,13 +29,14 @@ class GameObjectFactory{
 	public static var dummyAlly = new Ally();
 	public static function addEnemy(enemies:FlxTypedGroup<Enemy>, X:Int, Y:Int, Type:Int, Path:Array<FlxPoint>):Enemy{
 		var enemy = enemies.recycle(Enemy);	// uses an already added enemy, or makes a new one and adds it to enemies
+
 		var _framerate:Int = 13;
 		//set up cookie clicker interaction
 		FlxMouseEventManager.add(enemy, enemy.chipDmg);
 		// make enemy based on type
 		switch (Type) {	
 			case 0:
-				enemy.init(X,Y,Type,1,1,100);
+				enemy.init(X,Y,Type,1,1,100,Path);
 				enemy.loadGraphic(AssetPaths.snowball_spritesheet__png, true, 64, 64);
 				enemy.animation.add("idle",[0],_framerate, true);
 
@@ -51,7 +52,7 @@ class GameObjectFactory{
 				enemy.animation.add("walk_up",[8,9,10,11,12,13,14,15],_framerate, true);
 				enemy.animation.add("attack_up",[8,9,10,11,12,13,14,15],_framerate, true);
 			case 1:
-				enemy.init(X,Y,Type,1,2,150);
+				enemy.init(X,Y,Type,1,2,150,Path);
 				enemy.loadGraphic(AssetPaths.kid_ss__png, true, 64, 64);
 				enemy.animation.add("idle",[8],_framerate, true);
 
@@ -69,7 +70,7 @@ class GameObjectFactory{
 
 				// enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
 			case 2:
-				enemy.init(X,Y,Type,2,5,50);
+				enemy.init(X,Y,Type,2,5,50,Path);
 				enemy.loadGraphic(AssetPaths.gal_ss__png, true, 64, 64);
 				enemy.animation.add("idle",[8],_framerate, true);
 
@@ -89,9 +90,6 @@ class GameObjectFactory{
 			default:
 				trace('No such enemy type: $Type');
 		}
-
-		// set a path for the enemies to follow
-		enemy.followPath(Path);
 
 		return enemy;
 	}

@@ -80,7 +80,7 @@ class LevelData{
 		mapFilepath:"assets/maps/level5.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:2,
-		waves:[[0,0,1,0],
+		waves:[[0,0],[0,0,0],[0,0,1,0],
 				[1,0],
 				[1,0,1,0],
 				[1,0,0]],
@@ -91,8 +91,8 @@ class LevelData{
 	public static var level6:Level = {
 		mapFilepath:"assets/maps/level6.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:2,
-		waves:[[0,0,0,1,1],
+		startHealth:3,
+		waves:[[0,0,0],[0,0,0,1,1],
 				[1,1,1,1,1,1,1],
 				[0,1,1,0],
 				[1,1,1,1,0,0,0,0],
@@ -104,8 +104,8 @@ class LevelData{
 	public static var level7:Level = {
 		mapFilepath:"assets/maps/level7.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:2,
-		waves:[[0,0,0,1,1],
+		startHealth:3,
+		waves:[[0,0,1],[0,0,0,1,1],
 				[1,1,1],
 				[0,1,2,1,0],
 				[1,1,1,1,2,2,2],
@@ -117,7 +117,7 @@ class LevelData{
 	public static var level8:Level = {
 		mapFilepath:"assets/maps/level8.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:2,
+		startHealth:3,
 		waves:[[0,0,0,1],
 				[1,1,1,2,2],
 				[0,1,0,2,2,2],
@@ -129,7 +129,7 @@ class LevelData{
 	public static var level9:Level = {
 		mapFilepath:"assets/maps/level9.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:2,
+		startHealth:3,
 		waves:[
 				[0,0,1,1,1], 
 				[1,2,1,2], 
@@ -142,7 +142,7 @@ class LevelData{
 	public static var level10:Level = {
 		mapFilepath:"assets/maps/level10.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:2,
+		startHealth:4,
 		waves:[[0,0,0,1,1],
 				[1,1,1],
 				[0,1,2,0]],
@@ -153,7 +153,7 @@ class LevelData{
 	public static var level11:Level = {
 		mapFilepath:"assets/maps/level11.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:2,
+		startHealth:4,
 		waves:[[0,0,0,1,1],
 				[1,1,1],
 				[0,1,0],
@@ -165,7 +165,7 @@ class LevelData{
 	public static var level12:Level = {
 		mapFilepath:"assets/maps/level12.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:2,
+		startHealth:5,
 		waves:[[2,0,2,1,1,1],
 				[1,2,1,2],
 				[0,1,0,1,0],
@@ -177,7 +177,7 @@ class LevelData{
 	public static var level13:Level = {
 		mapFilepath:"assets/maps/level13.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:2,
+		startHealth:5,
 		waves:[[0,0,0,1,1,1,1],
 				[1,1,1,2,2],
 				[0,1,0,2,2,2],
@@ -247,7 +247,7 @@ class LevelData{
 
 	public static var levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13, level14, level15, level16];
 	public static var currentLevel = 1;
-	public static var maxLevelReached = currentLevel;
+	public static var maxLevelReached = currentLevel+10;
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>levels.length){
 			trace("Error: Level "+currentLevel+" does not exists");

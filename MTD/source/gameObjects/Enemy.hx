@@ -42,11 +42,11 @@ class Enemy extends FlxSprite{
 	private var _targetTower:Tower;
 	private var _attackInterval:Int = 1;
 	private var _attackCounter:Int = 0;
-	private var _tween:FlxTween;
+	private var _tween:Array<FlxTween>;
 
 	public var _healthBar:FlxBar; 
 	
-	public function init(X:Int, Y:Int, Type:Int, Attack:Int, Health:Int, Speed:Int){
+	public function init(X:Int, Y:Int, Type:Int, Attack:Int, Health:Int, Speed:Int,Path:Array<FlxPoint>){
 		setPosition(X,Y);
 		type = Type;
 		attackPt = Attack;
@@ -59,17 +59,24 @@ class Enemy extends FlxSprite{
 		
 		isAttacking = false; 
 		_attackCounter = 0;
+		_tween = [];
 		// reset path vars
 		_savedPath = null;
 		_savedSpeed = 0;
 		_savedOnComplete = null;
 		angle = 0;
-		_tween = null;
 
 		_prevFacing = facing;
+		x=X;
+		y=Y;
+
+		followPath(Path, X, Y);
 	}
 
 	override public function update(elapsed:Float) {
+		super.update(elapsed);
+		if (!alive)
+			return;
 		// what to do during attacking state
 		if (isAttacking){
 			_attackCounter += Std.int(FlxG.timeScale);
@@ -86,12 +93,6 @@ class Enemy extends FlxSprite{
 
 		 	// stop attacking a dead tower and go back to path
 			if (_targetTower!=null && (!_targetTower.alive || !_targetTower.created)){
-				// stop attack animation
-				if (_tween != null && _tween.active){
-					_tween.cancel();
-					_tween = null;
-				}
-
 				// resume path
 				resumePath();
 
@@ -120,8 +121,6 @@ class Enemy extends FlxSprite{
 
 		_prevFacing = facing;
 
-		super.update(elapsed);
-
 
 	}
 
@@ -131,8 +130,10 @@ class Enemy extends FlxSprite{
 		Util.animateDamage(this);
 
 		if (healthPt <= 0){
-			FlxTween.tween(this, { alpha:0 }, 0.5, { ease: FlxEase.expoOut, onComplete: function(t) kill(), type: FlxTween.ONESHOT });
-			pausePath();
+			if (path != null)
+				pausePath();
+			alive = false;
+			FlxTween.tween(this, { alpha:0 }, 1, { ease: FlxEase.expoOut, onComplete: function(t) kill(), type: FlxTween.ONESHOT });
 			_healthBar.kill();
 		}
 	}
@@ -162,29 +163,16 @@ class Enemy extends FlxSprite{
 	 * and then uses FlxPath.start() to set this enemy on the path. Speed is determined by wave number, unless
 	 * in the menu, in which case it's arbitrary.
 	 */
-	public function followPath(Path:Array<FlxPoint>):Void
+	public function followPath(Path:Array<FlxPoint>, X:Int, Y:Int):Void
 	{
 		if (Path == null)
 			throw("No valid path was passed to the enemy! Does the tilemap provide a valid path from start to finish?");
 		
-		Path[0].x = x;
-		Path[0].y = y;
+		Path[0].x = X;
+		Path[0].y = Y;
 		
 		path = new FlxPath().start(Path, speed, 0, false);
 	}
-	
-	public function followPathDemo(Path:Array<FlxPoint>, Speed:Int, ?OnComplete:FlxPath->Void):Void
-	{
-		if (Path == null)
-			throw("No valid path was passed to the enemy! Does the tilemap provide a valid path from start to finish?");
-		
-		Path[0].x = x;
-		Path[0].y = y;
-		
-		path = new FlxPath().start(Path, Speed, 0, false);
-		path.onComplete = OnComplete;
-	}
-
 
 	public function pausePath():Void{
 		_savedSpeed = path.speed;
@@ -192,7 +180,7 @@ class Enemy extends FlxSprite{
 		_savedPath = Util.copyPathFrom(path.nodes, path.nodeIndex);
 		_savedPath.insert(0, getMidpoint());
 		path.cancel();
-		// path = null;
+		path = null;
 	}
 
 	public function resumePath():Void{
@@ -229,7 +217,8 @@ class Enemy extends FlxSprite{
  		_targetTower = tower;
 		animateAttack();
 
- 		pausePath();
+		if (path != null)
+ 			pausePath();
 	 }
 
 	 private function animateAttack(?duration:Float=0.3, ?delay:Float=0.7):Void
@@ -237,9 +226,10 @@ class Enemy extends FlxSprite{
 		var targetXDirection = _targetTower.getMidpoint().x == getMidpoint().x? 0 : (_targetTower.getMidpoint().x > getMidpoint().x? 1 : -1); 
 		var targetYDirection = _targetTower.getMidpoint().y == getMidpoint().y? 0 :( _targetTower.getMidpoint().y > getMidpoint().y? 1 : -1); 
 		var travelDist = Std.int(Util.TILE_SIZE/3);
-		_tween = FlxTween.linearPath(this, 
+		var tween = FlxTween.linearPath(this, 
 			[FlxPoint.get(x, y), FlxPoint.get(x+targetXDirection*travelDist, y+targetYDirection*travelDist), 
-			FlxPoint.get(x, y)], duration, true, {startDelay:delay});
+			FlxPoint.get(x, y)], duration, true, {});
+		_tween.push(tween);
 	 }
 
 }
