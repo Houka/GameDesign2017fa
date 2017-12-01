@@ -34,7 +34,7 @@ class LevelData{
 	public static var level1:Level = {
 		mapFilepath:"assets/maps/level1.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
-		startHealth:1,
+		startHealth:2,
 		waves:[[0],
 				[1,0]],
 		buttonTypes:[0],
