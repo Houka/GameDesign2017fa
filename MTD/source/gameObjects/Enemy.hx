@@ -87,7 +87,7 @@ class Enemy extends FlxSprite{
 		 	// stop attacking a dead tower and go back to path
 			if (_targetTower!=null && (!_targetTower.alive || !_targetTower.created)){
 				// stop attack animation
-				if (_tween != null){
+				if (_tween != null && _tween.active){
 					_tween.cancel();
 					_tween = null;
 				}
