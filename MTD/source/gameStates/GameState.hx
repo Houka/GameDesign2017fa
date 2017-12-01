@@ -233,12 +233,12 @@ class GameState extends FlxState{
 		super.update(elapsed);
 
 		// keyboard shortcuts
-		if (FlxG.keys.anyJustPressed([P, Q]) && !paused) {
+		if (FlxG.keys.anyJustPressed([P, Q])) {
 			if (isATesting)
 				persistentUpdate = false;
 			paused = true;
 			openSubState(new PauseState());
-		} else {
+		} else if (!paused){
 			if (isATesting)
 				persistentUpdate = true;
 		}
@@ -299,6 +299,8 @@ class GameState extends FlxState{
 	}
 	
 	private function pauseCallBack():Void {
+		if (isATesting)
+			persistentUpdate = false;
 		paused = true;
 		openSubState(new PauseState());
 	}
