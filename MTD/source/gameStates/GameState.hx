@@ -299,6 +299,8 @@ class GameState extends FlxState{
 	}
 	
 	private function pauseCallBack():Void {
+		if(Std.is(subState,BuildState) )
+			return;
 		if (isATesting)
 			persistentUpdate = false;
 		paused = true;
