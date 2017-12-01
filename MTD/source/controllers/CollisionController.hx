@@ -192,7 +192,7 @@ class CollisionController{
 		}
 	}
 	private function hitPlayerTower(p:Player, t:Tower){
-		if (!t.created && prevCollision != CollisionID.PT){
+		if (prevCollision != CollisionID.PT){
 			// if the player hasn't made a tower here yet
 			if (state.subState == null){
 				Sounds.play("select");
