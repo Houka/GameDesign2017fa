@@ -272,6 +272,7 @@ class BuildState extends FlxSubState{
 		_materials = new Array<Int>();
 		_currTowerHeight = 0;
 		tower_gui.forEach(function(g) {gui.remove(g, true); } );
+        materialButtonsOut();
 	}
 
 	private function exitCallback(){
