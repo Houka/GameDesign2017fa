@@ -128,9 +128,11 @@ class Enemy extends FlxSprite{
 	override public function hurt(Damage:Float){
 		healthPt -= Std.int(Damage);
 		alpha -= 0.05;
+		Util.animateDamage(this);
 
 		if (healthPt <= 0){
-			kill();
+			FlxTween.tween(this, { alpha:0 }, 0.5, { ease: FlxEase.expoOut, onComplete: function(t) kill(), type: FlxTween.ONESHOT });
+			pausePath();
 			_healthBar.kill();
 		}
 	}
@@ -219,7 +221,7 @@ class Enemy extends FlxSprite{
 				case FlxObject.RIGHT:
 					this.animation.play("attack_right");
 				default:
-					this.animation.play("attack_right");
+					this.animation.play("attack_down");
 			}
 
 		}

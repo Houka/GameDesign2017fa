@@ -227,7 +227,7 @@ class LevelData{
 		buttonTypes:[0, 1,2, 3,4,5],
 		buildLimit:5
 	}
-
+  
 	public static var level16:Level = {
 		mapFilepath:"assets/maps/level16.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
@@ -246,7 +246,7 @@ class LevelData{
 
 
 	public static var levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13, level14, level15, level16];
-	public static var currentLevel = 15;
+	public static var currentLevel = 0;
 	public static var maxLevelReached = currentLevel;
 	public static function getCurrentLevel():Null<Level>{
 		if (currentLevel>levels.length){
