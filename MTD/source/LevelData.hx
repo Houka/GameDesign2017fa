@@ -69,8 +69,8 @@ class LevelData{
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:2,
 		waves:[[0,1],
-				[1,0,0],
-				[0,1,0,0],
+				[0,0,0],
+				[0,1,0],
 				[1,1,0,0]],
 		buttonTypes:[0,1,3],
 		buildLimit:1
