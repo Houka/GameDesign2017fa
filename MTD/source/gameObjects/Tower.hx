@@ -123,6 +123,13 @@ class Tower extends FlxSprite{
 			_healthBar.visible = created; 
 			FlxG.state.add(_healthBar);
 			map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 1, false);
+
+			// add animation for towers
+			for (i in 0...children.length){
+				var c = children[i];
+				var tween = FlxTween.tween(c, { y: c.y }, 0.5, { ease: FlxEase.expoOut, startDelay:i*0.1});
+				c.y -= FlxG.height;
+			}
 		}
 	}
 	public function addWorker(a:Ally){
