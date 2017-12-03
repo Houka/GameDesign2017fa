@@ -205,10 +205,19 @@ class GameState extends FlxState{
 			GameState.tutorialArrow.visible = true;
 		}
 		
-		// pause button
-		var pauseButton = new FlxButton(860,630,"", pauseCallBack);
+		// pause, exit, restart buttons
+		var pauseButton = new FlxButton(690,630,"", pauseCallBack);
         pauseButton.loadGraphic(AssetPaths.pauseButton__png, true, 84, 98);
         add(pauseButton);
+		
+		var restartButton = new FlxButton(780,630,"", restartCallBack);
+        restartButton.loadGraphic(AssetPaths.resetButton__png, true, 84, 98);
+        add(restartButton);
+		
+		var exitButton = new FlxButton(870,630,"", exitCallBack);
+        exitButton.loadGraphic(AssetPaths.exitButton__png, true, 84, 98);
+        add(exitButton);
+		
 		
 		// enemies remaining and waves left count
 		var remaining = new flixel.text.FlxText(600, -35, 0, "Enemies Remaining:\nWaves Remaining:", 20);
@@ -307,6 +316,16 @@ class GameState extends FlxState{
 			persistentUpdate = false;
 		paused = true;
 		openSubState(new PauseState());
+	}
+	
+	private function exitCallBack():Void {
+		FlxG.switchState(new LevelSelectState());
+	}
+	
+	private function restartCallBack():Void {
+		if (LevelData.currentLevel == 0)
+			GameState.tutorialEvent = 0;
+		FlxG.switchState(new GameState());
 	}
 	
 	/*	
