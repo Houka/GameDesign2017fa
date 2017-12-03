@@ -23,6 +23,7 @@ using StringTools;
 
 import utils.*;
 import gameStates.*;
+import controllers.CollisionController;
 
 class Tower extends FlxSprite{
 	public var created:Bool;
@@ -30,12 +31,14 @@ class Tower extends FlxSprite{
 	
 	private var towerLayers:FlxTypedGroup<FlxSprite>;
 	private var bullets:FlxTypedGroup<Bullet>;
+	private var sights:FlxTypedGroup<FlxSprite>;
+	private var range:Int;
 	private var children:Array<FlxSprite>;
 	private var ammoType:Int;
 	private var gunTypes:Array<Int>;
 	private var foundationTypes: Array<Int>; 
 	private var counter:Int;
-	private var interval:Int = 2;
+	private var interval:Int = 1;
 	private var workers:Array<Ally>;
 	private var _healthBar: FlxBar; 
 	private var dropshadow:FlxSprite;
@@ -46,6 +49,8 @@ class Tower extends FlxSprite{
 		this.towerLayers = towerLayers;
 		this.bullets = bullets;
 		this.map = map;
+		sights = new FlxTypedGroup<FlxSprite>();
+		this.range = 192;
 		this.children = new Array<FlxSprite>();
 		this.workers = new Array<Ally>();
 		this.gunTypes = new Array<Int>();
@@ -67,12 +72,24 @@ class Tower extends FlxSprite{
 						layer.loadGraphic(AssetPaths.snowman_h__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
+						var sightBox = new FlxSprite();
+						sightBox.makeGraphic(range*2,64);
+						sightBox.x = Std.int(this.x+this.width/2-sightBox.width/2);
+						sightBox.y = Std.int(this.y+this.height/2-sightBox.height/2);
+						sightBox.alpha = 0;
+						sights.add(sightBox);
 						gunTypes.push(m);
 						yOffset -= 30;
 					case 1:
 						layer.loadGraphic(AssetPaths.snowman_v__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset-3);
 						towerLayers.add(layer);
+						var sightBox = new FlxSprite();
+						sightBox.makeGraphic(64,range*2);
+						sightBox.x = Std.int(this.x+this.width/2-sightBox.width/2);
+						sightBox.y = Std.int(this.y+this.height/2-sightBox.height/2);
+						sightBox.alpha = 0;
+						sights.add(sightBox);
 						gunTypes.push(m);
 						yOffset -= 30;
 
@@ -80,6 +97,12 @@ class Tower extends FlxSprite{
 						layer.loadGraphic(AssetPaths.snowman_x__png);
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
+						var sightBox = new FlxSprite();
+						sightBox.makeGraphic(Std.int(range*2/Math.sqrt(2)),Std.int(range*2/Math.sqrt(2)));
+						sightBox.x = Std.int(this.x+this.width/2-sightBox.width/2);
+						sightBox.y = Std.int(this.y+this.height/2-sightBox.height/2);
+						sightBox.alpha = 0;
+						sights.add(sightBox);
 						gunTypes.push(m);
 						yOffset -= 30;
 
@@ -122,6 +145,8 @@ class Tower extends FlxSprite{
 			FlxG.state.add(_healthBar);
 			map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 1, false);
 
+			FlxG.state.add(sights);
+
 			// add animation for towers
 			for (i in 0...children.length){
 				var c = children[i];
@@ -145,13 +170,19 @@ class Tower extends FlxSprite{
 	override public function update(elapsed:Float){
 		super.update(elapsed);
 
-		// TODO: if an enemy is within range then shoot by creating bullet depending on ammo type
+		
 		if (children.length > 0 && gunTypes.length > 0 && workers.length > 0){
-			counter += Std.int(FlxG.timeScale);
 			if (counter > interval * FlxG.updateFramerate){
-				for (g in gunTypes)
-					GameObjectFactory.addBullet(bullets, Std.int(getMidpoint().x), Std.int(getMidpoint().y), g, ammoType);
-				counter = 0;
+				if(FlxG.overlap(CollisionController.enemies, this.sights)){
+					for (g in gunTypes){
+						// shoot only if an enemy is in range
+						GameObjectFactory.addBullet(bullets, Std.int(getMidpoint().x), Std.int(getMidpoint().y), g, ammoType);
+					}
+					counter = 0;
+				}
+			}
+			else{
+				counter += Std.int(FlxG.timeScale);
 			}
 		}
 	}

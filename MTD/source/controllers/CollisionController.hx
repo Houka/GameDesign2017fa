@@ -42,7 +42,7 @@ class CollisionController{
 	private var originalMap:FlxTilemap;
 	private var towerMap:FlxTilemap;
 	private var player:Player;
-	private var enemies:FlxTypedGroup<Enemy>;
+	static public var enemies:FlxTypedGroup<Enemy>;
 	private var allies:FlxTypedGroup<Ally>;
 	private var bullets:FlxTypedGroup<Bullet>;
 	private var towers:FlxTypedGroup<Tower>;
@@ -59,7 +59,7 @@ class CollisionController{
 		this.towerMap = towerMap;
 		this.player = player;
 		this.allies = allies;
-		this.enemies = enemies;
+		CollisionController.enemies = enemies;
 		this.bullets = bullets;
 		this.towers = towers;
 		this.homebase = homebase;
