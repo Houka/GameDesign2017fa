@@ -1,6 +1,7 @@
 package;
 
 class Logging {
+    static private var _isRecording:Bool = false;
     public function new(){
 
     }
@@ -11,22 +12,40 @@ class Logging {
     }
     static public function recordEvent(actionId : UInt, ?actionDetail : String) : Void{
         #if html5
-        untyped getLogging().recordEvent(actionId, actionDetail);
+        if(_isRecording){
+            untyped getLogging().recordEvent(actionId, actionDetail);
+        }
         #end
     }
     static public function recordLevelEnd() : Void{
         #if html5
-        untyped getLogging().recordLevelEnd();
+        if(_isRecording){
+            untyped getLogging().recordLevelEnd();
+            _isRecording = false;
+        }
         #end
     }
     static public function recordLevelStart(questId : Float, ?questDetail : String) : Void{
         #if html5
         untyped getLogging().recordLevelStart(questId, questDetail);
+        _isRecording = true;
         #end
     }
     static public function recordPageLoad(?userInfo : String) : Void{
         #if html5
         untyped getLogging().recordPageLoad(userInfo);
+        #end
+    }
+    static public function assignABTestValue(candidate:Int): Int{
+        #if html5
+        return untyped getLogging().assignABTestValue(candidate);
+        #else
+        return 0;
+        #end
+    }
+    static public function recordABTestValue():Void{
+        #if html5
+        untyped getLogging().recordABTestValue();
         #end
     }
 }

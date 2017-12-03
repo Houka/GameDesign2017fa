@@ -1,229 +1,193 @@
 package gameObjects;
 
-import flixel.FlxG;
+import flixel.FlxState;
+import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.FlxSubState;
+import flixel.FlxG;
+import flixel.FlxBasic;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import flixel.util.FlxPath;
+import flixel.math.FlxPoint;
+import flixel.math.FlxVelocity;
 import flixel.group.FlxGroup;
-import AssetPaths;
-import Constants;
-import gameObjects.TowerBlock; 
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import flixel.tile.FlxTilemap;
+import flixel.ui.FlxButton;
+import flixel.ui.FlxBar; 
+import flixel.system.FlxSound;
+import openfl.Assets;
+using StringTools;
 
-class Tower extends FlxSprite
-{
-	private static inline var COST_INCREASE:Float = 1.5;
-	private static inline var BASE_PRICE:Int = 10;
+import utils.*;
+import gameStates.*;
 
-	public var range:Int = 100;
-	public var fireRate:Float = 1;
-	public var damage:Int = 1;
+class Tower extends FlxSprite{
+	public var created:Bool;
+	public var map:FlxTilemap;
 	
-	public var rangeLevel:Int = 1;
-	public var fireRateLevel:Int = 1;
-	public var damageLevel:Int = 1;
-	
-	public var rangePrice:Int = BASE_PRICE;
-	public var fireRatePrice:Int = BASE_PRICE;
-	public var damagePrice:Int = BASE_PRICE;
-	
-	private var _shootInterval:Int = 1;
-	private var _shootCounter:Int = 0;
-	private var _initialCost:Int = 0;
-	private var _indicator:FlxSprite;
+	private var towerLayers:FlxTypedGroup<FlxSprite>;
+	private var bullets:FlxTypedGroup<Bullet>;
+	private var children:Array<FlxSprite>;
+	private var ammoType:Int;
+	private var gunTypes:Array<Int>;
+	private var foundationTypes: Array<Int>; 
+	private var counter:Int;
+	private var interval:Int = 2;
+	private var workers:Array<Ally>;
+	private var _healthBar: FlxBar; 
+	private var dropshadow:FlxSprite;
+	public function init(X:Int, Y:Int, bullets:FlxTypedGroup<Bullet>, towerLayers:FlxTypedGroup<FlxSprite>,map:FlxTilemap){
+		loadGraphic(AssetPaths.towerPlaceholder__png);
+		setPosition(X-Math.abs(width-Util.TILE_SIZE)/2,Y-Math.abs(height-Util.TILE_SIZE)/2);
 
-	public var children:Array<TowerBlock>; 
-
-	private var _ammoType:Int;
-	private var _hasGunBase:Bool = false;
-
-	
-	/**
-	 * Create a new tower at X and Y with default range, fire rate, and damage; create this tower's indicator.
-	 */
-	public function new(X:Float, Y:Float, Cost:Int, materials:Array<TowerBlock>, ammoType:Int)
-	{
-		super(X, Y);
-		loadGraphic(AssetPaths.tower__png);
-
-		health = 0; 
-		
-		_initialCost = Cost;
-		this.children = new Array<TowerBlock>();
-
-		_hasGunBase = false;
-		for (m in materials) {
-			addTowerBlock(m);
-			if (Std.is(m, GunBase))
-				_hasGunBase = true;
-		}
-		addTowerHealth(); 
-
-		_indicator = new Bullet();
-		_indicator.x = getMidpoint().x - _indicator.origin.x;
-		_indicator.y = getMidpoint().y - _indicator.origin.y;
-		Constants.PS.collisionController.towerIndicators.add(_indicator);
-
-		_ammoType = ammoType;
+		this.towerLayers = towerLayers;
+		this.bullets = bullets;
+		this.map = map;
+		this.children = new Array<FlxSprite>();
+		this.workers = new Array<Ally>();
+		this.gunTypes = new Array<Int>();
+		this.foundationTypes = new Array<Int>(); 
+		counter = 0;
+		health = 1; 
+		created = false;
 	}
-	
-	/**
-	 * The tower's update function just checks if there's an enemy nearby; if so, the indicator "charges"
-	 * by slowly increasing its alpha; once the shootCounter has reached the required level, a bullet is
-	 * shot.
-	 */
-	override public function update(elapsed:Float):Void
-	{	
-		if (getNearestEnemy() == null)
-		{
-			_indicator.visible = false;
-		}
-		else
-		{
-			_indicator.visible = true;
-			_indicator.alpha = _shootCounter / (_shootInterval * FlxG.updateFramerate);
-			
-			_shootCounter += Std.int(FlxG.timeScale);
-			
-			if (_shootCounter > (_shootInterval * FlxG.updateFramerate) * fireRate)
-			{
-				shoot();
+	public function buildTower(materials:Array<Int>){
+		var yOffset = 0;
+		var midpoint = getMidpoint();
+		for (m in materials){
+			if (m < 6){
+				// materials
+				var layer = new FlxSprite();
+				switch (m) {
+					// gunbases
+					case 0:
+						layer.loadGraphic(AssetPaths.snowman_h__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
+						towerLayers.add(layer);
+						gunTypes.push(m);
+						yOffset -= 30;
+					case 1:
+						layer.loadGraphic(AssetPaths.snowman_v__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset-3);
+						towerLayers.add(layer);
+						gunTypes.push(m);
+						yOffset -= 30;
+
+					case 2:
+						layer.loadGraphic(AssetPaths.snowman_x__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
+						towerLayers.add(layer);
+						gunTypes.push(m);
+						yOffset -= 30;
+
+					// foundations
+					case 3:
+						layer.loadGraphic(AssetPaths.rusty__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
+						towerLayers.add(layer);
+						health += 1; 
+						yOffset -= 30;
+
+					case 4:
+						layer.loadGraphic(AssetPaths.plated__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
+						towerLayers.add(layer);
+						health += 3; 
+						yOffset -= 30;
+
+					case 5:
+						layer.loadGraphic(AssetPaths.steel__png);
+						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
+						towerLayers.add(layer);
+						health += 7; 
+						yOffset -= 30;
+				}
+
+				children.push(layer);
+			}
+			else{
+				// ammo. only one ammo expected in each materials list
+				ammoType = m;
 			}
 		}
-		
+
+		created = children.length > 0;
+		if (created){
+			_healthBar = new FlxBar(0, 0, FlxBarFillDirection.LEFT_TO_RIGHT, 30, 4, this, "health", 0, this.health, true);
+			_healthBar.trackParent(15, 55);
+			_healthBar.visible = created; 
+			FlxG.state.add(_healthBar);
+			map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 1, false);
+
+			// add animation for towers
+			for (i in 0...children.length){
+				var c = children[i];
+				var tween = FlxTween.tween(c, { y: c.y }, 0.5, { ease: FlxEase.expoOut, startDelay:i*0.1});
+				c.y -= FlxG.height;
+			}
+		}
+
+		//add dropshadow
+		dropshadow = new FlxSprite();
+		dropshadow.loadGraphic(AssetPaths.tower__png);
+		dropshadow.setPosition(midpoint.x-dropshadow.width/2, midpoint.y+8);
+		FlxG.state.add(dropshadow);
+	}
+	public function addWorker(a:Ally){
+		workers.push(a);
+	}
+	public function popWorker():Ally{
+		return workers.pop();
+	}
+	override public function update(elapsed:Float){
 		super.update(elapsed);
+
+		// TODO: if an enemy is within range then shoot by creating bullet depending on ammo type
+		if (children.length > 0 && gunTypes.length > 0 && workers.length > 0){
+			counter += Std.int(FlxG.timeScale);
+			if (counter > interval * FlxG.updateFramerate){
+				for (g in gunTypes)
+					GameObjectFactory.addBullet(bullets, Std.int(getMidpoint().x), Std.int(getMidpoint().y), g, ammoType);
+				counter = 0;
+			}
+		}
 	}
 
-	
-	/**
-	 * Inflict horrible pain on this tower
-	 * 
-	 * @param	Damage	The damage to deal to this enemy.
-	 */
-	override public function hurt(Damage:Float):Void
-	{
+	override public function hurt(Damage:Float):Void {
 		health -= Damage;
-		alpha -= Damage;
+
+		// flash each child as red with a delay
+		for (i in 0...children.length){
+			Util.animateDamage(children[i],i);
+		}
 		
 		if (health <= 0){
-			Constants.PS.removeTower(this, true);
-			kill();
-		}
-	}
-	
-	/**
-	 * Used to determine value of a tower when selling it. Equivalent to half its next upgrade costs plus half its base cost.
-	 */
-	public var value(get, null):Int;
-	
-	private function get_value():Int
-	{
-		var val:Float = _initialCost;
-		
-		val += rangePrice - BASE_PRICE;
-		val += fireRatePrice - BASE_PRICE;
-		val += damagePrice - BASE_PRICE;
-		val = Math.round(val / 2);
-		
-		return Std.int(val);
-	}
-	
-	/**
-	 * Shoots a bullet! Called when shootCounter reaches the required limit.
-	 */
-	private function shoot():Void
-	{
-		var target:Enemy = getNearestEnemy();
-		if (target == null)
-			return;
-		if (!_hasGunBase)
-			return;
-		
-		var bullet = Constants.PS.collisionController.bullets.recycle(Bullet.new);
-		var midpoint = getMidpoint();
-		bullet.init(midpoint.x - bullet.origin.x, midpoint.y- bullet.origin.y, target, damage, _ammoType);
-		midpoint.put();
-		
-		Constants.play("shoot");
-		
-		_shootCounter = 0;
-	}
-	
-	/**
-	 * Goes through the entire enemy group and returns the first non-null enemy within range of this tower.
-	 * 
-	 * @return	The first enemy that is not null, in range, and alive. Returns null if none found.
-	 */
-	private function getNearestEnemy():Enemy
-	{
-		var firstEnemy:Enemy = null;
-		var enemies:FlxTypedGroup<Enemy> = Constants.PS.collisionController.enemies;
-		
-		for (enemy in enemies)
-		{
-			if (enemy != null && enemy.alive)
-			{
-				var distance:Float = getPosition().distanceTo(enemy.getPosition());
-				if (distance <= range)
-				{
-					firstEnemy = enemy;
-					break;
-				}
+			Sounds.play("destroyed");
+
+			created = false; 
+			_healthBar.visible = false;
+			_healthBar.kill();
+			dropshadow.kill();
+			for (c in children)
+				c.kill();
+			children = [];
+			var savedWorkers = workers;
+			init(Std.int(x), Std.int(y), bullets, towerLayers, map);
+			workers = savedWorkers;
+			map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 0, false);
+
+			//for logging
+			GameState.towersKilled++;
+
+			if (GameState.tutorialEvent == 3) { 
+				FlxG.state.add(GameState.tutorialArrow);
+				GameState.tutorialArrow.visible = true; 
+				GameState.tutorialArrow.setPosition(x-40, y);  
+				GameState.tutorialEvent++; 
 			}
 		}
-		
-		return firstEnemy;
 	}
-	
-	/**
-	 * Upgrading range increases the radius within which it will consider enemies valid targets by 10.
-	 * Also updates the rangeLevel and rangePrice (1.5 x LEVEL) values for display and player money impact.
-	 */
-	public function upgradeRange():Void
-	{
-		range += 10;
-		rangeLevel++;
-		rangePrice = Std.int(rangePrice * COST_INCREASE);
-	}
-
-	/**
-	 * Upgrading damage increases the damage value passed to bullets, and later enemies, by 1.
-	 * Also updates the damageLevel and damagePrice (1.5 x LEVEL) values for display and player money impact.
-	 */
-	public function upgradeDamage():Void
-	{
-		damage++;
-		damageLevel++;
-		damagePrice = Std.int(damagePrice * COST_INCREASE);
-	}
-	
-	/**
-	 * Upgrading fire rate decreases time between shots by 10%.
-	 * Also updates the fireRateLevel and fireRatePrice (1.5 x LEVEL) values for display and player money impact.
-	 */
-	public function upgradeFirerate():Void
-	{
-		fireRate *= 0.9;
-		fireRateLevel++;
-		fireRatePrice = Std.int(fireRatePrice * COST_INCREASE);
-	}
-
-	public function addTowerBlock(obj:TowerBlock):Bool{
-        if (!obj.inTower && children.length < Constants.MAX_HEIGHT){
-            obj.inTower = true;
-            children.push(obj);
-            return true;
-        }
-        return false;
-    }
-
-    private function addTowerHealth(): Void { 
-    	for (i in this.children) {
-    		if (Std.is(i, Foundation)) {
-    			health += cast(i, Foundation).healthPoints; 
-    		}
-    	}
-    }
-
-    //Print out the list of materials for logging purposes only.
-    override public function toString(): String{
-    	return children.length+"";
-    }
 }

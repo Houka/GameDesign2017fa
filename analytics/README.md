@@ -16,6 +16,10 @@ health change (hp, time) = 3
 wave start(currency, wave num, towers destroyed, time) = 4  
 tower build(position (x,y), materials, time) = 5  
 game over (wave num, level num) = 6  
+<<<<<<< HEAD
+=======
+level won (level num) = 7  
+>>>>>>> 4ee48795f58cd093c0287207b726678650bb21f9
 
 Structure:
 ----------
