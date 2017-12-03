@@ -41,13 +41,15 @@ class Tower extends FlxSprite{
 	private var interval:Int = 1;
 	private var workers:Array<Ally>;
 	private var _healthBar: FlxBar; 
+	private var enemies:FlxTypedGroup<Enemy>;
 	private var dropshadow:FlxSprite;
-	public function init(X:Int, Y:Int, bullets:FlxTypedGroup<Bullet>, towerLayers:FlxTypedGroup<FlxSprite>,map:FlxTilemap){
+	public function init(X:Int, Y:Int, bullets:FlxTypedGroup<Bullet>, enemies:FlxTypedGroup<Enemy>,towerLayers:FlxTypedGroup<FlxSprite>,map:FlxTilemap){
 		loadGraphic(AssetPaths.towerPlaceholder__png);
 		setPosition(X-Math.abs(width-Util.TILE_SIZE)/2,Y-Math.abs(height-Util.TILE_SIZE)/2);
 
 		this.towerLayers = towerLayers;
 		this.bullets = bullets;
+		this.enemies = enemies;
 		this.map = map;
 		sights = new FlxTypedGroup<FlxSprite>();
 		this.range = 160;
@@ -173,7 +175,7 @@ class Tower extends FlxSprite{
 		
 		if (children.length > 0 && gunTypes.length > 0 && workers.length > 0){
 			if (counter > interval * FlxG.updateFramerate){
-				if(FlxG.overlap(CollisionController.enemies, this.sights)){
+				if(FlxG.overlap(enemies, this.sights)){
 					for (g in gunTypes){
 						// shoot only if an enemy is in range
 						GameObjectFactory.addBullet(bullets, Std.int(getMidpoint().x), Std.int(getMidpoint().y), g, ammoType);
@@ -206,7 +208,7 @@ class Tower extends FlxSprite{
 				c.kill();
 			children = [];
 			var savedWorkers = workers;
-			init(Std.int(x), Std.int(y), bullets, towerLayers, map);
+			init(Std.int(x), Std.int(y), bullets, enemies, towerLayers, map);
 			workers = savedWorkers;
 			map.setTile(Std.int(getMidpoint().x / Constants.TILE_SIZE), Std.int(getMidpoint().y / Constants.TILE_SIZE), 0, false);
 

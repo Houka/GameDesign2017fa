@@ -94,11 +94,11 @@ class GameObjectFactory{
 		return enemy;
 	}
 
-	public static function addTower(towers:FlxTypedGroup<Tower>, X, Y, bullets:FlxTypedGroup<Bullet>, 
+	public static function addTower(towers:FlxTypedGroup<Tower>, X, Y, bullets:FlxTypedGroup<Bullet>, enemies:FlxTypedGroup<Enemy>,
 									towerLayers:FlxTypedGroup<FlxSprite>, map:FlxTilemap):Tower{
 		var tower = towers.recycle(Tower);
 		var point = Util.toCameraCoordinates(X,Y);
-		tower.init(Std.int(point.x), Std.int(point.y),bullets,towerLayers,map);
+		tower.init(Std.int(point.x), Std.int(point.y),bullets,enemies,towerLayers,map);
 
 		return tower;
 	}

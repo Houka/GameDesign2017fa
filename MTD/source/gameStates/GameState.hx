@@ -110,7 +110,7 @@ class GameState extends FlxState{
 						mapArray[row][col] = 0; //remove it
 					case 5:
 						// create tower placeholder
-						GameObjectFactory.addTower(towers, col, row, bullets, towerLayers,towerMap);
+						GameObjectFactory.addTower(towers, col, row, bullets, enemies, towerLayers,towerMap);
 						mapArray[row][col] = 0; // remove it
 					case 6:
 						// create ally
