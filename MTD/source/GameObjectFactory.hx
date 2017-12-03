@@ -36,7 +36,7 @@ class GameObjectFactory{
 		// make enemy based on type
 		switch (Type) {	
 			case 0:
-				enemy.init(X,Y,Type,1,3,100,Path);
+				enemy.init(X,Y,Type,1,2,100,Path);
 				enemy.loadGraphic(AssetPaths.snowball_spritesheet__png, true, 64, 64);
 				enemy.animation.add("idle",[0],_framerate, true);
 
@@ -70,7 +70,7 @@ class GameObjectFactory{
 
 				// enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
 			case 2:
-				enemy.init(X,Y,Type,2,12,50,Path);
+				enemy.init(X,Y,Type,2,10,50,Path);
 				enemy.loadGraphic(AssetPaths.gal_ss__png, true, 64, 64);
 				enemy.animation.add("idle",[8],_framerate, true);
 

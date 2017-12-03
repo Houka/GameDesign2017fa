@@ -50,7 +50,7 @@ class Tower extends FlxSprite{
 		this.bullets = bullets;
 		this.map = map;
 		sights = new FlxTypedGroup<FlxSprite>();
-		this.range = 192;
+		this.range = 160;
 		this.children = new Array<FlxSprite>();
 		this.workers = new Array<Ally>();
 		this.gunTypes = new Array<Int>();
@@ -98,7 +98,7 @@ class Tower extends FlxSprite{
 						layer.setPosition(midpoint.x-layer.width/2, midpoint.y-layer.height/2 + yOffset);
 						towerLayers.add(layer);
 						var sightBox = new FlxSprite();
-						sightBox.makeGraphic(Std.int(range*2/Math.sqrt(2)),Std.int(range*2/Math.sqrt(2)));
+						sightBox.makeGraphic(range*2,range*2);
 						sightBox.x = Std.int(this.x+this.width/2-sightBox.width/2);
 						sightBox.y = Std.int(this.y+this.height/2-sightBox.height/2);
 						sightBox.alpha = 0;
