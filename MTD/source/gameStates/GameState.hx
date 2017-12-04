@@ -210,25 +210,38 @@ class GameState extends FlxState{
 			GameState.tutorialArrow.visible = true;
 		}
 		
-		// pause button
-		var pauseButton = new FlxButton(860,630,"", pauseCallBack);
+		// pause, exit, restart buttons
+		var pauseButton = new FlxButton(870,450,"", pauseCallBack);
         pauseButton.loadGraphic(AssetPaths.pauseButton__png, true, 84, 98);
         add(pauseButton);
 		
+		var restartButton = new FlxButton(870,540,"", restartCallBack);
+        restartButton.loadGraphic(AssetPaths.resetButton__png, true, 84, 98);
+        add(restartButton);
+		
+		var exitButton = new FlxButton(870,630,"", exitCallBack);
+        exitButton.loadGraphic(AssetPaths.exitButton__png, true, 84, 98);
+        add(exitButton);
+		
+		
 		// enemies remaining and waves left count
-		var remaining = new flixel.text.FlxText(600, -35, 0, "Enemies Remaining:\nWaves Remaining:", 20);
+		var remaining = new flixel.text.FlxText(615, -35, 0, "Enemies Remaining:", 20);
         remaining.setFormat("assets/fonts/almonte_snow.ttf", 35, FlxColor.fromInt(0xFF508AAD));
 		remaining.y += 40;
 		add(remaining);
+		var remaining2 = new flixel.text.FlxText(645, 5, 0, "Waves Remaining:", 20);
+        remaining2.setFormat("assets/fonts/almonte_snow.ttf", 35, FlxColor.fromInt(0xFF508AAD));
+		remaining2.y += 40;
+		add(remaining2);
 		
-		enemiesRemaining = new flixel.text.FlxText(900, -35, 0, "0", 20);
+		enemiesRemaining = new flixel.text.FlxText(910, -35, 0, "0", 20);
         enemiesRemaining.setFormat("assets/fonts/almonte.ttf", 40, FlxColor.fromInt(0xFF508AAD));
 		enemiesRemaining.y += 40;
 		add(enemiesRemaining);
 		
 		startSpawn = false;
 		totalWaves = spawns.getFirstAlive().wavesLeft;
-		wavesRemaining = new flixel.text.FlxText(870, 5, 0, Std.string(totalWaves), 20);
+		wavesRemaining = new flixel.text.FlxText(910, 5, 0, Std.string(totalWaves), 20);
         wavesRemaining.setFormat("assets/fonts/almonte.ttf", 40, FlxColor.fromInt(0xFF508AAD));
 		wavesRemaining.y += 40;
 		add(wavesRemaining);
@@ -326,6 +339,16 @@ class GameState extends FlxState{
 			persistentUpdate = false;
 		paused = true;
 		openSubState(new PauseState());
+	}
+	
+	private function exitCallBack():Void {
+		FlxG.switchState(new LevelSelectState());
+	}
+	
+	private function restartCallBack():Void {
+		if (LevelData.currentLevel == 0)
+			GameState.tutorialEvent = 0;
+		FlxG.switchState(new GameState());
 	}
 	
 	/*	
