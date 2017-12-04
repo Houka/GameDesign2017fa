@@ -52,7 +52,7 @@ class GameObjectFactory{
 				enemy.animation.add("walk_up",[8,9,10,11,12,13,14,15],_framerate, true);
 				enemy.animation.add("attack_up",[8,9,10,11,12,13,14,15],_framerate, true);
 			case 1:
-				enemy.init(X,Y,Type,1,4,150,Path);
+				enemy.init(X,Y,Type,1,3,150,Path);
 				enemy.loadGraphic(AssetPaths.kid_ss__png, true, 64, 64);
 				enemy.animation.add("idle",[8],_framerate, true);
 
@@ -70,7 +70,7 @@ class GameObjectFactory{
 
 				// enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
 			case 2:
-				enemy.init(X,Y,Type,2,10,50,Path);
+				enemy.init(X,Y,Type,2,13,50,Path);
 				enemy.loadGraphic(AssetPaths.gal_ss__png, true, 64, 64);
 				enemy.animation.add("idle",[8],_framerate, true);
 

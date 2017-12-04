@@ -100,6 +100,6 @@ class Util{
 	 	var hitColor = FlxColor.RED;
 		var backToNorm = function(t) {FlxTween.color(obj, 0.1, hitColor, FlxColor.WHITE,{});};
 		FlxTween.color(obj, 0.1, FlxColor.WHITE, hitColor, { onComplete: backToNorm, type: FlxTween.ONESHOT, startDelay: delay*.1});
-		FlxTween.linearPath(obj, [FlxPoint.get(obj.x+5, obj.y), FlxPoint.get(obj.x-5, obj.y),FlxPoint.get(obj.x, obj.y)], 0.1, true, {});
+		//FlxTween.linearPath(obj, [FlxPoint.get(obj.x+5, obj.y), FlxPoint.get(obj.x-5, obj.y),FlxPoint.get(obj.x, obj.y)], 0.1, true, {});
 	 }
 }
