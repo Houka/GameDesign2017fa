@@ -38,6 +38,7 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 	public var wavesLeft:Int;
 	public var goal:FlxPoint;
 	public var map:FlxTilemap;
+	public var countdownComplete = false; 
 
 	private var defaultPath: Array<FlxPoint>;
 
@@ -81,9 +82,8 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 			return;
 
 		counter += Std.int(FlxG.timeScale);
-		if (counter > interval * FlxG.updateFramerate && currentWave < waves.length && waves[currentWave].length > currentEnemy)
-		{
-			
+		if (counter > interval * FlxG.updateFramerate && currentWave < waves.length && waves[currentWave].length > currentEnemy && countdownComplete)
+		{	
 			var path = map.findPath(midpoint, goal.copyTo());
 			if (path == null) {
 				path = Util.copyPathFrom(defaultPath, 0); 
@@ -99,6 +99,7 @@ class SpawnArea extends FlxTypedGroup<FlxSprite>{
 		}
 		
 		if (waveComplete && currentWave <= waves.length - 1) {
+			countdownComplete = false; 
 			currentWave ++;
 			currentEnemy = 0;
 			waveComplete = false;

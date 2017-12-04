@@ -18,6 +18,8 @@ import flixel.tile.FlxTilemap;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxBar; 
 import flixel.system.FlxSound;
+import flixel.util.FlxTimer; 
+import flixel.math.FlxMath; 
 import flixel.input.mouse.FlxMouseEventManager;
 import openfl.Assets;
 using StringTools;
@@ -46,6 +48,9 @@ class GameState extends FlxState{
 	private var wavesRemaining:FlxText;
 	private var enemiesRemaining:FlxText;
 	private var paused = false;
+	private var waveAnnounced = false; 
+	private var timeLeft: Float = 3;
+	private var timerText: Int = 0;  
 
 	public static var towersKilled = 0;
 	public var totalWaves:Int;
@@ -253,6 +258,21 @@ class GameState extends FlxState{
 			Logging.recordEvent(1, logString);
 		}
 
+		if (waveAnnounced) { 
+			timeLeft -= FlxG.elapsed; 
+			timerText = FlxMath.absInt(cast(FlxMath.roundDecimal(timeLeft, 0),Int));
+			_centerText.text = "Wave " + (spawns.getFirstAlive().currentWave + 1) + " starts in " + timerText;
+
+			if (timerText == 0) {
+				startSpawn = true;
+				for (spawnArea in spawns) {
+					spawnArea.countdownComplete = true; 
+				}
+				waveAnnounced = false; 
+				timeLeft = 3;
+			}
+		}
+
 		// update interactions of game objects
 		collisionController.update(elapsed);
 		
@@ -261,7 +281,6 @@ class GameState extends FlxState{
 		for (spawnArea in spawns){
 			if (!spawnArea.waveStart)
 				waveStart = false;
-
 			if (!spawnArea.playerReady)
 				playerReady = false;
 		}
@@ -313,18 +332,16 @@ class GameState extends FlxState{
 	*	Announces start of new wave.
 	*/
 	private function announceWave():Void {
-		
+		waveAnnounced = true; 
 		_centerText.x = -200;
-		_centerText.text = "Wave " + (spawns.getFirstAlive().currentWave + 1);
-		
+
 		FlxTween.tween(_centerText, { x: 0 }, 2, { ease: FlxEase.expoOut, onComplete: hideText });
 
 		//Log current wave was beaten
 		var logString = "Level:"+LevelData.currentLevel+" Wave:"+spawns.getFirstAlive().currentWave+" Towers Killed:"+towersKilled;
 		Logging.recordEvent(4, logString);
 		
-		
-		startSpawn = true;
+		// startSpawn = true;
 		
 		// waves remaining counter		
 		wavesRemaining.destroy();
@@ -332,8 +349,8 @@ class GameState extends FlxState{
         wavesRemaining.setFormat("assets/fonts/almonte.ttf", 40, FlxColor.fromInt(0xFF508AAD));
 		wavesRemaining.y += 40;
 		add(wavesRemaining);
-		
 	}
+
 	private function hideText(Tween:FlxTween):Void {
 		FlxTween.tween(_centerText, { x: FlxG.width }, 2, { ease: FlxEase.expoIn });
 	}
