@@ -152,7 +152,7 @@ class GameState extends FlxState{
 								
 		
 		// center text
-		_centerText = new FlxText( -200, 50, FlxG.width, "", 32);
+		_centerText = new FlxText( -200, 80, FlxG.width, "", 32);
 		_centerText.alignment = CENTER;
 		_centerText.borderStyle = SHADOW;
 		_centerText.setBorderStyle(OUTLINE_FAST, FlxColor.BLACK,5);
