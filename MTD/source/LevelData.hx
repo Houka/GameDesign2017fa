@@ -258,7 +258,7 @@ class LevelData{
 		return levels[currentLevel];
 	}
 	public static function gotoNextLevel():Null<Level>{
-		currentLevel = currentLevel>=levels.length-1: currentLevel; currentLevel+1;
+		currentLevel = currentLevel>=levels.length-1? currentLevel: currentLevel+1;
 		maxLevelReached = Std.int(Math.max(currentLevel, maxLevelReached));
 		if(maxLevelReached == 1){
 			maxLevelReached = 2;
