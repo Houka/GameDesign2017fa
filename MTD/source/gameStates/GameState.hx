@@ -320,7 +320,7 @@ class GameState extends FlxState{
 				enemiesLeft = 0;
 		
 			enemiesRemaining.destroy();
-			enemiesRemaining = new flixel.text.FlxText(900, -38, 0, Std.string(enemiesLeft), 20);
+			enemiesRemaining = new flixel.text.FlxText(910, -38, 0, Std.string(enemiesLeft), 20);
 			enemiesRemaining.setFormat("assets/fonts/almonte.ttf", 40, FlxColor.fromInt(0xFF508AAD));
 			enemiesRemaining.y += 40;
 			add(enemiesRemaining);
@@ -368,7 +368,7 @@ class GameState extends FlxState{
 		
 		// waves remaining counter		
 		wavesRemaining.destroy();
-		wavesRemaining = new flixel.text.FlxText(870, 5, 0, Std.string(spawns.getFirstAlive().wavesLeft - 1), 20);
+		wavesRemaining = new flixel.text.FlxText(910, 5, 0, Std.string(spawns.getFirstAlive().wavesLeft - 1), 20);
         wavesRemaining.setFormat("assets/fonts/almonte.ttf", 40, FlxColor.fromInt(0xFF508AAD));
 		wavesRemaining.y += 40;
 		add(wavesRemaining);
