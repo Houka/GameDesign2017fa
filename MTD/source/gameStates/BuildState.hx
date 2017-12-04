@@ -29,6 +29,7 @@ class BuildState extends FlxSubState{
 	private var _tower:Tower;
 	private var _materials:Array<Int>;
     private var _currTowerHeight:Int;
+    private var _alreadyBuilt:Bool;
 	private var ammo:Int;
 	private var ammoSprite:FlxSprite;
 	private var gui:FlxTypedGroup<FlxSprite>;
@@ -50,6 +51,7 @@ class BuildState extends FlxSubState{
 		gui = new FlxTypedGroup<FlxSprite>();
 		tower_gui = new FlxTypedGroup<FlxSprite>();
         matSlots = new Array<FlxSprite>();
+        _alreadyBuilt = false;
         slotSpacing = 48;
 		storePosition = new FlxPoint(FlxG.width - 340, 40);
         buildStartPosition = new FlxPoint(storePosition.x+180,storePosition.y+520);
@@ -242,29 +244,32 @@ class BuildState extends FlxSubState{
     }
 
 	private function confirmedCallback(){
-		// tutorial related
-		if (LevelData.currentLevel == 0 && GameState.tutorialEvent == 2){
-			GameState.tutorialArrow.visible = false;
-			gui.remove(GameState.tutorialArrow);
-			GameState.tutorialEvent++;
-		}
-
-		Sounds.play("summon", 1);
-		_materials.push(ammo);
-		_tower.buildTower(_materials);
-
-		// log tower creation and materials list
-		var logString = "Level:"+LevelData.currentLevel+" X:"+_tower.x+" Y:"+_tower.y+" Materials:[";
-		for(i in 0..._materials.length){
-			logString+=_materials[i];
-			if(i!=_materials.length-1){
-				logString+=",";
+		if(!_alreadyBuilt){
+			// tutorial related
+			if (LevelData.currentLevel == 0 && GameState.tutorialEvent == 2){
+				GameState.tutorialArrow.visible = false;
+				gui.remove(GameState.tutorialArrow);
+				GameState.tutorialEvent++;
 			}
-		}
-		logString+="] Height:"+_currTowerHeight;
-		Logging.recordEvent(5, logString);
 
-		exitCallback();
+			Sounds.play("summon", 1);
+			_materials.push(ammo);
+			_tower.buildTower(_materials);
+			_alreadyBuilt = true;
+
+			// log tower creation and materials list
+			var logString = "Level:"+LevelData.currentLevel+" X:"+_tower.x+" Y:"+_tower.y+" Materials:[";
+			for(i in 0..._materials.length){
+				logString+=_materials[i];
+				if(i!=_materials.length-1){
+					logString+=",";
+				}
+			}
+			logString+="] Height:"+_currTowerHeight;
+			Logging.recordEvent(5, logString);
+
+			exitCallback();
+		}
 	}
 
 	private function cancelCallback(){
