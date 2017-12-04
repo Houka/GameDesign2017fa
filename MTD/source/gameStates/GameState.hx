@@ -206,11 +206,11 @@ class GameState extends FlxState{
 		}
 		
 		// pause, exit, restart buttons
-		var pauseButton = new FlxButton(690,630,"", pauseCallBack);
+		var pauseButton = new FlxButton(870,450,"", pauseCallBack);
         pauseButton.loadGraphic(AssetPaths.pauseButton__png, true, 84, 98);
         add(pauseButton);
 		
-		var restartButton = new FlxButton(780,630,"", restartCallBack);
+		var restartButton = new FlxButton(870,540,"", restartCallBack);
         restartButton.loadGraphic(AssetPaths.resetButton__png, true, 84, 98);
         add(restartButton);
 		
@@ -220,19 +220,23 @@ class GameState extends FlxState{
 		
 		
 		// enemies remaining and waves left count
-		var remaining = new flixel.text.FlxText(600, -35, 0, "Enemies Remaining:\nWaves Remaining:", 20);
+		var remaining = new flixel.text.FlxText(615, -35, 0, "Enemies Remaining:", 20);
         remaining.setFormat("assets/fonts/almonte_snow.ttf", 35, FlxColor.fromInt(0xFF508AAD));
 		remaining.y += 40;
 		add(remaining);
+		var remaining2 = new flixel.text.FlxText(645, 5, 0, "Waves Remaining:", 20);
+        remaining2.setFormat("assets/fonts/almonte_snow.ttf", 35, FlxColor.fromInt(0xFF508AAD));
+		remaining2.y += 40;
+		add(remaining2);
 		
-		enemiesRemaining = new flixel.text.FlxText(900, -35, 0, "0", 20);
+		enemiesRemaining = new flixel.text.FlxText(910, -35, 0, "0", 20);
         enemiesRemaining.setFormat("assets/fonts/almonte.ttf", 40, FlxColor.fromInt(0xFF508AAD));
 		enemiesRemaining.y += 40;
 		add(enemiesRemaining);
 		
 		startSpawn = false;
 		totalWaves = spawns.getFirstAlive().wavesLeft;
-		wavesRemaining = new flixel.text.FlxText(870, 5, 0, Std.string(totalWaves), 20);
+		wavesRemaining = new flixel.text.FlxText(910, 5, 0, Std.string(totalWaves), 20);
         wavesRemaining.setFormat("assets/fonts/almonte.ttf", 40, FlxColor.fromInt(0xFF508AAD));
 		wavesRemaining.y += 40;
 		add(wavesRemaining);
