@@ -135,7 +135,7 @@ class Enemy extends FlxSprite{
 	}
 
 	public function chipDmg(_){
-		hurt(0.04);
+		hurt(0.1);
 	}
 
 	private function calculateFacing():Int{

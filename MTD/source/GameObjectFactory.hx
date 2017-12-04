@@ -36,7 +36,7 @@ class GameObjectFactory{
 		// make enemy based on type
 		switch (Type) {	
 			case 0:
-				enemy.init(X,Y,Type,1,1,100,Path);
+				enemy.init(X,Y,Type,1,2,100,Path);
 				enemy.loadGraphic(AssetPaths.snowball_spritesheet__png, true, 64, 64);
 				enemy.animation.add("idle",[0],_framerate, true);
 
@@ -52,7 +52,7 @@ class GameObjectFactory{
 				enemy.animation.add("walk_up",[8,9,10,11,12,13,14,15],_framerate, true);
 				enemy.animation.add("attack_up",[8,9,10,11,12,13,14,15],_framerate, true);
 			case 1:
-				enemy.init(X,Y,Type,1,2,150,Path);
+				enemy.init(X,Y,Type,1,3,150,Path);
 				enemy.loadGraphic(AssetPaths.kid_ss__png, true, 64, 64);
 				enemy.animation.add("idle",[8],_framerate, true);
 
@@ -70,7 +70,7 @@ class GameObjectFactory{
 
 				// enemy.animation.add("attack",[32,33,34,35,36,37], 5, true);
 			case 2:
-				enemy.init(X,Y,Type,2,5,50,Path);
+				enemy.init(X,Y,Type,2,13,50,Path);
 				enemy.loadGraphic(AssetPaths.gal_ss__png, true, 64, 64);
 				enemy.animation.add("idle",[8],_framerate, true);
 
@@ -94,11 +94,11 @@ class GameObjectFactory{
 		return enemy;
 	}
 
-	public static function addTower(towers:FlxTypedGroup<Tower>, X, Y, bullets:FlxTypedGroup<Bullet>, 
+	public static function addTower(towers:FlxTypedGroup<Tower>, X, Y, bullets:FlxTypedGroup<Bullet>, enemies:FlxTypedGroup<Enemy>,
 									towerLayers:FlxTypedGroup<FlxSprite>, map:FlxTilemap):Tower{
 		var tower = towers.recycle(Tower);
 		var point = Util.toCameraCoordinates(X,Y);
-		tower.init(Std.int(point.x), Std.int(point.y),bullets,towerLayers,map);
+		tower.init(Std.int(point.x), Std.int(point.y),bullets,enemies,towerLayers,map);
 
 		return tower;
 	}

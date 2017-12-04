@@ -119,9 +119,9 @@ class LevelData{
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:3,
 		waves:[[0,0,0,1],
-				[1,1,1,2,2],
-				[0,1,0,2,2,2],
-				[1,1,1,1,2,2]],
+				[0,1,1,0,2],
+				[1,2,0,0,2,2],
+				[2,2,0,0,0,2,2]],
 		buttonTypes:[0,1,2,3],
 		buildLimit:2
 	}
@@ -166,10 +166,10 @@ class LevelData{
 		mapFilepath:"assets/maps/level12.csv",
 		tilemap:"assets/tiles/auto_tilemap.png",
 		startHealth:5,
-		waves:[[2,0,2,1,1,1],
-				[1,2,1,2],
-				[0,1,0,1,0],
-				[1,1,0,1]],
+		waves:[[2,0,2,1,2,1],
+				[1,0,1,2,2,2,2],
+				[1,1,2,2,2,2,2,2],
+				[2,2,2,2,2,2,2,2,2]],
 		buttonTypes:[0,1,2,3,4,5],
 		buildLimit:4
 	}
